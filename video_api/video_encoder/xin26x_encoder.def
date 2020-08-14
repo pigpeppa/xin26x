@@ -1,0 +1,9 @@
+LIBRARY
+EXPORTS
+
+Xin26xEncoderCreate
+Xin26xEncoderDelete
+Xin26xEncodeFrame
+Xin26xGetReconFrame
+Xin26xSetDefaultParam
+Xin26xControlOption
