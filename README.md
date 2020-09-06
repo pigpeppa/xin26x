@@ -60,7 +60,7 @@ which specifies how many B frames in a gop. Currently, we support 1, 3 and 7.
 -W/--wpp <integer>    
 which specifies whether wavefront parallel processing is enabled. 0: disable 1: enable.
 
--P/--fpp <integer>    
+-F/--fpp <integer>    
 which specifies whether frame parallel processing is enabled. 0: disable 1: enable.
 
 -T/--thread <integer>    
