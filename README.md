@@ -92,6 +92,7 @@ Known Issues
 Todo Lists
 ------------
 - Transform skip and MTS support.
+- Screen content coding tools support.
 - Ternary cu partition support.
 - Adaptive loop filter support (I will evaluate the pros and cons to accommodate ALF in Xin26x).
 
