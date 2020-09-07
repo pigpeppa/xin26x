@@ -89,4 +89,10 @@ Known Issues
 - Max resolution we support is 3860x2160.
 - Max temporal layer we support is 3.
 
+Todo Lists
+------------
+- Transform skip and MTS support.
+- Ternary cu partition support.
+- Adaptive loop filter support (I will evaluate the pros and cons to accommodate ALF in Xin26x).
+
 The speed and compression efficiency of VVC encoder will increase dramatically in following months. Any question, please contact pig.peppa@qq.com
