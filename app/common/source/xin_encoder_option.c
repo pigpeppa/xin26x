@@ -167,6 +167,10 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     {
                         encoderOption->xinConfig.transformSkipFlag = atoi(configFile->value);
                     }
+                    else if (strcmp(configFile->key, "MaxTrSkipSize") == 0)
+                    {
+                        encoderOption->xinConfig.maxTrSkipSize = atoi(configFile->value);
+                    }
                     else if (strcmp(configFile->key, "LoopFilterDisable") == 0)
                     {
                         encoderOption->xinConfig.disableDeblockFilter = atoi(configFile->value);
@@ -379,7 +383,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
     bool bConsulting = false;
     if (argc <= 1)
     {
-        printf("Argument is invalid. Run xin265_enc --help for a list of options.\n");
+        printf("Argument is invalid. Run xin26x_test --help for a list of options.\n");
         return encoderOption;
     }
 
@@ -695,7 +699,7 @@ void PrintEncoderOption(encoder_option_struct* encoderOption)
 
 void ShowHelp()
 {
-    printf("\nSyntax: xin26x_enc [options]\n");
+    printf("\nSyntax: xin26x_test [options]\n");
 
     printf("\nEncoder config file option: if there is no config file, app will use custom options\n");
     printf("-c/--config <filename>       Config file\n");

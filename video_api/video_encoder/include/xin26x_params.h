@@ -119,6 +119,7 @@ typedef struct xin26x_params
     UINT32      maxTtSize;
     UINT32      maxMttDepth;
     UINT32      minCuSize;
+    UINT32      maxTrSkipSize;
     BOOL        lumaTrSize64;
 
     // av1 settings
