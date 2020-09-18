@@ -119,4 +119,23 @@ VVC
 - Adaptive loop filter support (I will evaluate the pros and cons to accommodate ALF in Xin26x).
 - SIMD optimization.
 
+About Xin26x
+-----------------
+The main purpose of Xin26x is unification. Xin26x is designed to unify different video standards and different implementations for same video standard.
+
+In past 30 years, there are a lot of video standards released by different groups. Fortunately, these standards are all block-based motion compensation and transform hybrid scheme. Actually, it never changed since h.261 had been released. Based on that, Xin26x is designed to unify mainstream video standards into ONE encoder. Xin26x is a flexible video encoder framework to accommodate all the video standard so far on this planet. Currently, Xin26x have implemented h.265 and h.266. For AV1, Xin26x supports static picture encoding. Later, Xin26x is planning to accommodate EVC.
+
+For same video standard, there are different implememations target to different application scenario. In my opinion, there are mainly 3 categories of encoder according to application latency.
+| Latency                            | Scenario                           |
+| -----------------------------------| ---------------------------------- |
+| 200ms or blow (real time)          | real time video communication      |
+| 1s-3s (low latency)                | live video boardcast               |
+| 10s or above (offline)             | offline video application          |
+
+Different encoding tools are adopted for different encoder implementions. For example, B frame is normally not adopted for RTC(Real-Time Communication) encoder. Frame parallelism is not used for RTC encoder. Rate control for RTC encoder is very strict. Besides, lookahead and mb-tree are normally not applied on first 2 encoders. Screen content coding tools are normally considered for a RTC encoder. In current industry, Openh264 is for real time video communication application. X264 is mainly for offline and low latency. Xin26x begins at a RTC video encoder. To accommodate offline video coding tools and video standard evolution, the encoder architecture has been greatly refactored. Also to make encoder work under different application scenarios, multiple different rate control modes are designed in Xin26x. 
+
+I wish video coding standardization would take a revolution, break though current hybrid scheme, stop piling up computation for better compression rate in the future, then Xin26x reaches its end-of-life. Otherwise, Xin26x will keep catching up with the latest video coding standard, till I reach my end-of-life.
+
+Basicly, Xin26x is purely a result of coding happiness pursuit. It is named after my 8 year old beautiful child. I would like her know how great her father is. After she grows up, I wish she would know how father loved her.
+
 Any question, please contact pig.peppa@qq.com
