@@ -100,6 +100,10 @@ Known Issues
 Todo Lists
 -----------------
 
+Xin26x
+-----------------
+- 2 pass coding tool support.
+
 HEVC
 -----------------
 - Minor structure adjustment.
