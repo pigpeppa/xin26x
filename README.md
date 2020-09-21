@@ -43,7 +43,7 @@ which specifies temporal layer number. It works under all P frame sequence.
 which specifies the encoding preset, trading off compression efficiency against encoding speed. 0: superfast, 1 veryfast, 2: fast, 3: medium, 4: slow 5: veryslow.
 
 -o/--output <filename>    
-which specifies output bitstream file name. For HEVC and VVC, the output file accord with HEVC annex B specification. For AV1, the output file accord with OBU format.
+which specifies output bitstream file name. For HEVC and VVC, the output file accord with Annex B specification. For AV1, the output file accord with OBU format.
 
 -R/--recon <filename>    
 which specifies reconstruction YUV file name. It is not a must input parameter.
