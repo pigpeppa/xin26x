@@ -125,6 +125,7 @@ typedef struct xin26x_params
     // av1 settings
     UINT32      sbSize;
     BOOL        enableRectPartType;
+    UINT32      outputFormat;
 
     BOOL        enableMultiThread;
     UINT32      threadNum;
