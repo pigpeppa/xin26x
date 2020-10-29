@@ -58,6 +58,10 @@ static const struct option encoder_long_options[] =
 	{ "mincusize",      required_argument, 0, '7' },
 	{ "lookahead",      required_argument, 0, '8' },
 	{ "trsize64",       required_argument, 0, '9' },
+	{ "maxtrskipsize",  required_argument, 0, 'G' },
+    { "adabframe",      required_argument, 0, 'g' },
+    { "rectparttype",   required_argument, 0, 'Q' },
+    { "sbsize",         required_argument, 0, 'z' },
     { "ratecontrol",    required_argument, 0, 'r' },
     { "initqp",         required_argument, 0, 'q' },
     { "rdoq",           required_argument, 0, 'd' },
@@ -270,6 +274,10 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     else if (strcmp(configFile->key, "RefFrames") == 0)
                     {
                         encoderOption->xinConfig.refFrameNum = atoi(configFile->value);
+                    }
+                    else if (strcmp(configFile->key, "AdapitveBFrame") == 0)
+                    {
+                        encoderOption->xinConfig.adapitveBFrame = atoi(configFile->value);
                     }
                     else if (strcmp(configFile->key, "SignBitHidden") == 0)
                     {
@@ -557,6 +565,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
                 case 'M':
                     encoderOption->xinConfig.refFrameNum = atoi(optarg);
                     break;
+
+                case 'g':
+                    encoderOption->xinConfig.adapitveBFrame = atoi(optarg);
+                    break;
 				
 				case 'A':
                     encoderOption->xinConfig.transformSkipFlag = atoi(optarg);
@@ -608,6 +620,18 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
                 case 'd':
                     encoderOption->xinConfig.enableRdoq = atoi(optarg);
+                    break;
+
+                case 'G':
+                    encoderOption->xinConfig.maxTrSkipSize = atoi(optarg);
+                    break;
+
+                case 'Q':
+                    encoderOption->xinConfig.enableRectPartType = atoi(optarg);
+                    break;
+
+                case 'z':
+                    encoderOption->xinConfig.sbSize = atoi(optarg);
                     break;
 
                 case 'E':
@@ -701,46 +725,84 @@ void ShowHelp()
 {
     printf("\nSyntax: xin26x_test [options]\n");
 
-    printf("\nEncoder config file option: if there is no config file, app will use custom options\n");
-    printf("-c/--config <filename>       Config file\n");
+    printf ("\nEncoder config file option: if there is no config file, app will use custom options\n");
+    printf ("-c/--config <filename>       Config file\n");
+    printf ("\nEncoder custom options: if there are some custom options, it will replace the value in config file\n");
 
-    printf("\nEncoder custom options: if there are some custom options, it will replace the value in config file\n");
-    printf("-i/--input <filename>        Input YUV420 file\n");
-    printf("-o/--output <filename>       Output raw bitstream file\n");
-    printf("-a/--algmode <integer>       Which algorithm mode is used. 0: H.265, 1: AV1 2: H.266.\n");
-    printf("-n/--framenumber <integer>   Frames to be encoded\n");
-    printf("-w/--width <integer>         Width of input YUV420 file\n");
-    printf("-h/--height <integer>        Height of input YUV420 file\n");
-    printf("-f/--framerate <float>       Encode frame rate\n");
-    printf("-b/--bitrate <integer>       Encode bit rate\n");
-    printf("-t/--temporallayer <integer> Temporal layer\n");
-    printf("-s/--screencontent <integer> Enable screen content, 0: disable, 1: enable\n");
-    printf("-r/--ratecontrol <integer>   Enable rate control, 0: disable, 1: cbr people 2: cbr content 3: vbr\n");
-    printf("-q/--qp <integer>            Encode QP, work when rate control is disabled\n");
-    printf("-p/--preset <integer>        Encoder preset. 0: veryfast, 1: fast, 2: medium, 3 slow\n");
-    printf("-B/--bframes <integer>       B frame number in a prediciton gop\n");
-    printf("-I/--intraperiod <integer>   Intra Period Length\n");
-    printf("-W/--wpp <integer>           Enable WaveFront Parallel Processing. 0: disable, 1: Enable\n");
-    printf("-F/--fpp <integer>           Enable Frame Parallel Processing. 0: disable, 1: Enable\n");
-    printf("-T/--thread <integer>        Specify thread number in thread pool. It is decided by local system if thread number is 0.\n");
-    printf("--intranxn <integer>         Enable intra 4x4, 0: disable, 1: enable\n");
-    printf("--internxn <integer>         Enable inter 4x4, 0: disable, 1: enable\n");
-    printf("--signbithide <integer>      Enable sign bit hidden, 0: disable, 1: enable\n");
-    printf("--refreshtype <integer>      Refresh Type, Only works under b frame cases. 0:CRA, 1:IDR\n");
-    printf("--refframes <integer>        Reference frame number, Only works under none b frame cases.\n");
-    printf("--frameskip <integer>        Enable frame skip when bit rate is insufficient. 0: disable, 1: enable\n");
-    printf("--transformskip <integer>    Enable transform skip. 0: disable, 1: enable\n");
-    printf("--lookahead <integer>        How many frames are lookahead.\n");
-    printf("--trsize64 <integer>         Enable max transform size 64 for luma, 0: disable, 1: enable.\n");
-    printf("-d/--rdoq <integer>          Enable rate distortion optimization. 0: disable, 1: Enable.\n");
-    printf("-L/--lathread <integer>      How many thread used for lookahead.\n");
-    printf("-u/--unittree <integer>      Enable unit tree, 0: disable, 1: enable.\n");
-    printf("-e/--treestrength <double>   Unit tree strength.\n");
-    printf("-E/--statlevel <integer>     Statistics level. 0: no stat, 1: stat in sequence level, 2: stat in picture level.\n");
+    printf ("Input and Ouput Options:\n");
+    printf ("-i/--input <filename>        Input YUV420 file\n");
+    printf ("-o/--output <filename>       Output raw bitstream file\n");
+    printf ("-n/--framenumber <integer>   Frames to be encoded\n");
+    printf ("-w/--width <integer>         Width of input YUV420 file\n");
+    printf ("-h/--height <integer>        Height of input YUV420 file\n");
+    printf ("\n");
 
-    printf("\nOther options:\n");
-    printf("-H/--help                    Show this help text\n");
-    printf("-V/--version                 Show version info\n");
+    printf ("Algorithm Mode:\n");
+    printf ("-a/--algmode <integer>       Which algorithm mode is used. 0: H.265, 1: AV1 2: H.266.\n");
+    printf ("\n");
+
+    printf ("H.265 Coding Tools:\n");
+    printf ("--intranxn <integer>         Enable intra 4x4, 0: disable, 1: enable\n");
+    printf ("--internxn <integer>         Enable inter 4x4, 0: disable, 1: enable\n");
+    printf ("\n");
+
+    printf ("AV1 Coding Toools:\n");
+    printf ("--sbsize <integer>           Super Block size 64 or 128.\n");
+    printf ("--rectparttype <integer>     Enable rectangle partition type.\n");
+    printf ("\n");
+
+    printf ("H266 Coding Tools:\n");
+    printf ("--minqtsize <integer>        Minimum allowed quaternary tree leaf node size.\n");
+    printf ("--maxbtsize <integer>        Maximum allowed binary tree root node size.\n");
+    printf ("--maxttsize <integer>        Maximum allowed ternary tree root node size.\n");
+    printf ("--maxmttdepth <integer>      Maximum allowed hierarchy depth of multi-type tree splitting from a quadtree leaf.\n");
+    printf ("--mincusize <integer>        Minimum coding unit size.\n");
+    printf ("--trsize64 <integer>         Enable max transform size 64 for luma, 0: disable, 1: enable.\n");
+    printf ("--maxtrskipsize <integer>    Max transform skip size.\n");
+    printf ("\n");
+
+    printf ("H265 and H266 Coding Tools:\n");
+    printf ("--signbithide <integer>      Enable sign bit hidden, 0: disable, 1: enable\n");
+    printf ("--transformskip <integer>    Enable transform skip. 0: disable, 1: enable\n");
+    printf ("--sao <integer>              Enable sample adaptive offset. 0: disable, 1: enable\n");
+    printf ("\n");
+
+    printf ("General Coding Tools:\n");
+    printf ("-p/--preset <integer>        Encoder preset. 0: superfast, 1: veryfast, 2: fast, 3: medium, 4 slow, 5 veryslow.\n");
+    printf ("-s/--screencontent <integer> Enable screen content, 0: disable, 1: enable\n");
+    printf ("--lookahead <integer>        How many frames are lookahead.\n");
+    printf ("-d/--rdoq <integer>          Enable rate distortion optimization. 0: disable, 1: Enable.\n");
+    printf ("-L/--lathread <integer>      How many thread used for lookahead.\n");
+    printf ("-u/--unittree <integer>      Enable unit tree, 0: disable, 1: enable.\n");
+    printf ("-e/--treestrength <double>   Unit tree strength.\n");
+    printf ("\n");
+
+    printf ("Coding Structure:\n");
+    printf ("-t/--temporallayer <integer> Temporal layer\n");
+    printf ("-I/--intraperiod <integer>   Intra Period Length\n");
+    printf ("--refreshtype <integer>      Refresh Type, Only works under b frame cases. 0:CRA, 1:IDR\n");
+    printf ("--refframes <integer>        Reference frame number, Only works under none b frame cases.\n");
+    printf ("-B/--bframes <integer>       B frame number in a prediciton gop.\n");
+    printf ("--adabframe <integer>        Enable adapitve B frame number in a gop. 0: disable, 1: enable\n");
+    printf ("\n");
+
+    printf ("Multiple Thread:\n");
+    printf ("-W/--wpp <integer>           Enable WaveFront Parallel Processing. 0: disable, 1: Enable\n");
+    printf ("-F/--fpp <integer>           Enable Frame Parallel Processing. 0: disable, 1: Enable\n");
+    printf ("-T/--thread <integer>        Specify thread number in thread pool. It is decided by local system if thread number is 0.\n");
+    
+    printf ("Rate Control:\n");
+    printf ("-r/--ratecontrol <integer>   Enable rate control, 0: disable, 1: cbr people 2: cbr content 3: vbr\n");
+    printf ("-q/--qp <integer>            Encode QP, work when rate control is disabled\n");
+    printf ("-f/--framerate <float>       Encode frame rate\n");
+    printf ("-b/--bitrate <integer>       Encode bit rate\n");
+    printf ("--frameskip <integer>        Enable frame skip when bit rate is insufficient. 0: disable, 1: enable\n");
+    printf ("\n");
+
+    printf ("Other options:\n");
+    printf ("-H/--help                    Show this help text\n");
+    printf ("-V/--version                 Show version info\n");
+    printf ("-E/--statlevel <integer>     Statistics level. 0: no stat, 1: stat in sequence level, 2: stat in picture level.\n");
     
 }
 

@@ -177,6 +177,7 @@ int main(int argc, char **argv)
     UINT64                totalFrameTicks;
     xin26x_dynamic_params dynParam;
     UINT64                totalBitSize;
+    UINT32                frameToBeEncoded;
 
     totalFrameTicks = 0;
     totalBitSize    = 0;
@@ -189,13 +190,15 @@ int main(int argc, char **argv)
 
         config = &encoderOption->xinConfig;
 
-        if (!config->frameToBeEncoded)
+        GetFrameCount (
+            encoderOption->inputFileHandle,
+            config->inputWidth,
+            config->inputHeight,
+            &frameToBeEncoded);
+
+        if ((frameToBeEncoded < config->frameToBeEncoded) || (config->frameToBeEncoded == 0))
         {
-            GetFrameCount (
-                encoderOption->inputFileHandle,
-                config->inputWidth,
-                config->inputHeight,
-                &config->frameToBeEncoded);
+            config->frameToBeEncoded = frameToBeEncoded;
         }
 
         if (Xin26xEncoderCreate (&encoderHandle, config))

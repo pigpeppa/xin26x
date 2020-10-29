@@ -102,6 +102,7 @@ typedef struct xin26x_params
     BOOL        constrainedIntraPredFlag;
 
     BOOL        transformSkipFlag;
+    BOOL        adapitveBFrame;
 
     BOOL        enableCuQpDelta;
     UINT32      diffCuQpDeltaDepth;
