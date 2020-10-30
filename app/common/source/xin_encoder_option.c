@@ -790,6 +790,7 @@ void ShowHelp()
     printf ("-W/--wpp <integer>           Enable WaveFront Parallel Processing. 0: disable, 1: Enable\n");
     printf ("-F/--fpp <integer>           Enable Frame Parallel Processing. 0: disable, 1: Enable\n");
     printf ("-T/--thread <integer>        Specify thread number in thread pool. It is decided by local system if thread number is 0.\n");
+    printf ("\n");
     
     printf ("Rate Control:\n");
     printf ("-r/--ratecontrol <integer>   Enable rate control, 0: disable, 1: cbr people 2: cbr content 3: vbr\n");
