@@ -103,7 +103,6 @@ Todo Lists
 Xin26x
 -----------------
 - 2 pass coding tool support.
-- Adaptive B frame number decision.
 
 HEVC
 -----------------
