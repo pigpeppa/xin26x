@@ -103,6 +103,8 @@ Todo Lists
 Xin26x
 -----------------
 - 2 pass coding tool support.
+- 16 and 32 picture gop size support.
+- Preprocessing algorithm refactor.
 
 HEVC
 -----------------
