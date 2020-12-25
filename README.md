@@ -85,6 +85,24 @@ Api Usage
 -----------------
 Please refer to xin_app_enc.c.
 
+Performance Comparison
+-----------------
+x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0 --bframes 15
+
+| INPUT YUV                          | BD-PSNRY | BD-RATEY | BD-PSNRYUV | BD-PSNRYUV |
+| -----------------------------------| ---------| ---------| -----------| -----------|
+| pedestrian_area                    | 0.23     | -10.67   | 0.22       | -10.65     |
+| B_Kimono1_1920x1080_24             | 0.24     | -9.45    | 0.2        | -8.21      |
+| B_ParkScene_1920x1080_24           | 0.28     | -8.94    | 0.26       | -8.74      |
+| B_BasketballDrive_1920x1080_50     | 0.07     | -3.3     | 0.08       | -3.97      |
+| B_BQTerrace_1920x1080_60           | 0.24     | -24.37   | 0.22       | -22.73     |
+| B_Cactus_1920x1080_50              | 0.34     | -18.5    | 0.32       | -18.29     |
+
+Please refer to file perf-comp.xlsx under doc folder for more information. Both x265 and xin26x(HEVC) are under slow mode, x265 is 2020/12/25 version. 
+
+Currently, xin26x(HEVC) decrease bitrate by 12.5% under same PSNR compare to x265. More offline tools will be added into xin26x codebase soon, I wish offline performance for xin26x could be better.
+
 Processor Support
 -----------------
 - Intel x86 with AVX2 support.
