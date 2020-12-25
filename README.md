@@ -88,14 +88,14 @@ Please refer to xin_app_enc.c.
 Performance Comparison
 -----------------
 
-| INPUT YUV                          | BD-PSNRY | BD-RATEY | BD-PSNRYUV | BD-PSNRYUV |
-| -----------------------------------| ---------| ---------| -----------| -----------|
-| pedestrian_area                    | 0.23     | -10.67   | 0.22       | -10.65     |
-| B_Kimono1_1920x1080_24             | 0.24     | -9.45    | 0.2        | -8.21      |
-| B_ParkScene_1920x1080_24           | 0.28     | -8.94    | 0.26       | -8.74      |
-| B_BasketballDrive_1920x1080_50     | 0.07     | -3.3     | 0.08       | -3.97      |
-| B_BQTerrace_1920x1080_60           | 0.24     | -24.37   | 0.22       | -22.73     |
-| B_Cactus_1920x1080_50              | 0.34     | -18.5    | 0.32       | -18.29     |
+| INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
+| -----------------------------------| --------------| -------------| ----------------| ---------------|
+| pedestrian_area                    | 0.23          | -10.67       | 0.22            | -10.65         |
+| B_Kimono1_1920x1080_24             | 0.24          | -9.45        | 0.2             | -8.21          |
+| B_ParkScene_1920x1080_24           | 0.28          | -8.94        | 0.26            | -8.74          |
+| B_BasketballDrive_1920x1080_50     | 0.07          | -3.3         | 0.08            | -3.97          |
+| B_BQTerrace_1920x1080_60           | 0.24          | -24.37       | 0.22            | -22.73         |
+| B_Cactus_1920x1080_50              | 0.34          | -18.5        | 0.32            | -18.29         |
 
 Encoder parameters for xin26x and x265 are as follows:    
 x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv    
