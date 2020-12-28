@@ -88,6 +88,9 @@ Please refer to xin_app_enc.c.
 Performance Comparison
 -----------------
 
+Offline Comparison
+-----------------
+
 | INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
 | -----------------------------------| --------------| -------------| ----------------| ---------------|
 | pedestrian_area                    | 0.23          | -10.67       | 0.22            | -10.65         |
@@ -97,13 +100,22 @@ Performance Comparison
 | B_BQTerrace_1920x1080_60           | 0.24          | -24.37       | 0.22            | -22.73         |
 | B_Cactus_1920x1080_50              | 0.34          | -18.5        | 0.32            | -18.29         |
 
-Encoder parameters for xin26x and x265 are as follows:    
+Offline encoder parameters for xin26x and x265 are as follows:    
 x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv    
 xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0 --bframes 15
 
 Please refer to file perf-comp.xlsx under doc folder for more information. Both x265 and xin26x(HEVC) are under slow mode, x265 is 2020/12/25 version. 
 
-Currently, xin26x(HEVC) decrease bitrate by 12.5% under same PSNR compare to x265.
+Currently, xin26x(HEVC) decrease bitrate by 12.5% under same PSNR compare to x265 for offline encoder scenario.
+
+Lowdelay Comparison
+-----------------
+
+| B_BasketballDrive_1920x1080_50.yuv | FPS           | PSNR         | Encoder parameters|
+| -----------------------------------| --------------| -------------| ------------------|
+| xin26x                             | 20.68         | 36.929       | xin26x_test.exe -i B_BasketballDrive_1920x1080_50.yuv -o test.265 -w 1920 -h 1080 -b 3000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 3 --bframes 0 -n 500 |
+| x265                               |  7.96         | 36.913       | x265.exe --preset fast -I -1 --input-res 1920x1080 --input B_BasketballDrive_1920x1080_50.yuv test.265 --bitrate 3000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr ¨Cf 500 |
+
 
 Processor Support
 -----------------
