@@ -111,10 +111,29 @@ Currently, xin26x(HEVC) decrease bitrate by 12.5% under same PSNR compare to x26
 Lowdelay Comparison
 -----------------
 
+Single thread for IPPPPPPPPP under suitbale bitrate
+
 | B_BasketballDrive_1920x1080_50.yuv | FPS           | PSNR         | Encoder parameters|
 | -----------------------------------| --------------| -------------| ------------------|
 | xin26x                             | 20.68         | 36.929       | xin26x_test.exe -i B_BasketballDrive_1920x1080_50.yuv -o test.265 -w 1920 -h 1080 -b 3000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 3 --bframes 0 -n 500 |
 | x265                               |  7.96         | 36.913       | x265.exe --preset fast -I -1 --input-res 1920x1080 --input B_BasketballDrive_1920x1080_50.yuv test.265 --bitrate 3000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr -f 500 |
+
+| pedestrian_area.yuv                | FPS           | PSNR         | Encoder parameters|
+| -----------------------------------| --------------| -------------| ------------------|
+| xin26x                             | 39.203        | 39.719       | xin26x_test.exe -i pedestrian_area.yuv -o test.265 -w 1920 -h 1080 -b 2000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 0 --bframes 0 |
+| x265                               |  8.35         | 39.707       | x265.exe --preset fast -I -1 --input-res 1920x1080 --input pedestrian_area.yuv test.265 --bitrate 2000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr |
+
+| E_KristenAndSara_1280x720_60.yuv   | FPS           | PSNR         | Encoder parameters|
+| -----------------------------------| --------------| -------------| ------------------|
+| xin26x                             | 103.68        | 43.218       | xin26x_test.exe ¨Ci E_KristenAndSara_1280x720_60.yuv -o test.265 -w 1280 -h 720 -b 1000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 0 --bframes 0 |
+| x265                               |  23.56        | 43.183       | x265.exe --preset fast -I -1 --input-res 1280x720 --input E_KristenAndSara_1280x720_60.yuv test.265 --bitrate 1000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr |
+
+| sc_desktop_1920x1080_60_8bit_420.yuv | FPS           | PSNR         | Encoder parameters|
+| -------------------------------------| --------------| -------------| ------------------|
+| xin26x                               | 39.48         | 40.082       | xin26x_test.exe -i sc_desktop_1920x1080_60_8bit_420.yuv-o test.265 -w 1920 -h 1080 -b 2000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 0 --bframes 0 -s 1 |
+| x265                                 | 16.83         | 29.817       | x265.exe --preset fast -I -1 --input-res 1920x1080 --input sc_desktop_1920x1080_60_8bit_420.yuv test.265 --bitrate 2000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr |
+
+
 
 
 Processor Support
