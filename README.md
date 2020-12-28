@@ -125,7 +125,7 @@ Single thread for IPPPPPPPPP under suitbale bitrate
 
 | E_KristenAndSara_1280x720_60.yuv   | FPS           | PSNR         | Encoder parameters|
 | -----------------------------------| --------------| -------------| ------------------|
-| xin26x                             | 103.68        | 43.218       | xin26x_test.exe ¨Ci E_KristenAndSara_1280x720_60.yuv -o test.265 -w 1280 -h 720 -b 1000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 0 --bframes 0 |
+| xin26x                             | 103.68        | 43.218       | xin26x_test.exe -i E_KristenAndSara_1280x720_60.yuv -o test.265 -w 1280 -h 720 -b 1000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 0 --bframes 0 |
 | x265                               |  23.56        | 43.183       | x265.exe --preset fast -I -1 --input-res 1280x720 --input E_KristenAndSara_1280x720_60.yuv test.265 --bitrate 1000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr |
 
 | sc_desktop_1920x1080_60_8bit_420.yuv | FPS           | PSNR         | Encoder parameters|
