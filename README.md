@@ -114,7 +114,7 @@ Lowdelay Comparison
 | B_BasketballDrive_1920x1080_50.yuv | FPS           | PSNR         | Encoder parameters|
 | -----------------------------------| --------------| -------------| ------------------|
 | xin26x                             | 20.68         | 36.929       | xin26x_test.exe -i B_BasketballDrive_1920x1080_50.yuv -o test.265 -w 1920 -h 1080 -b 3000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 3 --bframes 0 -n 500 |
-| x265                               |  7.96         | 36.913       | x265.exe --preset fast -I -1 --input-res 1920x1080 --input B_BasketballDrive_1920x1080_50.yuv test.265 --bitrate 3000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr ¨Cf 500 |
+| x265                               |  7.96         | 36.913       | x265.exe --preset fast -I -1 --input-res 1920x1080 --input B_BasketballDrive_1920x1080_50.yuv test.265 --bitrate 3000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr -f 500 |
 
 
 Processor Support
