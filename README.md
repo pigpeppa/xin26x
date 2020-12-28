@@ -133,8 +133,7 @@ Single thread for IPPPPPPPPP under suitbale bitrate
 | xin26x                               | 39.48         | 40.082       | xin26x_test.exe -i sc_desktop_1920x1080_60_8bit_420.yuv-o test.265 -w 1920 -h 1080 -b 2000000 -f 30 -I 0 --wpp 0 --thread 1 --preset 0 --bframes 0 -s 1 |
 | x265                                 | 16.83         | 29.817       | x265.exe --preset fast -I -1 --input-res 1920x1080 --input sc_desktop_1920x1080_60_8bit_420.yuv test.265 --bitrate 2000 --fps 30 --pools 1 --bframes 0 --frame-threads 0 --no-wpp --tune psnr |
 
-
-
+For a encoder, we normally take a tradeoff between picture quality and encoder sppeed. For a RTC encoder, performance on unit core or whole system capacity is more important. The performance of xin26x(HEVC) is x4 compared to x265 under single unit core. One important thing is that, the screen content coding performance of xin26x(HEVC) outperform x265 greatly both for speed and quality.    
 
 Processor Support
 -----------------
