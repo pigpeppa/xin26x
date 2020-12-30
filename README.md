@@ -157,6 +157,8 @@ Xin26x
 - 2 pass coding tool support.
 - 16 and 32 picture gop size support.
 - Preprocessing algorithm refactor.
+- Rate contronl algorithm refine.
+- Encoder structre refactor for offline coding consideration.
 
 HEVC
 -----------------
