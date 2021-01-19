@@ -153,7 +153,6 @@ static void GetFrameCount (
 
 }
 
-
 int main(int argc, char **argv)
 {
     encoder_option_struct *encoderOption;
@@ -286,7 +285,7 @@ int main(int argc, char **argv)
 
         }
 
-        // Flush trailing frames
+        // Flush traling frames
         do
         {
 
@@ -379,6 +378,8 @@ int main(int argc, char **argv)
 
         DeleteEncoderOption (
             encoderOption);
+
+        free (encoderOption);
 
     }
 

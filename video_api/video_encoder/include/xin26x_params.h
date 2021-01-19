@@ -60,6 +60,7 @@ typedef struct xin26x_params
     BOOL        frameSkip;
     UINT32      encoderMode;
     UINT32      algorithmMode;
+    BOOL        offlineMode;
 
     UINT32      frameToBeEncoded;
 
@@ -94,7 +95,7 @@ typedef struct xin26x_params
 
     BOOL        enableSignDataHiding;
     
-    BOOL        enableRdoq;
+    UINT32      enableRdoq;
 
     BOOL        enableIntraNxN;
     BOOL        enableInterNxN;
@@ -102,7 +103,7 @@ typedef struct xin26x_params
     BOOL        constrainedIntraPredFlag;
 
     BOOL        transformSkipFlag;
-    BOOL        adapitveBFrame;
+    BOOL        adaptiveBFrame;
 
     BOOL        enableCuQpDelta;
     UINT32      diffCuQpDeltaDepth;
@@ -110,8 +111,8 @@ typedef struct xin26x_params
     UINT32      motionSearchMode;
     UINT32      searchRange;
 
-    BOOL        enableSmp;
-    BOOL        enableAmp;
+    UINT32      enableSmp;
+    UINT32      enableAmp;
 
     // h266 settings
     UINT32      ctuSize;
