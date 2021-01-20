@@ -88,27 +88,27 @@ Please refer to xin_app_enc.c.
 Performance Comparison
 -----------------
 
-Offline Comparison
+Offline Comparison(Xin265)
 -----------------
 
 | INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
 | -----------------------------------| --------------| -------------| ----------------| ---------------|
-| pedestrian_area                    | 0.23          | -10.67       | 0.22            | -10.65         |
-| B_Kimono1_1920x1080_24             | 0.24          | -9.45        | 0.2             | -8.21          |
-| B_ParkScene_1920x1080_24           | 0.28          | -8.94        | 0.26            | -8.74          |
-| B_BasketballDrive_1920x1080_50     | 0.07          | -3.3         | 0.08            | -3.97          |
-| B_BQTerrace_1920x1080_60           | 0.24          | -24.37       | 0.22            | -22.73         |
-| B_Cactus_1920x1080_50              | 0.34          | -18.5        | 0.32            | -18.29         |
+| pedestrian_area                    | 0.24          | -11.59       | 0.24            | -11.55         |
+| B_Kimono1_1920x1080_24             | 0.3           | -11.46       | 0.25            | -10.25         |
+| B_ParkScene_1920x1080_24           | 0.29          | -9.29        | 0.27            | -9.06          |
+| B_BasketballDrive_1920x1080_50     | 0.08          | -3.81        | 0.09            | -4.36          |
+| B_BQTerrace_1920x1080_60           | 0.24          | -24.4        | 0.22            | -22.55         |
+| B_Cactus_1920x1080_50              | 0.35          | -19.32       | 0.33            | -19.16         |
 
-Offline encoder parameters for xin26x and x265 are as follows:    
+Offline encoder parameters for xin265 and x265 are as follows:    
 x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv    
 xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0 --bframes 15
 
-Please refer to file perf-comp.xlsx under doc folder for more information. Both x265 and xin26x(HEVC) are under slow mode, x265 is 2020/12/25 version. 
+Please refer to files under doc folder for more information. Both x265 and xin265 are under slow mode, x265 is 2020/12/25 version. 
 
-Currently, xin26x(HEVC) decrease bitrate by 12.5% under same PSNR compare to x265 for offline encoder scenario.
+Currently, Xin265 decrease bitrate by 13% under same PSNR compare to x265 for offline encoder scenario.
 
-Lowdelay Comparison
+Lowdelay Comparison(Xin265)
 -----------------
 
 Single thread for IPPPPPPPPP under suitbale bitrate
