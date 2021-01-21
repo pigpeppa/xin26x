@@ -88,7 +88,7 @@ Please refer to xin_app_enc.c.
 Performance Comparison
 -----------------
 
-Offline Comparison(Xin265)
+Offline Comparison(Xin265 vs X265)
 -----------------
 
 | INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
@@ -100,7 +100,7 @@ Offline Comparison(Xin265)
 | B_BQTerrace_1920x1080_60           | 0.24          | -24.4        | 0.22            | -22.55         |
 | B_Cactus_1920x1080_50              | 0.35          | -19.32       | 0.33            | -19.16         |
 
-Offline Comparison(Xin266)
+Offline Comparison(Xin266 vs X265)
 -----------------
 
 | INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
