@@ -112,11 +112,14 @@ Offline Comparison(Xin266)
 | B_BQTerrace_1920x1080_60           | 0.29          | -29.32       | 0.31            | -30.18         |
 | B_Cactus_1920x1080_50              | 0.41          | -22.1        | 0.43            | -24.29         |
 
-Offline encoder parameters for xin26x and x265 are as follows:    
+Offline encoder parameters for xin26x and x265 are as follows: 
+   
 x265    
 x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv
+
 xin265    
 xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0 --bframes 15
+
 xin266    
 xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 2 --bframes 15
 
