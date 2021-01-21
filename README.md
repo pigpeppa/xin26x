@@ -100,13 +100,29 @@ Offline Comparison(Xin265)
 | B_BQTerrace_1920x1080_60           | 0.24          | -24.4        | 0.22            | -22.55         |
 | B_Cactus_1920x1080_50              | 0.35          | -19.32       | 0.33            | -19.16         |
 
-Offline encoder parameters for xin265 and x265 are as follows:    
-x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv    
+Offline Comparison(Xin266)
+-----------------
+
+| INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
+| -----------------------------------| --------------| -------------| ----------------| ---------------|
+| pedestrian_area                    | 0.37          | -18.32       | 0.41            | -20.28         |
+| B_Kimono1_1920x1080_24             | 0.39          | -15          | 0.41            | -16.19         |
+| B_ParkScene_1920x1080_24           | 0.4           | -12.61       | 0.45            | -14.55         |
+| B_BasketballDrive_1920x1080_50     | 0.26          | -12.2        | 0.33            | -15.43         |
+| B_BQTerrace_1920x1080_60           | 0.29          | -29.32       | 0.31            | -30.18         |
+| B_Cactus_1920x1080_50              | 0.41          | -22.1        | 0.43            | -24.29         |
+
+Offline encoder parameters for xin26x and x265 are as follows:    
+x265    
+x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv
+xin265    
 xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0 --bframes 15
+xin266    
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 2 --bframes 15
 
-Please refer to files under doc folder for more information. Both x265 and xin265 are under slow mode, x265 is 2020/12/25 version. 
+Please refer to files under doc folder for more information. Both x265 and xin26x are under slow mode, x265 is 2020/12/25 version. 
 
-Currently, Xin265 decrease bitrate by 13% under same PSNR compare to x265 for offline encoder scenario.
+Currently, Xin265 decrease bitrate by 13%, Xin266 decrease bitrate by 20% under same PSNR compare to x265 for offline encoder scenario.
 
 Lowdelay Comparison(Xin265)
 -----------------
