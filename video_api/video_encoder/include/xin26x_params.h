@@ -60,7 +60,6 @@ typedef struct xin26x_params
     BOOL        frameSkip;
     UINT32      encoderMode;
     UINT32      algorithmMode;
-    BOOL        offlineMode;
 
     UINT32      frameToBeEncoded;
 
@@ -122,6 +121,7 @@ typedef struct xin26x_params
     UINT32      maxMttDepth;
     UINT32      minCuSize;
     UINT32      maxTrSkipSize;
+    UINT32      enableCclm;
     BOOL        lumaTrSize64;
 
     // av1 settings
@@ -143,6 +143,7 @@ typedef struct xin26x_params
     BOOL        disableDeblockFilter;
     XinLogEntry pfXinLogEntry;
     UINT32      statLevel;
+    UINT32      hiddenOption;
 
 } xin26x_params;
 

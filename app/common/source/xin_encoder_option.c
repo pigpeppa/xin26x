@@ -33,7 +33,7 @@ static const struct option encoder_long_options[] =
     { "screencontent",  required_argument, 0, 's' },
     { "transformskip",  required_argument, 0, 'A' },
     { "preset",         required_argument, 0, 'p' },
-    { "encodertype",    required_argument, 0, 'y' },
+    { "cclm",           required_argument, 0, 'y' },
     { "wpp",            required_argument, 0, 'W' },
     { "fpp",            required_argument, 0, 'F' },
     { "bframes",        required_argument, 0, 'B' },
@@ -332,6 +332,7 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
         }
 
         DeleteConfigFile(configFile);
+        
     }
 
     return ret;
@@ -409,6 +410,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.ctuSize          = 64;
         dstOption->xinConfig.maxMttDepth      = 0;
         dstOption->xinConfig.lumaTrSize64     = 0;
+        dstOption->xinConfig.enableCclm       = 0;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -425,7 +427,8 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxMttDepth      = 1;
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 8;
-        dstOption->xinConfig.lumaTrSize64     = 0;
+        dstOption->xinConfig.lumaTrSize64     = 1;
+        dstOption->xinConfig.enableCclm       = 0;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -443,6 +446,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 8;
         dstOption->xinConfig.lumaTrSize64     = 1;
+        dstOption->xinConfig.enableCclm       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -460,6 +464,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
+        dstOption->xinConfig.enableCclm       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -477,6 +482,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
+        dstOption->xinConfig.enableCclm       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -491,9 +497,10 @@ static void CopyEncoderOption (
         // VVC
         dstOption->xinConfig.ctuSize          = 128;
         dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 64;
+        dstOption->xinConfig.maxBtSize        = 128;
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
+        dstOption->xinConfig.enableCclm       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -511,6 +518,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
+        dstOption->xinConfig.enableCclm       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -540,6 +548,26 @@ static void CopyEncoderOption (
     if (srcOption->xinConfig.enableSmp != 0xFF)
     {
         dstOption->xinConfig.enableSmp = srcOption->xinConfig.enableSmp;
+    }
+
+    if (srcOption->xinConfig.rcMode != 0xFF)
+    {
+        dstOption->xinConfig.rcMode = srcOption->xinConfig.rcMode;
+    }
+	
+	if (srcOption->xinConfig.enableSignDataHiding != 0xFF)
+    {
+        dstOption->xinConfig.enableSignDataHiding = srcOption->xinConfig.enableSignDataHiding;
+    }
+
+    if (srcOption->xinConfig.bFrameNum != 0xFF)
+    {
+        dstOption->xinConfig.bFrameNum = srcOption->xinConfig.bFrameNum;
+    }
+
+    if (srcOption->xinConfig.enableCclm != 0xFF)
+    {
+        dstOption->xinConfig.enableCclm = srcOption->xinConfig.enableCclm;
     }
 
     if (srcOption->xinConfig.ctuSize)
@@ -592,11 +620,6 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxQp = srcOption->xinConfig.maxQp;
     }
 
-    if (srcOption->xinConfig.rcMode)
-    {
-        dstOption->xinConfig.rcMode = srcOption->xinConfig.rcMode;
-    }
-
     if (srcOption->xinConfig.frameSkip)
     {
         dstOption->xinConfig.frameSkip = srcOption->xinConfig.frameSkip;
@@ -612,19 +635,9 @@ static void CopyEncoderOption (
         dstOption->xinConfig.algorithmMode = srcOption->xinConfig.algorithmMode;
     }
 
-    if (srcOption->xinConfig.offlineMode)
-    {
-        dstOption->xinConfig.offlineMode = srcOption->xinConfig.offlineMode;
-    }
-
     if (srcOption->xinConfig.frameToBeEncoded)
     {
         dstOption->xinConfig.frameToBeEncoded = srcOption->xinConfig.frameToBeEncoded;
-    }
-
-    if (srcOption->xinConfig.bFrameNum)
-    {
-        dstOption->xinConfig.bFrameNum = srcOption->xinConfig.bFrameNum;
     }
 
     if (srcOption->xinConfig.refFrameNum)
@@ -675,11 +688,6 @@ static void CopyEncoderOption (
     if (srcOption->xinConfig.enableTMvp)
     {
         dstOption->xinConfig.enableTMvp = srcOption->xinConfig.enableTMvp;
-    }
-
-    if (srcOption->xinConfig.enableSignDataHiding)
-    {
-        dstOption->xinConfig.enableSignDataHiding = srcOption->xinConfig.enableSignDataHiding;
     }
 
     if (srcOption->xinConfig.enableIntraNxN)
@@ -858,11 +866,15 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
     memset(&localOption, 0, sizeof(encoder_option_struct));
 
-    localOption.xinConfig.encoderMode      = 1;
-    localOption.xinConfig.enableRdoq       = 0xFF;
-    localOption.xinConfig.maxMttDepth      = 0xFF;
-    localOption.xinConfig.motionSearchMode = 0xFF;
-    localOption.xinConfig.enableSmp        = 0xFF;
+    localOption.xinConfig.encoderMode          = 1;
+    localOption.xinConfig.enableRdoq           = 0xFF;
+    localOption.xinConfig.maxMttDepth          = 0xFF;
+    localOption.xinConfig.motionSearchMode     = 0xFF;
+    localOption.xinConfig.enableSmp            = 0xFF;
+    localOption.xinConfig.rcMode               = 0xFF;
+	localOption.xinConfig.enableSignDataHiding = 0xFF;
+    localOption.xinConfig.bFrameNum            = 0xFF;
+    localOption.xinConfig.enableCclm           = 0xFF;
 
     if (configFileName)
     {
@@ -1063,6 +1075,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 'd':
             localOption.xinConfig.enableRdoq = atoi(optarg);
+            break;
+
+        case 'y':
+            localOption.xinConfig.enableCclm = atoi(optarg);
             break;
 
         case 'G':
