@@ -192,6 +192,7 @@ AV1
 
 VVC
 -----------------
+- CCLM support.
 - MTS support.
 - Screen content coding tools support.
 - Adaptive loop filter support (I will evaluate the pros and cons to accommodate ALF in Xin26x).
