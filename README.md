@@ -118,14 +118,14 @@ x265
 x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv
 
 xin265    
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0 --bframes 15
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0
 
 xin266    
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 2 --bframes 15
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 2
 
 Please refer to files under doc folder for more information. Both x265 and xin26x are under slow mode, x265 is 2020/12/25 version. 
 
-Currently, Xin265 decrease bitrate by 13%, Xin266 decrease bitrate by 20% under same PSNR compare to x265 for offline encoder scenario.
+Currently, Xin265 decrease bitrate by 13%, Xin266 decrease bitrate by 21.3% under same PSNR compare to x265 for offline encoder scenario.
 
 Lowdelay Comparison(Xin265)
 -----------------
