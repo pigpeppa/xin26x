@@ -570,6 +570,11 @@ static void CopyEncoderOption (
         dstOption->xinConfig.enableCclm = srcOption->xinConfig.enableCclm;
     }
 
+	if (srcOption->xinConfig.enableSao != 0xFF)
+	{
+		dstOption->xinConfig.enableSao = srcOption->xinConfig.enableSao;
+	}
+
     if (srcOption->xinConfig.ctuSize)
     {
         dstOption->xinConfig.ctuSize = srcOption->xinConfig.ctuSize;
@@ -673,11 +678,6 @@ static void CopyEncoderOption (
     if (srcOption->xinConfig.calcPsnr)
     {
         dstOption->xinConfig.calcPsnr = srcOption->xinConfig.calcPsnr;
-    }
-
-    if (srcOption->xinConfig.enableSao)
-    {
-        dstOption->xinConfig.enableSao = srcOption->xinConfig.enableSao;
     }
 
     if (srcOption->xinConfig.enableStrongIntraSmoothing)
@@ -875,6 +875,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 	localOption.xinConfig.enableSignDataHiding = 0xFF;
     localOption.xinConfig.bFrameNum            = 0xFF;
     localOption.xinConfig.enableCclm           = 0xFF;
+	localOption.xinConfig.enableSao            = 0xFF;
 
     if (configFileName)
     {
