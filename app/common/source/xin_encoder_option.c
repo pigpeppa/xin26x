@@ -267,6 +267,10 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     {
                         encoderOption->xinConfig.lumaTrSize64 = atoi(configFile->value);
                     }
+                    else if (strcmp(configFile->key, "Cclm") == 0)
+                    {
+                        encoderOption->xinConfig.enableCclm = atoi(configFile->value);
+                    }
                     else if (strcmp(configFile->key, "AlgorithmMode") == 0)
                     {
                         encoderOption->xinConfig.algorithmMode = atoi(configFile->value);
@@ -1124,7 +1128,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
     {
         DeleteEncoderOption(&localOption);
 
-        encoderOption = 0;
+        encoderOption = NULL;
 
         if (!bConsulting)
         {
@@ -1132,13 +1136,17 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
             ShowHelp();
         }
+
     }
+	else
+	{
 
-    encoderOption = (encoder_option_struct*)malloc(sizeof(encoder_option_struct));
+		encoderOption = (encoder_option_struct*)malloc(sizeof(encoder_option_struct));
 
-    CopyEncoderOption (
-        &localOption,
-        encoderOption);
+		CopyEncoderOption (
+			&localOption,
+			encoderOption);
+	}
 
     return encoderOption;
 
