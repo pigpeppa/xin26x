@@ -33,7 +33,8 @@ static const struct option encoder_long_options[] =
     { "screencontent",  required_argument, 0, 's' },
     { "transformskip",  required_argument, 0, 'A' },
     { "preset",         required_argument, 0, 'p' },
-    { "cclm",           required_argument, 0, 'y' },
+    { "cclm",           required_argument, 0, 'C' },
+    { "dmvr",           required_argument, 0, 'y' },
     { "wpp",            required_argument, 0, 'W' },
     { "fpp",            required_argument, 0, 'F' },
     { "bframes",        required_argument, 0, 'B' },
@@ -271,6 +272,10 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     {
                         encoderOption->xinConfig.enableCclm = atoi(configFile->value);
                     }
+                    else if (strcmp(configFile->key, "Dmvr") == 0)
+                    {
+                        encoderOption->xinConfig.enableDmvr = atoi(configFile->value);
+                    }
                     else if (strcmp(configFile->key, "AlgorithmMode") == 0)
                     {
                         encoderOption->xinConfig.algorithmMode = atoi(configFile->value);
@@ -415,6 +420,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxMttDepth      = 0;
         dstOption->xinConfig.lumaTrSize64     = 0;
         dstOption->xinConfig.enableCclm       = 0;
+        dstOption->xinConfig.enableDmvr       = 0;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -433,6 +439,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxTtSize        = 8;
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 0;
+        dstOption->xinConfig.enableDmvr       = 0;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -451,6 +458,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxTtSize        = 8;
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableDmvr       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -469,6 +477,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableDmvr       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -487,6 +496,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableDmvr       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -505,6 +515,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableDmvr       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -523,6 +534,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableDmvr       = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -572,6 +584,11 @@ static void CopyEncoderOption (
     if (srcOption->xinConfig.enableCclm != 0xFF)
     {
         dstOption->xinConfig.enableCclm = srcOption->xinConfig.enableCclm;
+    }
+
+    if (srcOption->xinConfig.enableDmvr != 0xFF)
+    {
+        dstOption->xinConfig.enableDmvr = srcOption->xinConfig.enableDmvr;
     }
 
 	if (srcOption->xinConfig.enableSao != 0xFF)
@@ -879,6 +896,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 	localOption.xinConfig.enableSignDataHiding = 0xFF;
     localOption.xinConfig.bFrameNum            = 0xFF;
     localOption.xinConfig.enableCclm           = 0xFF;
+    localOption.xinConfig.enableDmvr           = 0xFF;
 	localOption.xinConfig.enableSao            = 0xFF;
 
     if (configFileName)
@@ -1082,8 +1100,12 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             localOption.xinConfig.enableRdoq = atoi(optarg);
             break;
 
-        case 'y':
+        case 'C':
             localOption.xinConfig.enableCclm = atoi(optarg);
+            break;
+
+        case 'y':
+            localOption.xinConfig.enableDmvr = atoi(optarg);
             break;
 
         case 'G':

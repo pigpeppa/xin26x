@@ -105,12 +105,12 @@ Offline Comparison(Xin266 vs X265)
 
 | INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
 | -----------------------------------| --------------| -------------| ----------------| ---------------|
-| pedestrian_area                    | 0.41          | -19.59       | 0.46            | -22.05         |
-| B_Kimono1_1920x1080_24             | 0.44          | -16.91       | 0.47            | -18.74         |
-| B_ParkScene_1920x1080_24           | 0.43          | -13.45       | 0.5             | -16.02         |
-| B_BasketballDrive_1920x1080_50     | 0.27          | -12.94       | 0.36            | -16.9          |
-| B_BQTerrace_1920x1080_60           | 0.31          | -30.84       | 0.33            | -32.16         |
-| B_Cactus_1920x1080_50              | 0.42          | -22.89       | 0.46            | -26.07         |
+| pedestrian_area                    | 0.41          | -19.88       | 0.46            | -22.38         |
+| B_Kimono1_1920x1080_24             | 0.49          | -18.83       | 0.52            | -20.65         |
+| B_ParkScene_1920x1080_24           | 0.49          | -15.2        | 0.56            | -17.77         |
+| B_BasketballDrive_1920x1080_50     | 0.29          | -14.13       | 0.38            | -18.05         |
+| B_BQTerrace_1920x1080_60           | 0.31          | -30.98       | 0.33            | -32.29         |
+| B_Cactus_1920x1080_50              | 0.45          | -24.6        | 0.49            | -27.72         |
 
 Offline encoder parameters for xin26x and x265 are as follows: 
    
@@ -125,7 +125,7 @@ xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b
 
 Please refer to files under doc folder for more information. Both x265 and xin26x are under slow mode, x265 is 2020/12/25 version. 
 
-Currently, Xin265 decrease bitrate by 13%, Xin266 decrease bitrate by 22% under same PSNR compare to x265 for offline encoder scenario.
+Currently, Xin265 decrease bitrate by 13%, Xin266 decrease bitrate by 23.1% under same PSNR compare to x265 for offline encoder scenario.
 
 Lowdelay Comparison(Xin265)
 -----------------
