@@ -192,10 +192,8 @@ AV1
 
 VVC
 -----------------
-- AMVR support.
-- MTS support.
+- Adaptive loop filter support.
 - Screen content coding tools support.
-- Adaptive loop filter support (I will evaluate the pros and cons to accommodate ALF in Xin26x).
 - SIMD optimization.
 
 About Xin26x
