@@ -596,6 +596,16 @@ static void CopyEncoderOption (
 		dstOption->xinConfig.enableSao = srcOption->xinConfig.enableSao;
 	}
 
+    if (srcOption->xinConfig.adaptiveBFrame != 0xFF)
+    {
+        dstOption->xinConfig.adaptiveBFrame = srcOption->xinConfig.adaptiveBFrame;
+    }
+
+    if (srcOption->xinConfig.enableMultiThread != 0xFF)
+    {
+        dstOption->xinConfig.enableMultiThread = srcOption->xinConfig.enableMultiThread;
+    }
+
     if (srcOption->xinConfig.ctuSize)
     {
         dstOption->xinConfig.ctuSize = srcOption->xinConfig.ctuSize;
@@ -731,11 +741,6 @@ static void CopyEncoderOption (
         dstOption->xinConfig.transformSkipFlag = srcOption->xinConfig.transformSkipFlag;
     }
 
-    if (srcOption->xinConfig.adaptiveBFrame)
-    {
-        dstOption->xinConfig.adaptiveBFrame = srcOption->xinConfig.adaptiveBFrame;
-    }
-
     if (srcOption->xinConfig.enableCuQpDelta)
     {
         dstOption->xinConfig.enableCuQpDelta = srcOption->xinConfig.enableCuQpDelta;
@@ -784,11 +789,6 @@ static void CopyEncoderOption (
     if (srcOption->xinConfig.sbSize)
     {
         dstOption->xinConfig.sbSize = srcOption->xinConfig.sbSize;
-    }
-
-    if (srcOption->xinConfig.enableMultiThread)
-    {
-        dstOption->xinConfig.enableMultiThread = srcOption->xinConfig.enableMultiThread;
     }
 
     if (srcOption->xinConfig.threadNum)
@@ -898,6 +898,8 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
     localOption.xinConfig.enableCclm           = 0xFF;
     localOption.xinConfig.enableDmvr           = 0xFF;
 	localOption.xinConfig.enableSao            = 0xFF;
+    localOption.xinConfig.adaptiveBFrame       = 0xFF;
+	localOption.xinConfig.enableMultiThread    = 0xFF;
 
     if (configFileName)
     {
