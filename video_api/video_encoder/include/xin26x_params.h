@@ -142,6 +142,7 @@ typedef struct xin26x_params
     double      unitTreeStrength;
 
     BOOL        disableDeblockFilter;
+    BOOL        needRecon;
     XinLogEntry pfXinLogEntry;
     UINT32      statLevel;
     UINT32      hiddenOption;

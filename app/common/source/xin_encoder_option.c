@@ -391,6 +391,15 @@ static bool verifyEncoderOption(
         }
     }
 
+    if (encoderOption->reconFileHandle)
+    {
+        encoderOption->xinConfig.needRecon = true;
+    }
+    else
+    {
+        encoderOption->xinConfig.needRecon = false;
+    }
+
     return ret;
 
 }
@@ -840,6 +849,11 @@ static void CopyEncoderOption (
     {
         dstOption->xinConfig.disableDeblockFilter = srcOption->xinConfig.disableDeblockFilter;
     }
+
+	if (srcOption->xinConfig.needRecon)
+	{
+		dstOption->xinConfig.needRecon = srcOption->xinConfig.needRecon;
+	}
 
     if (srcOption->xinConfig.statLevel)
     {
