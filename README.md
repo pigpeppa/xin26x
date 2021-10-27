@@ -88,43 +88,59 @@ Please refer to xin_app_enc.c.
 Performance Comparison
 -----------------
 
-Offline Comparison(Xin265 vs X265)
+Offline Comparison(Xin26x vs X265)
 -----------------
 
-| INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
-| -----------------------------------| --------------| -------------| ----------------| ---------------|
-| pedestrian_area                    | 0.311         | -15.379      | 0.314           | -15.553        |
-| B_Kimono1_1920x1080_24             | 0.303         | -11.61       | 0.283           | -11.316        |
-| B_ParkScene_1920x1080_24           | 0.353         | -11.259      | 0.373           | -12.291        |
-| B_BasketballDrive_1920x1080_50     | 0.106         | -5.005       | 0.123           | -5.771         |
-| B_BQTerrace_1920x1080_60           | 0.217         | -22.383      | 0.222           | -22.555        |
-| B_Cactus_1920x1080_50              | 0.36          | -20.118      | 0.358           | -20.93         |
+| INPUT YUV  BD-PSNR (dB)            | x265 veryslow | x265 faster | x265 meduim | xin265 p1 | xin265 p4 | xin265 p6 | xin266 p1 | xin266 p4 | xin266 p6 |
+| -----------------------------------| --------------| ------------| ------------| ----------| ----------| ----------| ----------| ----------| ----------|
+| pedestrian_area                    | 0             | -0.78       | -0.4        | -0.44     | 0.08      | 0.31      | -0.22     | 0.43      | 0.51      |
+| B_Kimono1_1920x1080_24             | 0             | -0.63       | -0.44       | -0.51     | 0.07      | 0.3	     | -0.25     | 0.5       | 0.55      |
+| B_ParkScene_1920x1080_24           | 0             | -1          | -0.75       | -0.45     | 0.13      | 0.38	     | -0.26     | 0.56	     | 0.61      |
+| B_BasketballDrive_1920x1080_50     | 0             | -0.74       | -0.45       | -0.63     | -0.13     | 0.14	     | -0.4      | 0.38	     | 0.42      |
+| B_BQTerrace_1920x1080_60           | 0             | -0.51       | -0.41       | -0.24     | -0.07     | 0.18	     | -0.14     | 0.26	     | 0.32      |
+| B_Cactus_1920x1080_50              | 0             | -0.72       | -0.43       | -0.37     | 0.11      | 0.37	     | -0.19     | 0.43	     | 0.52      |
+| Overall                            | 0             | -0.73       | -0.48       | -0.44     | 0.03      | 0.28	     | -0.24     | 0.43	     | 0.49      |
 
-Offline Comparison(Xin266 vs X265)
 -----------------
 
-| INPUT YUV                          | BD-PSNRY (dB) | BD-RATEY (%) | BD-PSNRYUV (dB) | BD-PSNRYUV (%) |
-| -----------------------------------| --------------| -------------| ----------------| ---------------|
-| pedestrian_area                    | 0.455         | -21.867      | 0.507           | -24.353        |
-| B_Kimono1_1920x1080_24             | 0.515         | -19.431      | 0.551           | -21.438        |
-| B_ParkScene_1920x1080_24           | 0.51          | -15.92       | 0.581           | -18.588        |
-| B_BasketballDrive_1920x1080_50     | 0.314         | -15.154      | 0.401           | -18.977        |
-| B_BQTerrace_1920x1080_60           | 0.314         | -31.323      | 0.338           | -32.913        |
-| B_Cactus_1920x1080_50              | 0.461         | -25.768      | 0.501           | -29.034        |
+| INPUT YUV  BD-RATE (%)             | x265 veryslow | x265 faster | x265 meduim | xin265 p1 | xin265 p4 | xin265 p6 | xin266 p1 | xin266 p4 | xin266 p6 |
+| -----------------------------------| --------------| ------------| ------------| ----------| ----------| ----------| ----------| ----------| ----------|
+| pedestrian_area                    | 0             | 41.19       | 20.31       | 22.64     | -4.31     | -15	     | 10.87     | -20.56    | -24.28    |
+| B_Kimono1_1920x1080_24             | 0             | 28.09       | 19.01       | 22.6      | -2.93     | -11.73    | 10.85     | -19.47    | -21.31    |
+| B_ParkScene_1920x1080_24           | 0             | 41          | 28.98       | 16.57     | -4.48     | -11.99    | 9.48      | -17.85    | -19.49    |
+| B_BasketballDrive_1920x1080_50     | 0             | 40.25       | 23.35       | 33.95     | 6.39      | -6.73     | 21.04     | -17.93    | -19.82    |
+| B_BQTerrace_1920x1080_60           | 0             | 50.03       | 39.43       | 22.84     | 5.15      | -21.38    | 12.95     | -30.87    | -35.97    |
+| B_Cactus_1920x1080_50              | 0             | 47.92	   | 27.75       | 24.13     | -6.92     | -21.53    | 11.75     | -25.2     | -30.17    |
+| Overall                            | 0             | 41.41       | 26.47       | 23.79     | -1.18     | -14.73    | 12.82     | -21.98    | -25.17    |
 
 Offline encoder parameters for xin26x and x265 are as follows: 
    
-x265    
-x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --fps 30 --tune psnr -p veryslow input.yuv
+x265 veryslow  
+x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --tune psnr -p veryslow input.yuv
 
-xin265    
+x265 faster  
+x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --tune psnr -p faster input.yuv
+
+x265 meduim  
+x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --tune psnr -p meduim input.yuv
+
+xin265 p1   
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 1 -a 0
+
+xin265 p4  
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 4 -a 0
+
+xin265 p6   
 xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0
 
-xin266    
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 2
+xin266 p1    
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 1 -a 2
 
-Please refer to files under doc folder for more information. Both x265 and xin26x are under slow mode, x265 is 2020/12/25 version. 
-Currently, Xin265 decrease bitrate by 14.7%, Xin266 decrease bitrate by 24.2% under same PSNR compare to x265 for offline encoder scenario.
+xin266 p4    
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 4 -a 2
+
+xin266 p6    
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 2
 
 Lowdelay Comparison(Xin265)
 -----------------
