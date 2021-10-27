@@ -142,6 +142,8 @@ xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b
 xin266 p6    
 xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 2
 
+In above table, we set x265(veryslow) as a reference, others are compared with x265(veryslow). x265 is 2020/12/25 version.
+
 Lowdelay Comparison(Xin265)
 -----------------
 
