@@ -233,3 +233,7 @@ I wish video coding standardization would take a revolution, break though curren
 Basicly, Xin26x is purely a result of coding happiness pursuit. It is named after my 8 year old beautiful child. I would like her know how great her father is. After she grows up, I wish she would know how father loved her.
 
 Any question, please contact pig.peppa@qq.com
+
+About MSU 2021
+-----------------
+I would like to note that Xin26x neither apply to take part in nor provide any encoder parameters to MSU 2021.
