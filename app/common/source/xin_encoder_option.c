@@ -551,6 +551,21 @@ static void CopyEncoderOption (
         break;
 
     default:
+        dstOption->xinConfig.refFrameNum      = 6;
+        dstOption->xinConfig.enableRdoq       = 1;
+        dstOption->xinConfig.motionSearchMode = 2;
+
+        // VVC
+        dstOption->xinConfig.ctuSize          = 128;
+        dstOption->xinConfig.maxMttDepth      = 1;
+        dstOption->xinConfig.maxBtSize        = 64;
+        dstOption->xinConfig.maxTtSize        = 64;
+        dstOption->xinConfig.lumaTrSize64     = 1;
+        dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableDmvr       = 1;
+
+        // HEVC
+        dstOption->xinConfig.enableSmp        = 1;
         break;
 
     }
@@ -613,6 +628,11 @@ static void CopyEncoderOption (
     if (srcOption->xinConfig.enableMultiThread != 0xFF)
     {
         dstOption->xinConfig.enableMultiThread = srcOption->xinConfig.enableMultiThread;
+    }
+
+    if (srcOption->xinConfig.enableWpp != 0xFF)
+    {
+        dstOption->xinConfig.enableWpp = srcOption->xinConfig.enableWpp;
     }
 
     if (srcOption->xinConfig.ctuSize)
@@ -805,11 +825,6 @@ static void CopyEncoderOption (
         dstOption->xinConfig.threadNum = srcOption->xinConfig.threadNum;
     }
 
-    if (srcOption->xinConfig.enableWpp)
-    {
-        dstOption->xinConfig.enableWpp = srcOption->xinConfig.enableWpp;
-    }
-
     if (srcOption->xinConfig.enableFpp)
     {
         dstOption->xinConfig.enableFpp = srcOption->xinConfig.enableFpp;
@@ -914,6 +929,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 	localOption.xinConfig.enableSao            = 0xFF;
     localOption.xinConfig.adaptiveBFrame       = 0xFF;
 	localOption.xinConfig.enableMultiThread    = 0xFF;
+    localOption.xinConfig.enableWpp            = 0xFF;
 
     if (configFileName)
     {
