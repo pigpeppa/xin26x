@@ -234,6 +234,3 @@ Basicly, Xin26x is purely a result of coding happiness pursuit. It is named afte
 
 Any question, please contact pig.peppa@qq.com
 
-About MSU 2021
------------------
-I would like to note that Xin26x neither apply to take part in nor provide any encoder parameters to MSU 2021.
