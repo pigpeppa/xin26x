@@ -40,6 +40,19 @@ void Xin26xControlOption (
     XIN_HANDLE            encoderHandle,
     xin26x_dynamic_params *dynParam);
 
+SINT32 Xin26xReadFrameCreate (
+    XIN_HANDLE    *fileReadHandle,
+    SINT32        frameRead(FILE *inputFile, xin_frame_desc *inputFrame),         
+    xin26x_params *config,
+    FILE          *fileHandle);
+
+void Xin26xReadFrameDelete (
+    XIN_HANDLE    *fileReadHandle);
+
+void Xin26xReadFrame (
+    XIN_HANDLE     fileReadHandle,
+    xin_frame_desc *outFrame);
+
 #ifdef __cplusplus
 }
 #endif

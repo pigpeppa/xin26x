@@ -7,3 +7,6 @@ Xin26xEncodeFrame
 Xin26xGetReconFrame
 Xin26xSetDefaultParam
 Xin26xControlOption
+Xin26xReadFrameCreate
+Xin26xReadFrameDelete
+Xin26xReadFrame

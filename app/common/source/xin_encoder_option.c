@@ -513,7 +513,7 @@ static void CopyEncoderOption (
         break;
 
     case 5:
-        dstOption->xinConfig.refFrameNum      = 5;
+        dstOption->xinConfig.refFrameNum      = 4;
         dstOption->xinConfig.enableRdoq       = 1;
         dstOption->xinConfig.motionSearchMode = 2;
 
@@ -532,7 +532,7 @@ static void CopyEncoderOption (
         break;
 
     case 6:
-        dstOption->xinConfig.refFrameNum      = 6;
+        dstOption->xinConfig.refFrameNum      = 4;
         dstOption->xinConfig.enableRdoq       = 1;
         dstOption->xinConfig.motionSearchMode = 2;
 
@@ -1228,22 +1228,9 @@ void DeleteEncoderOption(encoder_option_struct* encoderOption)
 
 }
 
-void PrintEncoderOption(encoder_option_struct* encoderOption)
+void PrintEncoderOption(encoder_option_struct *encoderOption)
 {
-    if (encoderOption)
-    {
-        printf("xinConfig:\n");
-        printf("InputFileName = ");
-        printf("%s\n",  encoderOption->inputFileName);
-        printf("OutputFileName = ");
-        printf("%s\n",  encoderOption->outputFileName);
-        printf("ReconFileName = ");
-        printf("%s\n",  encoderOption->reconFileName);
-        printf("inputWidth = ");
-        printf("%d\n", encoderOption->xinConfig.inputWidth);
-        printf("inputHeight = ");
-        printf("%d\n", encoderOption->xinConfig.inputHeight);
-    }
+    (void)encoderOption;
 }
 
 void ShowHelp()
