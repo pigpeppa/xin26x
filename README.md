@@ -195,6 +195,7 @@ Xin26x
 - Preprocessing algorithm refactor.
 - Rate contronl algorithm refine.
 - Encoder structre refactor for offline coding consideration.
+- Motion compensation temporal filter.
 
 HEVC
 -----------------
