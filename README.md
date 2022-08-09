@@ -118,12 +118,6 @@ Offline encoder parameters for xin26x and x265 are as follows:
 x265 veryslow  
 x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --tune psnr -p veryslow input.yuv
 
-x265 faster  
-x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --tune psnr -p faster input.yuv
-
-x265 meduim  
-x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --tune psnr -p meduim input.yuv
-
 xin265 p1   
 xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 1 -a 0
 
