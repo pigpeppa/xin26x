@@ -40,7 +40,7 @@ which specifies the frame rate of the input video.
 which specifies temporal layer number. It works under all P frame sequence.
 
 -p/--preset <integer>    
-which specifies the encoding preset, trading off compression efficiency against encoding speed. 0: superfast, 1 veryfast, 2: fast, 3: medium, 4: slow 5: veryslow.
+which specifies the encoding preset, trading off compression efficiency against encoding speed. [0, 6] Big number means high quality but low encoder speed.
 
 -o/--output <filename>    
 which specifies output bitstream file name. For HEVC and VVC, the output file accord with Annex B specification. For AV1, the output file accord with OBU format.
@@ -94,24 +94,24 @@ Offline Comparison(Xin26x vs X265)
 | INPUT YUV  BD-PSNR (dB)            | x265 veryslow | xin265 p1 | xin265 p4 | xin265 p6 | xin266 p1 | xin266 p4 | xin266 p6 |
 | -----------------------------------| --------------| ----------| ----------| ----------| ----------| ----------| ----------|
 | pedestrian_area                    | 0             | -0.44     | 0.28      | 0.37      | -0.1      | 0.49      | 0.58      |
-| B_Kimono1_1920x1080_24             | 0             | -0.51     | 0.24      | 0.33      | -0.17     | 0.53      | 0.62      |
-| B_ParkScene_1920x1080_24           | 0             | -0.45     | 0.33      | 0.46      | -0.13     | 0.55      | 0.72      |
-| B_BasketballDrive_1920x1080_50     | 0             | -0.63     | 0.07      | 0.14      | -0.32     | 0.31      | 0.45      |
-| B_BQTerrace_1920x1080_60           | 0             | -0.24     | 0.54      | 0.62      | 0.38      | 0.62      | 0.75      |
-| B_Cactus_1920x1080_50              | 0             | -0.37     | 0.41      | 0.52      | 0.04      | 0.56      | 0.71      |
-| Overall                            | 0             | -0.44     | 0.31      | 0.41      | -0.05     | 0.43      | 0.64      |
+| B_Kimono1_1920x1080_24             | 0             | -0.51     | 0.24      | 0.33      | -0.16     | 0.52      | 0.62      |
+| B_ParkScene_1920x1080_24           | 0             | -0.45     | 0.33      | 0.46      | -0.13     | 0.55      | 0.71      |
+| B_BasketballDrive_1920x1080_50     | 0             | -0.63     | 0.06      | 0.14      | -0.30     | 0.32      | 0.45      |
+| B_BQTerrace_1920x1080_60           | 0             | -0.24     | 0.51      | 0.62      | 0.32      | 0.55      | 0.74      |
+| B_Cactus_1920x1080_50              | 0             | -0.37     | 0.43      | 0.55      | 0.08      | 0.60      | 0.76      |
+| Overall                            | 0             | -0.44     | 0.31      | 0.41      | -0.05     | 0.51      | 0.64      |
 
 -----------------
 
 | INPUT YUV  BD-RATE (%)             | x265 veryslow | xin265 p1 | xin265 p4 | xin265 p6 | xin266 p1 | xin266 p4 | xin266 p6 |
 | -----------------------------------| --------------| ----------| ----------| ----------| ----------| ----------| ----------|
-| pedestrian_area                    | 0             | 22.64     | -13.13    | -17.27    | 4.66      | -22.74    | -26.56    |
-| B_Kimono1_1920x1080_24             | 0             | 22.6      | -9.79     | -13.2     | 6.9       | -20.33    | -23.86    |
-| B_ParkScene_1920x1080_24           | 0             | 16.57     | -10.98    | -14.83    | 4.25      | -17.41    | -22.17    |
-| B_BasketballDrive_1920x1080_50     | 0             | 33.95     | -3.55     | -6.83     | 16.71     | -13.67    | -20.68    |
-| B_BQTerrace_1920x1080_60           | 0             | 22.84     | -41.26    | -51.34    | -32.65    | -47.66    | -58.79    |
-| B_Cactus_1920x1080_50              | 0             | 24.13     | -21.35    | -26.75    | -2.02     | -28.76    | -36.23    |
-| Overall                            | 0             | 23.79     | -16.68    | -21.7     | -0.36     | -25.09    | -31.38    |
+| pedestrian_area                    | 0             | 22.64     | -13.13    | -17.27    | 4.59      | -22.74    | -26.65    |
+| B_Kimono1_1920x1080_24             | 0             | 22.6      | -9.79     | -13.2     | 6.73      | -20.22    | -23.64    |
+| B_ParkScene_1920x1080_24           | 0             | 16.57     | -10.98    | -14.83    | 4.21      | -17.35    | -22.04    |
+| B_BasketballDrive_1920x1080_50     | 0             | 33.95     | -2.68     | -6.83     | 15.27     | -15.17    | -20.57    |
+| B_BQTerrace_1920x1080_60           | 0             | 22.84     | -44.27    | -51.34    | -29.89    | -47.71    | -58.27    |
+| B_Cactus_1920x1080_50              | 0             | 24.13     | -22.63    | -28.05    | -4.48     | -30.47    | -38.05    |
+| Overall                            | 0             | 23.79     | -17.25    | -21.92    | -0.6      | -25.63    | -31.54    |
 
 Offline encoder parameters for xin26x and x265 are as follows: 
    
