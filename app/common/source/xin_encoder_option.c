@@ -495,16 +495,16 @@ static void CopyEncoderOption (
 
     case 4:
         dstOption->xinConfig.refFrameNum      = 3;
-        dstOption->xinConfig.motionSearchMode = 2;
         dstOption->xinConfig.enableRdoq       = 1;
+        dstOption->xinConfig.motionSearchMode = 2;
 
         // VVC
-        dstOption->xinConfig.ctuSize          = 128;
+        dstOption->xinConfig.ctuSize          = 64;
         dstOption->xinConfig.maxMttDepth      = 1;
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableCclm       = 0;
         dstOption->xinConfig.enableDmvr       = 1;
 
         // HEVC
@@ -520,7 +520,7 @@ static void CopyEncoderOption (
         // VVC
         dstOption->xinConfig.ctuSize          = 128;
         dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 128;
+        dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;

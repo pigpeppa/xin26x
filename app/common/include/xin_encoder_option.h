@@ -25,9 +25,9 @@ typedef struct encoder_option_struct
     xin26x_params xinConfig;
 
     //app option
-    char inputFileName[MAX_FILE_NAME_LEN];
-    char outputFileName[MAX_FILE_NAME_LEN];
-    char reconFileName[MAX_FILE_NAME_LEN];
+    char  inputFileName[MAX_FILE_NAME_LEN];
+    char  outputFileName[MAX_FILE_NAME_LEN];
+    char  reconFileName[MAX_FILE_NAME_LEN];
     FILE* inputFileHandle;
     FILE* outputFileHandle;
     FILE* reconFileHandle;
