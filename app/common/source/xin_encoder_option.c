@@ -45,6 +45,7 @@ static const struct option encoder_long_options[] =
     { "lathread",       required_argument, 0, 'L' },
     { "signbithide",    required_argument, 0, 'S' },
     { "sao",            required_argument, 0, 'O' },
+    { "alf",            required_argument, 0, 'l' },
     { "disabledeblock", required_argument, 0, 'D' },
     { "unittree",       required_argument, 0, 'u' },
     { "treestrength",   required_argument, 0, 'e' },
@@ -183,6 +184,10 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     else if (strcmp(configFile->key, "SAO") == 0)
                     {
                         encoderOption->xinConfig.enableSao = atoi(configFile->value);
+                    }
+                    else if (strcmp(configFile->key, "ALF") == 0)
+                    {
+                        encoderOption->xinConfig.enableAlf = atoi(configFile->value);
                     }
                     else if (strcmp(configFile->key, "RateControl") == 0)
                     {
@@ -430,6 +435,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 0;
         dstOption->xinConfig.enableCclm       = 0;
         dstOption->xinConfig.enableDmvr       = 0;
+        dstOption->xinConfig.enableAlf        = 0;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -449,6 +455,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 0;
         dstOption->xinConfig.enableDmvr       = 0;
+        dstOption->xinConfig.enableAlf        = 0;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -468,6 +475,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
         dstOption->xinConfig.enableDmvr       = 1;
+        dstOption->xinConfig.enableAlf        = 0;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -487,6 +495,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
         dstOption->xinConfig.enableDmvr       = 1;
+        dstOption->xinConfig.enableAlf        = 0;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -494,7 +503,7 @@ static void CopyEncoderOption (
         break;
 
     case 4:
-        dstOption->xinConfig.refFrameNum      = 3;
+        dstOption->xinConfig.refFrameNum      = 2;
         dstOption->xinConfig.enableRdoq       = 1;
         dstOption->xinConfig.motionSearchMode = 2;
 
@@ -506,6 +515,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 0;
         dstOption->xinConfig.enableDmvr       = 1;
+        dstOption->xinConfig.enableAlf        = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -513,7 +523,7 @@ static void CopyEncoderOption (
         break;
 
     case 5:
-        dstOption->xinConfig.refFrameNum      = 4;
+        dstOption->xinConfig.refFrameNum      = 3;
         dstOption->xinConfig.enableRdoq       = 1;
         dstOption->xinConfig.motionSearchMode = 2;
 
@@ -525,6 +535,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
         dstOption->xinConfig.enableDmvr       = 1;
+        dstOption->xinConfig.enableAlf        = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -544,6 +555,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
         dstOption->xinConfig.enableDmvr       = 1;
+        dstOption->xinConfig.enableAlf        = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -563,6 +575,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
         dstOption->xinConfig.enableDmvr       = 1;
+        dstOption->xinConfig.enableAlf        = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 1;
@@ -573,6 +586,11 @@ static void CopyEncoderOption (
     if (srcOption->xinConfig.maxMttDepth != 0xFF)
     {
         dstOption->xinConfig.maxMttDepth = srcOption->xinConfig.maxMttDepth;
+    }
+
+    if (srcOption->xinConfig.enableAlf != 0xFF)
+    {
+        dstOption->xinConfig.enableAlf = srcOption->xinConfig.enableAlf;
     }
 
     if (srcOption->xinConfig.enableRdoq != 0xFF)
@@ -930,6 +948,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
     localOption.xinConfig.adaptiveBFrame       = 0xFF;
 	localOption.xinConfig.enableMultiThread    = 0xFF;
     localOption.xinConfig.enableWpp            = 0xFF;
+    localOption.xinConfig.enableAlf            = 0xFF;
 
     if (configFileName)
     {
@@ -1022,6 +1041,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 'O':
             localOption.xinConfig.enableSao = atoi(optarg);
+            break;
+
+        case 'l':
+            localOption.xinConfig.enableAlf = atoi(optarg);
             break;
 
         case 'D':
