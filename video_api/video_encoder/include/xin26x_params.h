@@ -68,6 +68,7 @@ typedef struct xin26x_params
     UINT32      refreshType;
     UINT32      temporalLayerNum;
 	BOOL        twoPassEncoder;
+    UINT32      enableMctf;
 
     UINT32      intraPeriod;
 
@@ -132,16 +133,13 @@ typedef struct xin26x_params
     BOOL        enableRectPartType;
     UINT32      outputFormat;
 
-    BOOL        enableMultiThread;
     UINT32      threadNum;
     BOOL        enableWpp;
-    BOOL        enableFpp;
+    UINT32      enableFpp;
     UINT32      numTileCols;
     UINT32      numTileRows;
     BOOL        unitTree;
     UINT32      lookAhead;
-    UINT32      laThreadNum;
-    UINT32      fpThreadNum;
     double      unitTreeStrength;
 
     BOOL        disableDeblockFilter;

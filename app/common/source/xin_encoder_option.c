@@ -29,12 +29,12 @@ static const struct option encoder_long_options[] =
     { "framerate",      required_argument, 0, 'f' },
     { "bitrate",        required_argument, 0, 'b' },
     { "temporallayer",  required_argument, 0, 't' },
-    { "multithread",    required_argument, 0, 'm' },
     { "screencontent",  required_argument, 0, 's' },
     { "transformskip",  required_argument, 0, 'A' },
     { "preset",         required_argument, 0, 'p' },
     { "cclm",           required_argument, 0, 'C' },
     { "dmvr",           required_argument, 0, 'y' },
+    { "mctf",           required_argument, 0, 'K' },
     { "wpp",            required_argument, 0, 'W' },
     { "fpp",            required_argument, 0, 'F' },
     { "bframes",        required_argument, 0, 'B' },
@@ -42,7 +42,6 @@ static const struct option encoder_long_options[] =
     { "intranxn",       required_argument, 0, 'N' },
     { "internxn",       required_argument, 0, 'X' },
     { "thread",         required_argument, 0, 'T' },
-    { "lathread",       required_argument, 0, 'L' },
     { "signbithide",    required_argument, 0, 'S' },
     { "sao",            required_argument, 0, 'O' },
     { "alf",            required_argument, 0, 'l' },
@@ -233,10 +232,6 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     {
                         encoderOption->xinConfig.numTileRows = atoi(configFile->value);
                     }
-                    else if (strcmp(configFile->key, "MultiThread") == 0)
-                    {
-                        encoderOption->xinConfig.enableMultiThread = atoi(configFile->value);
-                    }
                     else if (strcmp(configFile->key, "WPP") == 0)
                     {
                         encoderOption->xinConfig.enableWpp = atoi(configFile->value);
@@ -277,6 +272,10 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     {
                         encoderOption->xinConfig.enableCclm = atoi(configFile->value);
                     }
+                    else if (strcmp(configFile->key, "MCTF") == 0)
+                    {
+                        encoderOption->xinConfig.enableMctf = atoi(configFile->value);
+                    }
                     else if (strcmp(configFile->key, "Dmvr") == 0)
                     {
                         encoderOption->xinConfig.enableDmvr = atoi(configFile->value);
@@ -316,10 +315,6 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     else if (strcmp(configFile->key, "ThreadNum") == 0)
                     {
                         encoderOption->xinConfig.threadNum = atoi(configFile->value);
-                    }
-                    else if (strcmp(configFile->key, "LaThreadNum") == 0)
-                    {
-                        encoderOption->xinConfig.laThreadNum = atoi(configFile->value);
                     }
                     else if (strcmp(configFile->key, "FPP") == 0)
                     {
@@ -428,6 +423,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.refFrameNum      = 1;
         dstOption->xinConfig.motionSearchMode = 1;
         dstOption->xinConfig.enableRdoq       = 0;
+        dstOption->xinConfig.enableMctf       = 0;
 
         // VVC
         dstOption->xinConfig.ctuSize          = 64;
@@ -446,13 +442,14 @@ static void CopyEncoderOption (
         dstOption->xinConfig.refFrameNum      = 1;
         dstOption->xinConfig.motionSearchMode = 1;
         dstOption->xinConfig.enableRdoq       = 0;
+        dstOption->xinConfig.enableMctf       = 0;
 
         // VVC
         dstOption->xinConfig.ctuSize          = 64;
         dstOption->xinConfig.maxMttDepth      = 1;
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 8;
-        dstOption->xinConfig.lumaTrSize64     = 1;
+        dstOption->xinConfig.lumaTrSize64     = 0;
         dstOption->xinConfig.enableCclm       = 0;
         dstOption->xinConfig.enableDmvr       = 0;
         dstOption->xinConfig.enableAlf        = 0;
@@ -466,6 +463,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.refFrameNum      = 2;
         dstOption->xinConfig.enableRdoq       = 0;
         dstOption->xinConfig.motionSearchMode = 1;
+        dstOption->xinConfig.enableMctf       = 1;
 
         // VVC
         dstOption->xinConfig.ctuSize          = 64;
@@ -486,6 +484,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.refFrameNum      = 3;
         dstOption->xinConfig.motionSearchMode = 1;
         dstOption->xinConfig.enableRdoq       = 0;
+        dstOption->xinConfig.enableMctf       = 1;
         
         // VVC
         dstOption->xinConfig.ctuSize          = 64;
@@ -506,6 +505,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.refFrameNum      = 2;
         dstOption->xinConfig.enableRdoq       = 1;
         dstOption->xinConfig.motionSearchMode = 2;
+        dstOption->xinConfig.enableMctf       = 1;
 
         // VVC
         dstOption->xinConfig.ctuSize          = 64;
@@ -526,6 +526,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.refFrameNum      = 3;
         dstOption->xinConfig.enableRdoq       = 1;
         dstOption->xinConfig.motionSearchMode = 2;
+        dstOption->xinConfig.enableMctf       = 1;
 
         // VVC
         dstOption->xinConfig.ctuSize          = 128;
@@ -546,6 +547,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.refFrameNum      = 4;
         dstOption->xinConfig.enableRdoq       = 1;
         dstOption->xinConfig.motionSearchMode = 2;
+        dstOption->xinConfig.enableMctf       = 1;
 
         // VVC
         dstOption->xinConfig.ctuSize          = 128;
@@ -566,6 +568,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.refFrameNum      = 6;
         dstOption->xinConfig.enableRdoq       = 1;
         dstOption->xinConfig.motionSearchMode = 2;
+        dstOption->xinConfig.enableMctf       = 1;
 
         // VVC
         dstOption->xinConfig.ctuSize          = 128;
@@ -643,14 +646,19 @@ static void CopyEncoderOption (
         dstOption->xinConfig.adaptiveBFrame = srcOption->xinConfig.adaptiveBFrame;
     }
 
-    if (srcOption->xinConfig.enableMultiThread != 0xFF)
-    {
-        dstOption->xinConfig.enableMultiThread = srcOption->xinConfig.enableMultiThread;
-    }
-
     if (srcOption->xinConfig.enableWpp != 0xFF)
     {
         dstOption->xinConfig.enableWpp = srcOption->xinConfig.enableWpp;
+    }
+
+    if (srcOption->xinConfig.enableMctf != 0xFF)
+    {
+        dstOption->xinConfig.enableMctf = srcOption->xinConfig.enableMctf;
+    }
+
+    if (srcOption->xinConfig.enableFpp != 0xFF)
+    {
+        dstOption->xinConfig.enableFpp = srcOption->xinConfig.enableFpp;
     }
 
     if (srcOption->xinConfig.ctuSize)
@@ -843,11 +851,6 @@ static void CopyEncoderOption (
         dstOption->xinConfig.threadNum = srcOption->xinConfig.threadNum;
     }
 
-    if (srcOption->xinConfig.enableFpp)
-    {
-        dstOption->xinConfig.enableFpp = srcOption->xinConfig.enableFpp;
-    }
-
     if (srcOption->xinConfig.numTileCols)
     {
         dstOption->xinConfig.numTileCols = srcOption->xinConfig.numTileCols;
@@ -866,11 +869,6 @@ static void CopyEncoderOption (
     if (srcOption->xinConfig.lookAhead)
     {
         dstOption->xinConfig.lookAhead = srcOption->xinConfig.lookAhead;
-    }
-
-    if (srcOption->xinConfig.laThreadNum)
-    {
-        dstOption->xinConfig.laThreadNum = srcOption->xinConfig.laThreadNum;
     }
 
     if (srcOption->xinConfig.unitTreeStrength != 0.0)
@@ -946,9 +944,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
     localOption.xinConfig.enableDmvr           = 0xFF;
 	localOption.xinConfig.enableSao            = 0xFF;
     localOption.xinConfig.adaptiveBFrame       = 0xFF;
-	localOption.xinConfig.enableMultiThread    = 0xFF;
     localOption.xinConfig.enableWpp            = 0xFF;
     localOption.xinConfig.enableAlf            = 0xFF;
+    localOption.xinConfig.enableMctf           = 0xFF;
+    localOption.xinConfig.enableFpp            = 0xFF;
 
     if (configFileName)
     {
@@ -1071,10 +1070,6 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             localOption.xinConfig.threadNum = atoi(optarg);
             break;
 
-        case 'L':
-            localOption.xinConfig.laThreadNum = atoi(optarg);
-            break;
-
         case 'N':
             localOption.xinConfig.enableIntraNxN = atoi(optarg);
             break;
@@ -1157,6 +1152,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 'C':
             localOption.xinConfig.enableCclm = atoi(optarg);
+            break;
+
+        case 'K':
+            localOption.xinConfig.enableMctf = atoi(optarg);
             break;
 
         case 'y':
