@@ -64,6 +64,10 @@ typedef int32_t             BOOL;
 
 #endif
 
+typedef float               FLOAT32;
+typedef double              FLOAT64;
+
+
 // Define pixel and coefficient data type
 #define PIXEL               UINT8
 #define PIXEL4              UINT32

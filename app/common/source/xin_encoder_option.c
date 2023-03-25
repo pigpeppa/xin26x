@@ -473,7 +473,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
         dstOption->xinConfig.enableDmvr       = 1;
-        dstOption->xinConfig.enableAlf        = 0;
+        dstOption->xinConfig.enableAlf        = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
@@ -494,7 +494,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.lumaTrSize64     = 1;
         dstOption->xinConfig.enableCclm       = 1;
         dstOption->xinConfig.enableDmvr       = 1;
-        dstOption->xinConfig.enableAlf        = 0;
+        dstOption->xinConfig.enableAlf        = 1;
 
         // HEVC
         dstOption->xinConfig.enableSmp        = 0;
