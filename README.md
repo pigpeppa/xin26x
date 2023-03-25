@@ -189,7 +189,8 @@ Xin26x
 - Preprocessing algorithm refactor.
 - Rate contronl algorithm refine.
 - Encoder structre refactor for offline coding consideration.
-- Motion compensation temporal filter.
+- 10 bit encoder support.
+- Fast algorithm optimization.
 
 HEVC
 -----------------
@@ -204,7 +205,6 @@ AV1
 
 VVC
 -----------------
-- Adaptive loop filter support.
 - Screen content coding tools support.
 - SIMD optimization.
 
