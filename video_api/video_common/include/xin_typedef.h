@@ -69,14 +69,29 @@ typedef double              FLOAT64;
 
 
 // Define pixel and coefficient data type
+#ifdef ENABLE_10BIT_ENCODER
+#define PIXEL               UINT16
+#define PIXEL4              UINT64
+#define PIXEL2              UINT32
+#define COEFF               SINT32
+#define LEVEL               UINT32
+#define MIN_PIXEL_VALUE     (0)
+#define MAX_PIXEL_VALUE     (1023)
+#define MAX_COEFF_VALUE     (32767)
+#define MIN_COEFF_VALUE     (-32768)
+#define XIN_DEFAULT_PIXEL   (128*4)
+#else
 #define PIXEL               UINT8
 #define PIXEL4              UINT32
 #define PIXEL2              UINT16
 #define COEFF               SINT16
+#define LEVEL               UINT16
 #define MIN_PIXEL_VALUE     (0)
 #define MAX_PIXEL_VALUE     (255)
 #define MAX_COEFF_VALUE     (32767)
 #define MIN_COEFF_VALUE     (-32768)
+#define XIN_DEFAULT_PIXEL   (128)
+#endif
 
 #ifdef __cplusplus
 }

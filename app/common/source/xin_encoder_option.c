@@ -471,7 +471,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 8;
         dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableCclm       = 0;
         dstOption->xinConfig.enableDmvr       = 1;
         dstOption->xinConfig.enableAlf        = 1;
 
@@ -492,7 +492,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableCclm       = 0;
         dstOption->xinConfig.enableDmvr       = 1;
         dstOption->xinConfig.enableAlf        = 1;
 
@@ -534,7 +534,7 @@ static void CopyEncoderOption (
         dstOption->xinConfig.maxBtSize        = 64;
         dstOption->xinConfig.maxTtSize        = 64;
         dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 1;
+        dstOption->xinConfig.enableCclm       = 0;
         dstOption->xinConfig.enableDmvr       = 1;
         dstOption->xinConfig.enableAlf        = 1;
 

@@ -29,13 +29,15 @@ extern "C" {
 
 typedef struct xin_frame_desc
 {
-    UINT8      *yuvBuf[3];
+    void       *yuvBuf[3];
 
     UINT32     lumaWidth;
     UINT32     lumaHeight;
 
     intptr_t   lumaStride;
     intptr_t   chromaStride;
+
+    UINT32     bitDepth;
 
 } xin_frame_desc;
 

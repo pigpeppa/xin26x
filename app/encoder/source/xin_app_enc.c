@@ -25,13 +25,10 @@
 #include <sys/time.h>
 #endif
 
-
 #if defined(_MSC_VER)
 #define fseeko  _fseeki64
 #define ftello  _ftelli64
 #endif
-
-
 
 static void WriteFrame (
     FILE           *reconFile,
@@ -50,7 +47,7 @@ static void WriteFrame (
     {
         fwrite (
             yBuf,
-            1,
+            sizeof(PIXEL),
             reconFrame->lumaWidth,
             reconFile);
 
@@ -61,7 +58,7 @@ static void WriteFrame (
     {
         fwrite (
             uBuf,
-            1,
+            sizeof(PIXEL),
             reconFrame->lumaWidth/2,
             reconFile);
 
@@ -72,7 +69,7 @@ static void WriteFrame (
     {
         fwrite (
             vBuf,
-            1,
+            sizeof(PIXEL),
             reconFrame->lumaWidth/2,
             reconFile);
 
@@ -86,10 +83,10 @@ static int ReadFrame (
     xin_frame_desc *inputFrame)
 {
     size_t readCount;
-
+    
     readCount = fread (
                     inputFrame->yuvBuf[0],
-                    sizeof(PIXEL),
+                    1,
                     inputFrame->lumaHeight*inputFrame->lumaWidth,
                     inputFile);
 
@@ -100,23 +97,23 @@ static int ReadFrame (
 
     readCount = fread (
                     inputFrame->yuvBuf[1],
-                    sizeof(PIXEL),
+                    1,
                     inputFrame->lumaHeight*inputFrame->lumaWidth/4,
                     inputFile);
 
     if (readCount != inputFrame->lumaHeight*inputFrame->lumaWidth/4)
-    {   
+    {
         return XIN_FAIL;
     }
 
     readCount = fread (
                     inputFrame->yuvBuf[2],
-                    sizeof(PIXEL),
+                    1,
                     inputFrame->lumaHeight*inputFrame->lumaWidth/4,
                     inputFile);
 
     if (readCount != inputFrame->lumaHeight*inputFrame->lumaWidth/4)
-    {   
+    {
         return XIN_FAIL;
     }
 
@@ -186,7 +183,7 @@ int main(int argc, char **argv)
     SINT32                passIdx;
 
     totalBitSize  = 0;
-    encoderOption = CreateEncoderOption (argc, argv);
+	encoderOption = CreateEncoderOption(argc, argv);
 
     if (encoderOption)
     {
@@ -220,7 +217,7 @@ int main(int argc, char **argv)
         }
 
         printf("Start coding...\n");
-        
+
         encodedFrame  = 0;
         trailingFrame = 0;
         startTime     = Xin26xGetTime ();
@@ -232,7 +229,7 @@ int main(int argc, char **argv)
                 if (passIdx == 0)
                 {
                     Xin26xReadFrame (
-                        fileReadHandle, 
+                        fileReadHandle,
                         &inputFrame);
                 }
 
