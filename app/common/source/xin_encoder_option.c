@@ -30,7 +30,7 @@ static const struct option encoder_long_options[] =
     { "bitrate",        required_argument, 0, 'b' },
     { "temporallayer",  required_argument, 0, 't' },
     { "screencontent",  required_argument, 0, 's' },
-    { "transformskip",  required_argument, 0, 'A' },
+    { "transformSkip",  required_argument, 0, 'A' },
     { "preset",         required_argument, 0, 'p' },
     { "cclm",           required_argument, 0, 'C' },
     { "dmvr",           required_argument, 0, 'y' },
@@ -42,36 +42,193 @@ static const struct option encoder_long_options[] =
     { "intranxn",       required_argument, 0, 'N' },
     { "internxn",       required_argument, 0, 'X' },
     { "thread",         required_argument, 0, 'T' },
-    { "signbithide",    required_argument, 0, 'S' },
+    { "sbh",            required_argument, 0, 'S' },
     { "sao",            required_argument, 0, 'O' },
     { "alf",            required_argument, 0, 'l' },
-    { "disabledeblock", required_argument, 0, 'D' },
-    { "unittree",       required_argument, 0, 'u' },
-    { "treestrength",   required_argument, 0, 'e' },
+    { "deblock",        required_argument, 0, 'D' },
+    { "unitTree",       required_argument, 0, 'u' },
+    { "treeStrength",   required_argument, 0, 'e' },
     { "refreshtype",    required_argument, 0, 'U' },
     { "refframes",      required_argument, 0, 'M' },
-    { "frameskip",      required_argument, 0, '1' },
-    { "ctusize",        required_argument, 0, '2' },
-    { "minqtsize",      required_argument, 0, '3' },
-    { "maxbtsize",      required_argument, 0, '4' },
-    { "maxttsize",      required_argument, 0, '5' },
-    { "maxmttdepth",    required_argument, 0, '6' },
-    { "mincusize",      required_argument, 0, '7' },
-    { "lookahead",      required_argument, 0, '8' },
-    { "trsize64",       required_argument, 0, '9' },
-    { "maxtrskipsize",  required_argument, 0, 'G' },
-    { "adabframe",      required_argument, 0, 'g' },
+    { "frameSkip",      required_argument, 0, '1' },
+    { "ctuSize",        required_argument, 0, '2' },
+    { "minQtSize",      required_argument, 0, '3' },
+    { "maxBtSize",      required_argument, 0, '4' },
+    { "maxTtsize",      required_argument, 0, '5' },
+    { "maxMttDepth",    required_argument, 0, '6' },
+    { "minCuSize",      required_argument, 0, '7' },
+    { "lookAhead",      required_argument, 0, '8' },
+    { "trSize64",       required_argument, 0, '9' },
+    { "maxTrSkipSize",  required_argument, 0, 'G' },
+    { "adaBFrame",      required_argument, 0, 'g' },
     { "rectparttype",   required_argument, 0, 'Q' },
-    { "sbsize",         required_argument, 0, 'z' },
-    { "ratecontrol",    required_argument, 0, 'r' },
+    { "sbSize",         required_argument, 0, 'z' },
+    { "rateControl",    required_argument, 0, 'r' },
     { "initqp",         required_argument, 0, 'q' },
     { "rdoq",           required_argument, 0, 'd' },
-    { "statlevel",      required_argument, 0, 'E' },
+    { "statLevel",      required_argument, 0, 'E' },
     { "psnr",           required_argument, 0, 'P' },
     { "help",                 no_argument, 0, 'H' },
     { "version",              no_argument, 0, 'V' },
     { 0,                0,                 0, 0   }
 };
+
+static void SetPreset (
+    encoder_option_struct *encoderOption)
+{
+    switch (encoderOption->xinConfig.encoderMode)
+    {
+    case 0:
+        encoderOption->xinConfig.refFrameNum      = 1;
+        encoderOption->xinConfig.motionSearchMode = 1;
+        encoderOption->xinConfig.enableRdoq       = 0;
+        encoderOption->xinConfig.enableMctf       = 0;
+
+        // VVC
+        encoderOption->xinConfig.ctuSize          = 64;
+        encoderOption->xinConfig.maxMttDepth      = 0;
+        encoderOption->xinConfig.lumaTrSize64     = 0;
+        encoderOption->xinConfig.enableCclm       = 0;
+        encoderOption->xinConfig.enableDmvr       = 0;
+        encoderOption->xinConfig.enableAlf        = 0;
+
+        // HEVC
+        encoderOption->xinConfig.enableSmp        = 0;
+
+        break;
+
+    case 1:
+        encoderOption->xinConfig.refFrameNum      = 1;
+        encoderOption->xinConfig.motionSearchMode = 1;
+        encoderOption->xinConfig.enableRdoq       = 0;
+        encoderOption->xinConfig.enableMctf       = 0;
+
+        // VVC
+        encoderOption->xinConfig.ctuSize          = 64;
+        encoderOption->xinConfig.maxMttDepth      = 1;
+        encoderOption->xinConfig.maxBtSize        = 64;
+        encoderOption->xinConfig.maxTtSize        = 8;
+        encoderOption->xinConfig.lumaTrSize64     = 0;
+        encoderOption->xinConfig.enableCclm       = 0;
+        encoderOption->xinConfig.enableDmvr       = 0;
+        encoderOption->xinConfig.enableAlf        = 0;
+
+        // HEVC
+        encoderOption->xinConfig.enableSmp        = 0;
+
+        break;
+
+    case 2:
+        encoderOption->xinConfig.refFrameNum      = 2;
+        encoderOption->xinConfig.enableRdoq       = 0;
+        encoderOption->xinConfig.motionSearchMode = 1;
+        encoderOption->xinConfig.enableMctf       = 1;
+
+        // VVC
+        encoderOption->xinConfig.ctuSize          = 64;
+        encoderOption->xinConfig.maxMttDepth      = 1;
+        encoderOption->xinConfig.maxBtSize        = 64;
+        encoderOption->xinConfig.maxTtSize        = 8;
+        encoderOption->xinConfig.lumaTrSize64     = 1;
+        encoderOption->xinConfig.enableCclm       = 0;
+        encoderOption->xinConfig.enableDmvr       = 1;
+        encoderOption->xinConfig.enableAlf        = 1;
+
+        // HEVC
+        encoderOption->xinConfig.enableSmp        = 0;
+
+        break;
+
+    case 3:
+        encoderOption->xinConfig.refFrameNum      = 3;
+        encoderOption->xinConfig.motionSearchMode = 1;
+        encoderOption->xinConfig.enableRdoq       = 0;
+        encoderOption->xinConfig.enableMctf       = 1;
+
+        // VVC
+        encoderOption->xinConfig.ctuSize          = 64;
+        encoderOption->xinConfig.maxMttDepth      = 1;
+        encoderOption->xinConfig.maxBtSize        = 64;
+        encoderOption->xinConfig.maxTtSize        = 64;
+        encoderOption->xinConfig.lumaTrSize64     = 1;
+        encoderOption->xinConfig.enableCclm       = 0;
+        encoderOption->xinConfig.enableDmvr       = 1;
+        encoderOption->xinConfig.enableAlf        = 1;
+
+        // HEVC
+        encoderOption->xinConfig.enableSmp        = 0;
+
+        break;
+
+    case 4:
+        encoderOption->xinConfig.refFrameNum      = 2;
+        encoderOption->xinConfig.enableRdoq       = 1;
+        encoderOption->xinConfig.motionSearchMode = 2;
+        encoderOption->xinConfig.enableMctf       = 1;
+
+        // VVC
+        encoderOption->xinConfig.ctuSize          = 64;
+        encoderOption->xinConfig.maxMttDepth      = 1;
+        encoderOption->xinConfig.maxBtSize        = 64;
+        encoderOption->xinConfig.maxTtSize        = 64;
+        encoderOption->xinConfig.lumaTrSize64     = 1;
+        encoderOption->xinConfig.enableCclm       = 0;
+        encoderOption->xinConfig.enableDmvr       = 1;
+        encoderOption->xinConfig.enableAlf        = 1;
+
+        // HEVC
+        encoderOption->xinConfig.enableSmp        = 1;
+
+        break;
+
+    case 5:
+        encoderOption->xinConfig.refFrameNum      = 3;
+        encoderOption->xinConfig.enableRdoq       = 1;
+        encoderOption->xinConfig.motionSearchMode = 2;
+        encoderOption->xinConfig.enableMctf       = 1;
+
+        // VVC
+        encoderOption->xinConfig.ctuSize          = 128;
+        encoderOption->xinConfig.maxMttDepth      = 1;
+        encoderOption->xinConfig.maxBtSize        = 64;
+        encoderOption->xinConfig.maxTtSize        = 64;
+        encoderOption->xinConfig.lumaTrSize64     = 1;
+        encoderOption->xinConfig.enableCclm       = 0;
+        encoderOption->xinConfig.enableDmvr       = 1;
+        encoderOption->xinConfig.enableAlf        = 1;
+
+        // HEVC
+        encoderOption->xinConfig.enableSmp        = 1;
+
+        break;
+
+    case 6:
+        encoderOption->xinConfig.refFrameNum      = 4;
+        encoderOption->xinConfig.enableRdoq       = 1;
+        encoderOption->xinConfig.motionSearchMode = 2;
+        encoderOption->xinConfig.enableMctf       = 1;
+
+        // VVC
+        encoderOption->xinConfig.ctuSize          = 128;
+        encoderOption->xinConfig.maxMttDepth      = 1;
+        encoderOption->xinConfig.maxBtSize        = 64;
+        encoderOption->xinConfig.maxTtSize        = 64;
+        encoderOption->xinConfig.lumaTrSize64     = 1;
+        encoderOption->xinConfig.enableCclm       = 1;
+        encoderOption->xinConfig.enableDmvr       = 1;
+        encoderOption->xinConfig.enableAlf        = 1;
+
+        // HEVC
+        encoderOption->xinConfig.enableSmp        = 1;
+
+        break;
+
+    default:
+        break;
+
+    }
+    
+}
 
 static bool parseConfigFile(encoder_option_struct* encoderOption, const char *configFileName)
 {
@@ -176,9 +333,9 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     {
                         encoderOption->xinConfig.maxTrSkipSize = atoi(configFile->value);
                     }
-                    else if (strcmp(configFile->key, "LoopFilterDisable") == 0)
+                    else if (strcmp(configFile->key, "LoopFilter") == 0)
                     {
-                        encoderOption->xinConfig.disableDeblockFilter = atoi(configFile->value);
+                        encoderOption->xinConfig.enableDeblock = atoi(configFile->value);
                     }
                     else if (strcmp(configFile->key, "SAO") == 0)
                     {
@@ -239,6 +396,8 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     else if (strcmp(configFile->key, "EncoderMode") == 0)
                     {
                         encoderOption->xinConfig.encoderMode = atoi(configFile->value);
+
+                        SetPreset (encoderOption);
                     }
                     else if (strcmp(configFile->key, "CtuSize") == 0)
                     {
@@ -341,7 +500,7 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
         }
 
         DeleteConfigFile(configFile);
-        
+
     }
 
     return ret;
@@ -404,500 +563,10 @@ static bool verifyEncoderOption(
 
 }
 
-static void CopyEncoderOption (
-    encoder_option_struct *srcOption,
-    encoder_option_struct *dstOption)
-{
-    memset (dstOption, 0, sizeof(encoder_option_struct));
-
-    Xin26xSetDefaultParam (
-        &dstOption->xinConfig);
-
-    dstOption->inputFileHandle  = srcOption->inputFileHandle;
-    dstOption->outputFileHandle = srcOption->outputFileHandle;
-    dstOption->reconFileHandle  = srcOption->reconFileHandle;
-
-    switch (srcOption->xinConfig.encoderMode)
-    {
-    case 0:
-        dstOption->xinConfig.refFrameNum      = 1;
-        dstOption->xinConfig.motionSearchMode = 1;
-        dstOption->xinConfig.enableRdoq       = 0;
-        dstOption->xinConfig.enableMctf       = 0;
-
-        // VVC
-        dstOption->xinConfig.ctuSize          = 64;
-        dstOption->xinConfig.maxMttDepth      = 0;
-        dstOption->xinConfig.lumaTrSize64     = 0;
-        dstOption->xinConfig.enableCclm       = 0;
-        dstOption->xinConfig.enableDmvr       = 0;
-        dstOption->xinConfig.enableAlf        = 0;
-
-        // HEVC
-        dstOption->xinConfig.enableSmp        = 0;
-        
-        break;
-
-    case 1:
-        dstOption->xinConfig.refFrameNum      = 1;
-        dstOption->xinConfig.motionSearchMode = 1;
-        dstOption->xinConfig.enableRdoq       = 0;
-        dstOption->xinConfig.enableMctf       = 0;
-
-        // VVC
-        dstOption->xinConfig.ctuSize          = 64;
-        dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 64;
-        dstOption->xinConfig.maxTtSize        = 8;
-        dstOption->xinConfig.lumaTrSize64     = 0;
-        dstOption->xinConfig.enableCclm       = 0;
-        dstOption->xinConfig.enableDmvr       = 0;
-        dstOption->xinConfig.enableAlf        = 0;
-
-        // HEVC
-        dstOption->xinConfig.enableSmp        = 0;
-        
-        break;
-
-    case 2:
-        dstOption->xinConfig.refFrameNum      = 2;
-        dstOption->xinConfig.enableRdoq       = 0;
-        dstOption->xinConfig.motionSearchMode = 1;
-        dstOption->xinConfig.enableMctf       = 1;
-
-        // VVC
-        dstOption->xinConfig.ctuSize          = 64;
-        dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 64;
-        dstOption->xinConfig.maxTtSize        = 8;
-        dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 0;
-        dstOption->xinConfig.enableDmvr       = 1;
-        dstOption->xinConfig.enableAlf        = 1;
-
-        // HEVC
-        dstOption->xinConfig.enableSmp        = 0;
-        
-        break;
-
-    case 3:
-        dstOption->xinConfig.refFrameNum      = 3;
-        dstOption->xinConfig.motionSearchMode = 1;
-        dstOption->xinConfig.enableRdoq       = 0;
-        dstOption->xinConfig.enableMctf       = 1;
-        
-        // VVC
-        dstOption->xinConfig.ctuSize          = 64;
-        dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 64;
-        dstOption->xinConfig.maxTtSize        = 64;
-        dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 0;
-        dstOption->xinConfig.enableDmvr       = 1;
-        dstOption->xinConfig.enableAlf        = 1;
-
-        // HEVC
-        dstOption->xinConfig.enableSmp        = 0;
-        
-        break;
-
-    case 4:
-        dstOption->xinConfig.refFrameNum      = 2;
-        dstOption->xinConfig.enableRdoq       = 1;
-        dstOption->xinConfig.motionSearchMode = 2;
-        dstOption->xinConfig.enableMctf       = 1;
-
-        // VVC
-        dstOption->xinConfig.ctuSize          = 64;
-        dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 64;
-        dstOption->xinConfig.maxTtSize        = 64;
-        dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 0;
-        dstOption->xinConfig.enableDmvr       = 1;
-        dstOption->xinConfig.enableAlf        = 1;
-
-        // HEVC
-        dstOption->xinConfig.enableSmp        = 1;
-        
-        break;
-
-    case 5:
-        dstOption->xinConfig.refFrameNum      = 3;
-        dstOption->xinConfig.enableRdoq       = 1;
-        dstOption->xinConfig.motionSearchMode = 2;
-        dstOption->xinConfig.enableMctf       = 1;
-
-        // VVC
-        dstOption->xinConfig.ctuSize          = 128;
-        dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 64;
-        dstOption->xinConfig.maxTtSize        = 64;
-        dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 0;
-        dstOption->xinConfig.enableDmvr       = 1;
-        dstOption->xinConfig.enableAlf        = 1;
-
-        // HEVC
-        dstOption->xinConfig.enableSmp        = 1;
-        
-        break;
-
-    case 6:
-        dstOption->xinConfig.refFrameNum      = 4;
-        dstOption->xinConfig.enableRdoq       = 1;
-        dstOption->xinConfig.motionSearchMode = 2;
-        dstOption->xinConfig.enableMctf       = 1;
-
-        // VVC
-        dstOption->xinConfig.ctuSize          = 128;
-        dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 64;
-        dstOption->xinConfig.maxTtSize        = 64;
-        dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 1;
-        dstOption->xinConfig.enableDmvr       = 1;
-        dstOption->xinConfig.enableAlf        = 1;
-
-        // HEVC
-        dstOption->xinConfig.enableSmp        = 1;
-        
-        break;
-
-    default:
-        dstOption->xinConfig.refFrameNum      = 6;
-        dstOption->xinConfig.enableRdoq       = 1;
-        dstOption->xinConfig.motionSearchMode = 2;
-        dstOption->xinConfig.enableMctf       = 1;
-
-        // VVC
-        dstOption->xinConfig.ctuSize          = 128;
-        dstOption->xinConfig.maxMttDepth      = 1;
-        dstOption->xinConfig.maxBtSize        = 64;
-        dstOption->xinConfig.maxTtSize        = 64;
-        dstOption->xinConfig.lumaTrSize64     = 1;
-        dstOption->xinConfig.enableCclm       = 1;
-        dstOption->xinConfig.enableDmvr       = 1;
-        dstOption->xinConfig.enableAlf        = 1;
-
-        // HEVC
-        dstOption->xinConfig.enableSmp        = 1;
-        break;
-
-    }
-
-    if (srcOption->xinConfig.maxMttDepth != 0xFF)
-    {
-        dstOption->xinConfig.maxMttDepth = srcOption->xinConfig.maxMttDepth;
-    }
-
-    if (srcOption->xinConfig.enableAlf != 0xFF)
-    {
-        dstOption->xinConfig.enableAlf = srcOption->xinConfig.enableAlf;
-    }
-
-    if (srcOption->xinConfig.enableRdoq != 0xFF)
-    {
-        dstOption->xinConfig.enableRdoq = srcOption->xinConfig.enableRdoq;
-    }
-
-    if (srcOption->xinConfig.motionSearchMode != 0xFF)
-    {
-        dstOption->xinConfig.motionSearchMode = srcOption->xinConfig.motionSearchMode;
-    }
-
-    if (srcOption->xinConfig.enableSmp != 0xFF)
-    {
-        dstOption->xinConfig.enableSmp = srcOption->xinConfig.enableSmp;
-    }
-
-    if (srcOption->xinConfig.rcMode != 0xFF)
-    {
-        dstOption->xinConfig.rcMode = srcOption->xinConfig.rcMode;
-    }
-	
-	if (srcOption->xinConfig.enableSignDataHiding != 0xFF)
-    {
-        dstOption->xinConfig.enableSignDataHiding = srcOption->xinConfig.enableSignDataHiding;
-    }
-
-    if (srcOption->xinConfig.bFrameNum != 0xFF)
-    {
-        dstOption->xinConfig.bFrameNum = srcOption->xinConfig.bFrameNum;
-    }
-
-    if (srcOption->xinConfig.enableCclm != 0xFF)
-    {
-        dstOption->xinConfig.enableCclm = srcOption->xinConfig.enableCclm;
-    }
-
-    if (srcOption->xinConfig.enableDmvr != 0xFF)
-    {
-        dstOption->xinConfig.enableDmvr = srcOption->xinConfig.enableDmvr;
-    }
-
-	if (srcOption->xinConfig.enableSao != 0xFF)
-	{
-		dstOption->xinConfig.enableSao = srcOption->xinConfig.enableSao;
-	}
-
-    if (srcOption->xinConfig.adaptiveBFrame != 0xFF)
-    {
-        dstOption->xinConfig.adaptiveBFrame = srcOption->xinConfig.adaptiveBFrame;
-    }
-
-    if (srcOption->xinConfig.enableWpp != 0xFF)
-    {
-        dstOption->xinConfig.enableWpp = srcOption->xinConfig.enableWpp;
-    }
-
-    if (srcOption->xinConfig.enableMctf != 0xFF)
-    {
-        dstOption->xinConfig.enableMctf = srcOption->xinConfig.enableMctf;
-    }
-
-    if (srcOption->xinConfig.enableFpp != 0xFF)
-    {
-        dstOption->xinConfig.enableFpp = srcOption->xinConfig.enableFpp;
-    }
-
-    if (srcOption->xinConfig.ctuSize)
-    {
-        dstOption->xinConfig.ctuSize = srcOption->xinConfig.ctuSize;
-    }
-
-    if (srcOption->xinConfig.maxBtSize)
-    {
-        dstOption->xinConfig.maxBtSize = srcOption->xinConfig.maxBtSize;
-    }
-
-    if (srcOption->xinConfig.maxTtSize)
-    {
-        dstOption->xinConfig.maxTtSize = srcOption->xinConfig.maxTtSize;
-    }
-
-    if (srcOption->xinConfig.refFrameNum)
-    {
-        dstOption->xinConfig.refFrameNum = srcOption->xinConfig.refFrameNum;
-    }
-
-    if (srcOption->xinConfig.inputWidth)
-    {
-        dstOption->xinConfig.inputWidth = srcOption->xinConfig.inputWidth;
-    }
-
-    if (srcOption->xinConfig.inputHeight)
-    {
-        dstOption->xinConfig.inputHeight = srcOption->xinConfig.inputHeight;
-    }
-
-    if (srcOption->xinConfig.frameRate != 0.0)
-    {
-        dstOption->xinConfig.frameRate = srcOption->xinConfig.frameRate;
-    }
-
-    if (srcOption->xinConfig.bitRate)
-    {
-        dstOption->xinConfig.bitRate = srcOption->xinConfig.bitRate;
-    }
-
-    if (srcOption->xinConfig.minQp)
-    {
-        dstOption->xinConfig.minQp = srcOption->xinConfig.minQp;
-    }
-
-    if (srcOption->xinConfig.maxQp)
-    {
-        dstOption->xinConfig.maxQp = srcOption->xinConfig.maxQp;
-    }
-
-    if (srcOption->xinConfig.frameSkip)
-    {
-        dstOption->xinConfig.frameSkip = srcOption->xinConfig.frameSkip;
-    }
-
-    if (srcOption->xinConfig.encoderMode)
-    {
-        dstOption->xinConfig.encoderMode = srcOption->xinConfig.encoderMode;
-    }
-
-    if (srcOption->xinConfig.algorithmMode)
-    {
-        dstOption->xinConfig.algorithmMode = srcOption->xinConfig.algorithmMode;
-    }
-
-    if (srcOption->xinConfig.frameToBeEncoded)
-    {
-        dstOption->xinConfig.frameToBeEncoded = srcOption->xinConfig.frameToBeEncoded;
-    }
-
-    if (srcOption->xinConfig.refFrameNum)
-    {
-        dstOption->xinConfig.refFrameNum = srcOption->xinConfig.refFrameNum;
-    }
-
-    if (srcOption->xinConfig.refreshType)
-    {
-        dstOption->xinConfig.refreshType = srcOption->xinConfig.refreshType;
-    }
-
-    if (srcOption->xinConfig.temporalLayerNum)
-    {
-        dstOption->xinConfig.temporalLayerNum = srcOption->xinConfig.temporalLayerNum;
-    }
-
-    if (srcOption->xinConfig.intraPeriod)
-    {
-        dstOption->xinConfig.intraPeriod = srcOption->xinConfig.intraPeriod;
-    }
-
-    if (srcOption->xinConfig.screenContentMode)
-    {
-        dstOption->xinConfig.screenContentMode = srcOption->xinConfig.screenContentMode;
-    }
-
-    if (srcOption->xinConfig.qp)
-    {
-        dstOption->xinConfig.qp = srcOption->xinConfig.qp;
-    }
-
-    if (srcOption->xinConfig.calcPsnr)
-    {
-        dstOption->xinConfig.calcPsnr = srcOption->xinConfig.calcPsnr;
-    }
-
-    if (srcOption->xinConfig.enableStrongIntraSmoothing)
-    {
-        dstOption->xinConfig.enableStrongIntraSmoothing = srcOption->xinConfig.enableStrongIntraSmoothing;
-    }
-
-    if (srcOption->xinConfig.enableTMvp)
-    {
-        dstOption->xinConfig.enableTMvp = srcOption->xinConfig.enableTMvp;
-    }
-
-    if (srcOption->xinConfig.enableIntraNxN)
-    {
-        dstOption->xinConfig.enableIntraNxN = srcOption->xinConfig.enableIntraNxN;
-    }
-
-    if (srcOption->xinConfig.enableInterNxN)
-    {
-        dstOption->xinConfig.enableInterNxN = srcOption->xinConfig.enableInterNxN;
-    }
-
-    if (srcOption->xinConfig.constrainedIntraPredFlag)
-    {
-        dstOption->xinConfig.constrainedIntraPredFlag = srcOption->xinConfig.constrainedIntraPredFlag;
-    }
-
-    if (srcOption->xinConfig.transformSkipFlag)
-    {
-        dstOption->xinConfig.transformSkipFlag = srcOption->xinConfig.transformSkipFlag;
-    }
-
-    if (srcOption->xinConfig.enableCuQpDelta)
-    {
-        dstOption->xinConfig.enableCuQpDelta = srcOption->xinConfig.enableCuQpDelta;
-    }
-
-    if (srcOption->xinConfig.diffCuQpDeltaDepth)
-    {
-        dstOption->xinConfig.diffCuQpDeltaDepth = srcOption->xinConfig.diffCuQpDeltaDepth;
-    }
-
-    if (srcOption->xinConfig.searchRange)
-    {
-        dstOption->xinConfig.searchRange = srcOption->xinConfig.searchRange;
-    }
-
-    if (srcOption->xinConfig.enableAmp)
-    {
-        dstOption->xinConfig.enableAmp = srcOption->xinConfig.enableAmp;
-    }
-
-    if (srcOption->xinConfig.ctuSize)
-    {
-        dstOption->xinConfig.ctuSize = srcOption->xinConfig.ctuSize;
-    }
-
-    if (srcOption->xinConfig.minQtSize)
-    {
-        dstOption->xinConfig.minQtSize = srcOption->xinConfig.minQtSize;
-    }
-
-    if (srcOption->xinConfig.minCuSize)
-    {
-        dstOption->xinConfig.minCuSize = srcOption->xinConfig.minCuSize;
-    }
-
-    if (srcOption->xinConfig.maxTrSkipSize)
-    {
-        dstOption->xinConfig.maxTrSkipSize = srcOption->xinConfig.maxTrSkipSize;
-    }
-
-    if (srcOption->xinConfig.lumaTrSize64)
-    {
-        dstOption->xinConfig.lumaTrSize64 = srcOption->xinConfig.lumaTrSize64;
-    }
-
-    if (srcOption->xinConfig.sbSize)
-    {
-        dstOption->xinConfig.sbSize = srcOption->xinConfig.sbSize;
-    }
-
-    if (srcOption->xinConfig.threadNum)
-    {
-        dstOption->xinConfig.threadNum = srcOption->xinConfig.threadNum;
-    }
-
-    if (srcOption->xinConfig.numTileCols)
-    {
-        dstOption->xinConfig.numTileCols = srcOption->xinConfig.numTileCols;
-    }
-
-    if (srcOption->xinConfig.numTileRows)
-    {
-        dstOption->xinConfig.numTileRows = srcOption->xinConfig.numTileRows;
-    }
-
-    if (srcOption->xinConfig.unitTree)
-    {
-        dstOption->xinConfig.unitTree = srcOption->xinConfig.unitTree;
-    }
-
-    if (srcOption->xinConfig.lookAhead)
-    {
-        dstOption->xinConfig.lookAhead = srcOption->xinConfig.lookAhead;
-    }
-
-    if (srcOption->xinConfig.unitTreeStrength != 0.0)
-    {
-        dstOption->xinConfig.unitTreeStrength = srcOption->xinConfig.unitTreeStrength;
-    }
-
-    if (srcOption->xinConfig.disableDeblockFilter)
-    {
-        dstOption->xinConfig.disableDeblockFilter = srcOption->xinConfig.disableDeblockFilter;
-    }
-
-	if (srcOption->xinConfig.needRecon)
-	{
-		dstOption->xinConfig.needRecon = srcOption->xinConfig.needRecon;
-	}
-
-    if (srcOption->xinConfig.statLevel)
-    {
-        dstOption->xinConfig.statLevel = srcOption->xinConfig.statLevel;
-    }
-
-}
-
 encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 {
     const char            *configFileName;
     encoder_option_struct *encoderOption;
-    encoder_option_struct localOption;
     bool                  bConsulting;
 
     configFileName = NULL;
@@ -930,33 +599,19 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
         }
     }
 
-    memset(&localOption, 0, sizeof(encoder_option_struct));
+    encoderOption = (encoder_option_struct*)malloc(sizeof(encoder_option_struct));
+    
+    memset(encoderOption, 0, sizeof(encoder_option_struct));
 
-    localOption.xinConfig.encoderMode          = 1;
-    localOption.xinConfig.enableRdoq           = 0xFF;
-    localOption.xinConfig.maxMttDepth          = 0xFF;
-    localOption.xinConfig.motionSearchMode     = 0xFF;
-    localOption.xinConfig.enableSmp            = 0xFF;
-    localOption.xinConfig.rcMode               = 0xFF;
-	localOption.xinConfig.enableSignDataHiding = 0xFF;
-    localOption.xinConfig.bFrameNum            = 0xFF;
-    localOption.xinConfig.enableCclm           = 0xFF;
-    localOption.xinConfig.enableDmvr           = 0xFF;
-	localOption.xinConfig.enableSao            = 0xFF;
-    localOption.xinConfig.adaptiveBFrame       = 0xFF;
-    localOption.xinConfig.enableWpp            = 0xFF;
-    localOption.xinConfig.enableAlf            = 0xFF;
-    localOption.xinConfig.enableMctf           = 0xFF;
-    localOption.xinConfig.enableFpp            = 0xFF;
+    Xin26xSetDefaultParam (
+        &encoderOption->xinConfig);
 
     if (configFileName)
     {
         //configEncoder with config file
-        if (!parseConfigFile(&localOption, configFileName))
+        if (!parseConfigFile(encoderOption, configFileName))
         {
             printf("Config file is invalid\n");
-
-            DeleteEncoderOption (&localOption);
 
             return NULL;
         }
@@ -974,7 +629,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             fileNameLen
                 = (MAX_FILE_NAME_LEN < ((int)strlen(optarg) + 1)) ?
                   MAX_FILE_NAME_LEN : ((int)strlen(optarg) + 1);
-            memcpy(localOption.inputFileName, optarg,
+            memcpy(encoderOption->inputFileName, optarg,
                    fileNameLen);
             break;
 
@@ -982,200 +637,203 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             fileNameLen
                 = (MAX_FILE_NAME_LEN < ((int)strlen(optarg) + 1)) ?
                   MAX_FILE_NAME_LEN : ((int)strlen(optarg) + 1);
-            memcpy(localOption.outputFileName, optarg,
+			memcpy(encoderOption->outputFileName, optarg,
                    fileNameLen);
             break;
 
         case 'a':
-            localOption.xinConfig.algorithmMode = atoi(optarg);
+			encoderOption->xinConfig.algorithmMode = atoi(optarg);
             break;
 
         case 'n':
-            localOption.xinConfig.frameToBeEncoded = atoi(optarg);
+			encoderOption->xinConfig.frameToBeEncoded = atoi(optarg);
             break;
 
         case 'R':
             fileNameLen
                 = (MAX_FILE_NAME_LEN < ((int)strlen(optarg) + 1)) ?
                   MAX_FILE_NAME_LEN : ((int)strlen(optarg) + 1);
-            memcpy(localOption.reconFileName, optarg,
+			memcpy(encoderOption->reconFileName, optarg,
                    fileNameLen);
             break;
 
         case 'w':
-            localOption.xinConfig.inputWidth = atoi(optarg);
+			encoderOption->xinConfig.inputWidth = atoi(optarg);
             break;
 
         case 'h':
-            localOption.xinConfig.inputHeight = atoi(optarg);
+			encoderOption->xinConfig.inputHeight = atoi(optarg);
             break;
 
         case 'f':
-            localOption.xinConfig.frameRate = (float)atof(optarg);
+			encoderOption->xinConfig.frameRate = (float)atof(optarg);
             break;
 
         case 'b':
-            localOption.xinConfig.bitRate = atoi(optarg);
+			encoderOption->xinConfig.bitRate = atoi(optarg);
             break;
 
         case 't':
-            localOption.xinConfig.temporalLayerNum = atoi(optarg);
+			encoderOption->xinConfig.temporalLayerNum = atoi(optarg);
             break;
 
         case 's':
-            localOption.xinConfig.screenContentMode = atoi(optarg);
+			encoderOption->xinConfig.screenContentMode = atoi(optarg);
             break;
 
         case 'r':
-            localOption.xinConfig.rcMode = atoi(optarg);
+			encoderOption->xinConfig.rcMode = atoi(optarg);
             break;
 
         case 'u':
-            localOption.xinConfig.unitTree = atoi(optarg);
+			encoderOption->xinConfig.unitTree = atoi(optarg);
             break;
 
         case 'e':
-            localOption.xinConfig.unitTreeStrength = (double)atoi(optarg);
+			encoderOption->xinConfig.unitTreeStrength = (double)atoi(optarg);
             break;
 
         case 'O':
-            localOption.xinConfig.enableSao = atoi(optarg);
+			encoderOption->xinConfig.enableSao = atoi(optarg);
             break;
 
         case 'l':
-            localOption.xinConfig.enableAlf = atoi(optarg);
+			encoderOption->xinConfig.enableAlf = atoi(optarg);
             break;
 
         case 'D':
-            localOption.xinConfig.disableDeblockFilter = atoi(optarg);
+			encoderOption->xinConfig.enableDeblock = atoi(optarg);
             break;
 
         case 'P':
-            localOption.xinConfig.calcPsnr = atoi(optarg);
+			encoderOption->xinConfig.calcPsnr = atoi(optarg);
             break;
 
         case 'B':
-            localOption.xinConfig.bFrameNum = atoi(optarg);
+			encoderOption->xinConfig.bFrameNum = atoi(optarg);
             break;
 
         case 'W':
-            localOption.xinConfig.enableWpp = atoi(optarg);
+			encoderOption->xinConfig.enableWpp = atoi(optarg);
             break;
 
         case 'F':
-            localOption.xinConfig.enableFpp = atoi(optarg);
+			encoderOption->xinConfig.enableFpp = atoi(optarg);
             break;
 
         case 'T':
-            localOption.xinConfig.threadNum = atoi(optarg);
+			encoderOption->xinConfig.threadNum = atoi(optarg);
             break;
 
         case 'N':
-            localOption.xinConfig.enableIntraNxN = atoi(optarg);
+			encoderOption->xinConfig.enableIntraNxN = atoi(optarg);
             break;
 
         case 'X':
-            localOption.xinConfig.enableInterNxN = atoi(optarg);
+			encoderOption->xinConfig.enableInterNxN = atoi(optarg);
             break;
 
         case 'p':
-            localOption.xinConfig.encoderMode = atoi(optarg);
+			encoderOption->xinConfig.encoderMode = atoi(optarg);
+
+            SetPreset (encoderOption);
+            
             break;
 
         case 'S':
-            localOption.xinConfig.enableSignDataHiding = atoi(optarg);
+			encoderOption->xinConfig.enableSignDataHiding = atoi(optarg);
             break;
 
         case 'U':
-            localOption.xinConfig.refreshType = atoi(optarg);
+			encoderOption->xinConfig.refreshType = atoi(optarg);
             break;
 
         case 'M':
-            localOption.xinConfig.refFrameNum = atoi(optarg);
+			encoderOption->xinConfig.refFrameNum = atoi(optarg);
             break;
 
         case 'g':
-            localOption.xinConfig.adaptiveBFrame = atoi(optarg);
+			encoderOption->xinConfig.adaptiveBFrame = atoi(optarg);
             break;
 
         case 'A':
-            localOption.xinConfig.transformSkipFlag = atoi(optarg);
+			encoderOption->xinConfig.transformSkipFlag = atoi(optarg);
             break;
 
         case '1':
-            localOption.xinConfig.frameSkip = atoi(optarg);
+			encoderOption->xinConfig.frameSkip = atoi(optarg);
             break;
 
         case '2':
-            localOption.xinConfig.ctuSize = atoi(optarg);
+			encoderOption->xinConfig.ctuSize = atoi(optarg);
             break;
 
         case '3':
-            localOption.xinConfig.minQtSize = atoi(optarg);
+			encoderOption->xinConfig.minQtSize = atoi(optarg);
             break;
 
         case '4':
-            localOption.xinConfig.maxBtSize = atoi(optarg);
+			encoderOption->xinConfig.maxBtSize = atoi(optarg);
             break;
 
         case '5':
-            localOption.xinConfig.maxTtSize = atoi(optarg);
+			encoderOption->xinConfig.maxTtSize = atoi(optarg);
             break;
 
         case '6':
-            localOption.xinConfig.maxMttDepth = atoi(optarg);
+			encoderOption->xinConfig.maxMttDepth = atoi(optarg);
             break;
 
         case '7':
-            localOption.xinConfig.minCuSize = atoi(optarg);
+			encoderOption->xinConfig.minCuSize = atoi(optarg);
             break;
 
         case '8':
-            localOption.xinConfig.lookAhead = atoi(optarg);
+			encoderOption->xinConfig.lookAhead = atoi(optarg);
             break;
 
         case '9':
-            localOption.xinConfig.lumaTrSize64 = atoi(optarg);
+			encoderOption->xinConfig.lumaTrSize64 = atoi(optarg);
             break;
 
         case 'I':
-            localOption.xinConfig.intraPeriod = atoi(optarg);
+			encoderOption->xinConfig.intraPeriod = atoi(optarg);
             break;
 
         case 'q':
-            localOption.xinConfig.qp = atoi(optarg);
+			encoderOption->xinConfig.qp = atoi(optarg);
             break;
 
         case 'd':
-            localOption.xinConfig.enableRdoq = atoi(optarg);
+			encoderOption->xinConfig.enableRdoq = atoi(optarg);
             break;
 
         case 'C':
-            localOption.xinConfig.enableCclm = atoi(optarg);
+			encoderOption->xinConfig.enableCclm = atoi(optarg);
             break;
 
         case 'K':
-            localOption.xinConfig.enableMctf = atoi(optarg);
+			encoderOption->xinConfig.enableMctf = atoi(optarg);
             break;
 
         case 'y':
-            localOption.xinConfig.enableDmvr = atoi(optarg);
+			encoderOption->xinConfig.enableDmvr = atoi(optarg);
             break;
 
         case 'G':
-            localOption.xinConfig.maxTrSkipSize = atoi(optarg);
+			encoderOption->xinConfig.maxTrSkipSize = atoi(optarg);
             break;
 
         case 'Q':
-            localOption.xinConfig.enableRectPartType = atoi(optarg);
+			encoderOption->xinConfig.enableRectPartType = atoi(optarg);
             break;
 
         case 'z':
-            localOption.xinConfig.sbSize = atoi(optarg);
+			encoderOption->xinConfig.sbSize = atoi(optarg);
             break;
 
         case 'E':
-            localOption.xinConfig.statLevel = atoi(optarg);
+			encoderOption->xinConfig.statLevel = atoi(optarg);
             break;
 
         case 'H':
@@ -1200,12 +858,8 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
     }
 
-    if (verifyEncoderOption(&localOption, bConsulting) == false)
+    if (verifyEncoderOption(encoderOption, bConsulting) == false)
     {
-        DeleteEncoderOption(&localOption);
-
-        encoderOption = NULL;
-
         if (!bConsulting)
         {
             printf("Option is wrong!\n");
@@ -1213,16 +867,11 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             ShowHelp();
         }
 
+        free (encoderOption);
+
+        encoderOption = NULL;
+
     }
-	else
-	{
-
-		encoderOption = (encoder_option_struct*)malloc(sizeof(encoder_option_struct));
-
-		CopyEncoderOption (
-			&localOption,
-			encoderOption);
-	}
 
     return encoderOption;
 
@@ -1286,29 +935,29 @@ void ShowHelp()
     printf ("\n");
 
     printf ("H266 Coding Tools:\n");
-    printf ("--minqtsize <integer>        Minimum allowed quaternary tree leaf node size.\n");
-    printf ("--maxbtsize <integer>        Maximum allowed binary tree root node size.\n");
-    printf ("--maxttsize <integer>        Maximum allowed ternary tree root node size.\n");
-    printf ("--maxmttdepth <integer>      Maximum allowed hierarchy depth of multi-type tree splitting from a quadtree leaf.\n");
-    printf ("--mincusize <integer>        Minimum coding unit size.\n");
-    printf ("--trsize64 <integer>         Enable max transform size 64 for luma, 0: disable, 1: enable.\n");
-    printf ("--maxtrskipsize <integer>    Max transform skip size.\n");
+    printf ("--minQtSize <integer>        Minimum allowed quaternary tree leaf node size.\n");
+    printf ("--maxBtSize <integer>        Maximum allowed binary tree root node size.\n");
+    printf ("--maxTtSize <integer>        Maximum allowed ternary tree root node size.\n");
+    printf ("--maxMttDepth <integer>      Maximum allowed hierarchy depth of multi-type tree splitting from a quadtree leaf.\n");
+    printf ("--minCuSize <integer>        Minimum coding unit size.\n");
+    printf ("--trSize64 <integer>         Enable max transform size 64 for luma, 0: disable, 1: enable.\n");
+    printf ("--maxTrSkipSize <integer>    Max transform skip size.\n");
     printf ("\n");
 
     printf ("H265 and H266 Coding Tools:\n");
-    printf ("--signbithide <integer>      Enable sign bit hidden, 0: disable, 1: enable\n");
-    printf ("--transformskip <integer>    Enable transform skip. 0: disable, 1: enable\n");
+    printf ("--sbh <integer>              Enable sign bit hidden, 0: disable, 1: enable\n");
+    printf ("--transformSkip <integer>    Enable transform skip. 0: disable, 1: enable\n");
     printf ("--sao <integer>              Enable sample adaptive offset. 0: disable, 1: enable\n");
     printf ("\n");
 
     printf ("General Coding Tools:\n");
     printf ("-p/--preset <integer>        Encoder preset. 0: superfast, 1: veryfast, 2: fast, 3: medium, 4 slow, 5 veryslow.\n");
     printf ("-s/--screencontent <integer> Enable screen content, 0: disable, 1: enable\n");
-    printf ("--lookahead <integer>        How many frames are lookahead.\n");
+    printf ("--lookAhead <integer>        How many frames are lookahead.\n");
     printf ("-d/--rdoq <integer>          Enable rate distortion optimization. 0: disable, 1: Enable.\n");
     printf ("-L/--lathread <integer>      How many thread used for lookahead.\n");
-    printf ("-u/--unittree <integer>      Enable unit tree, 0: disable, 1: enable.\n");
-    printf ("-e/--treestrength <double>   Unit tree strength.\n");
+    printf ("-u/--unitTree <integer>      Enable unit tree, 0: disable, 1: enable.\n");
+    printf ("-e/--treeStrength <double>   Unit tree strength.\n");
     printf ("\n");
 
     printf ("Coding Structure:\n");
@@ -1331,7 +980,7 @@ void ShowHelp()
     printf ("-q/--qp <integer>            Encode QP, work when rate control is disabled\n");
     printf ("-f/--framerate <float>       Encode frame rate\n");
     printf ("-b/--bitrate <integer>       Encode bit rate\n");
-    printf ("--frameskip <integer>        Enable frame skip when bit rate is insufficient. 0: disable, 1: enable\n");
+    printf ("--frameSkip <integer>        Enable frame skip when bit rate is insufficient. 0: disable, 1: enable\n");
     printf ("\n");
 
     printf ("Other Options:\n");
