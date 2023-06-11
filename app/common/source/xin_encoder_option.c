@@ -70,6 +70,7 @@ static const struct option encoder_long_options[] =
     { "psnr",           required_argument, 0, 'P' },
     { "help",                 no_argument, 0, 'H' },
     { "version",              no_argument, 0, 'V' },
+    { "sbTmvp",         required_argument, 0, 128 },
     { 0,                0,                 0, 0   }
 };
 
@@ -175,6 +176,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableCclm       = 0;
         encoderOption->xinConfig.enableDmvr       = 1;
         encoderOption->xinConfig.enableAlf        = 1;
+        encoderOption->xinConfig.enableSbTmvp     = 1;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -196,6 +198,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableCclm       = 0;
         encoderOption->xinConfig.enableDmvr       = 1;
         encoderOption->xinConfig.enableAlf        = 1;
+        encoderOption->xinConfig.enableSbTmvp     = 1;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -217,6 +220,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableCclm       = 1;
         encoderOption->xinConfig.enableDmvr       = 1;
         encoderOption->xinConfig.enableAlf        = 1;
+        encoderOption->xinConfig.enableSbTmvp     = 1;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -836,6 +840,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 			encoderOption->xinConfig.statLevel = atoi(optarg);
             break;
 
+        case 128:
+            encoderOption->xinConfig.enableSbTmvp = atoi(optarg);
+			break;
+
         case 'H':
             ShowHelp();
             bConsulting = true;
@@ -942,6 +950,7 @@ void ShowHelp()
     printf ("--minCuSize <integer>        Minimum coding unit size.\n");
     printf ("--trSize64 <integer>         Enable max transform size 64 for luma, 0: disable, 1: enable.\n");
     printf ("--maxTrSkipSize <integer>    Max transform skip size.\n");
+    printf ("--sbTmvp <integer>           Enbale SbTMVP.\n");
     printf ("\n");
 
     printf ("H265 and H266 Coding Tools:\n");

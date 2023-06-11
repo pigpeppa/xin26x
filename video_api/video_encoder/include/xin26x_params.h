@@ -129,6 +129,7 @@ typedef struct xin26x_params
     UINT32      enableDmvr;
     BOOL        lumaTrSize64;
     BOOL        enableAlf;
+    BOOL        enableSbTmvp;
 
     // av1 settings
     UINT32      sbSize;
