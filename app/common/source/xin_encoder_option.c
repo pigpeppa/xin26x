@@ -71,6 +71,7 @@ static const struct option encoder_long_options[] =
     { "help",                 no_argument, 0, 'H' },
     { "version",              no_argument, 0, 'V' },
     { "sbTmvp",         required_argument, 0, 128 },
+    { "affine",         required_argument, 0, 129 },
     { 0,                0,                 0, 0   }
 };
 
@@ -176,7 +177,8 @@ static void SetPreset (
         encoderOption->xinConfig.enableCclm       = 0;
         encoderOption->xinConfig.enableDmvr       = 1;
         encoderOption->xinConfig.enableAlf        = 1;
-        encoderOption->xinConfig.enableSbTmvp     = 1;
+        encoderOption->xinConfig.enableSbTmvp     = FALSE;
+        encoderOption->xinConfig.enableAffine     = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -197,8 +199,9 @@ static void SetPreset (
         encoderOption->xinConfig.lumaTrSize64     = 1;
         encoderOption->xinConfig.enableCclm       = 0;
         encoderOption->xinConfig.enableDmvr       = 1;
-        encoderOption->xinConfig.enableAlf        = 1;
-        encoderOption->xinConfig.enableSbTmvp     = 1;
+        encoderOption->xinConfig.enableAlf        = TRUE;
+        encoderOption->xinConfig.enableSbTmvp     = TRUE;
+        encoderOption->xinConfig.enableAffine     = TRUE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -219,8 +222,9 @@ static void SetPreset (
         encoderOption->xinConfig.lumaTrSize64     = 1;
         encoderOption->xinConfig.enableCclm       = 1;
         encoderOption->xinConfig.enableDmvr       = 1;
-        encoderOption->xinConfig.enableAlf        = 1;
-        encoderOption->xinConfig.enableSbTmvp     = 1;
+        encoderOption->xinConfig.enableAlf        = TRUE;
+        encoderOption->xinConfig.enableSbTmvp     = TRUE;
+        encoderOption->xinConfig.enableAffine     = TRUE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -842,6 +846,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 128:
             encoderOption->xinConfig.enableSbTmvp = atoi(optarg);
+			break;
+
+        case 129:
+            encoderOption->xinConfig.enableAffine = atoi(optarg);
 			break;
 
         case 'H':
