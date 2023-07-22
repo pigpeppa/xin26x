@@ -72,6 +72,9 @@ static const struct option encoder_long_options[] =
     { "version",              no_argument, 0, 'V' },
     { "sbTmvp",         required_argument, 0, 128 },
     { "affine",         required_argument, 0, 129 },
+    { "mts",            required_argument, 0, 130 },
+    { "gpb",            required_argument, 0, 131 },
+    { "hidden",         required_argument, 0, 132 },
     { 0,                0,                 0, 0   }
 };
 
@@ -179,6 +182,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableAlf        = 1;
         encoderOption->xinConfig.enableSbTmvp     = FALSE;
         encoderOption->xinConfig.enableAffine     = FALSE;
+        encoderOption->xinConfig.enableMts        = TRUE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -202,6 +206,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableAlf        = TRUE;
         encoderOption->xinConfig.enableSbTmvp     = TRUE;
         encoderOption->xinConfig.enableAffine     = TRUE;
+        encoderOption->xinConfig.enableMts        = TRUE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -225,6 +230,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableAlf        = TRUE;
         encoderOption->xinConfig.enableSbTmvp     = TRUE;
         encoderOption->xinConfig.enableAffine     = TRUE;
+        encoderOption->xinConfig.enableMts        = TRUE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -850,6 +856,18 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 129:
             encoderOption->xinConfig.enableAffine = atoi(optarg);
+			break;
+
+        case 130:
+            encoderOption->xinConfig.enableMts = atoi(optarg);
+			break;
+
+        case 131:
+            encoderOption->xinConfig.enableGpb = atoi(optarg);
+			break;
+
+        case 132:
+            encoderOption->xinConfig.hiddenOption = atoi(optarg);
 			break;
 
         case 'H':

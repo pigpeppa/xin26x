@@ -93,6 +93,8 @@ typedef struct xin26x_params
 
     BOOL        enableSao;
 
+    BOOL        enableGpb;
+
     BOOL        enableStrongIntraSmoothing;
     BOOL        enableTMvp;
 
@@ -125,6 +127,7 @@ typedef struct xin26x_params
     UINT32      maxMttDepth;
     UINT32      minCuSize;
     UINT32      maxTrSkipSize;
+    BOOL        enableMts;
     BOOL        enableCclm;
     BOOL        enableDmvr;
     BOOL        lumaTrSize64;
