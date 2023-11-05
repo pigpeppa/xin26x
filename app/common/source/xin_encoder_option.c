@@ -210,7 +210,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableAffine     = TRUE;
         encoderOption->xinConfig.enableMts        = TRUE;
         encoderOption->xinConfig.enableDepQuant   = TRUE;
-        
+
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
 
@@ -244,6 +244,29 @@ static void SetPreset (
     default:
         break;
 
+    }
+
+}
+
+static void SetScreenContentMode (
+    xin26x_params *xinConfig)
+{
+    if (xinConfig->screenContentMode)
+    {
+        // h266 & h265
+        xinConfig->transformSkipFlag = TRUE;
+        xinConfig->motionSearchMode  = 2;
+        xinConfig->enableMctf        = FALSE;
+
+        // h265
+        xinConfig->enableIntraNxN    = TRUE;
+        xinConfig->enableInterNxN    = TRUE;
+
+        // h266
+        xinConfig->maxTrSkipSize     = xinConfig->maxTrSkipSize > 8 ? xinConfig->maxTrSkipSize : 8;
+        xinConfig->minCuSize         = 4;
+        xinConfig->minQtSize         = 4;
+        xinConfig->enableCclm        = TRUE;
     }
     
 }
@@ -394,6 +417,9 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     else if (strcmp(configFile->key, "ScreenContent") == 0)
                     {
                         encoderOption->xinConfig.screenContentMode = atoi(configFile->value);
+
+                        SetScreenContentMode (
+                            &encoderOption->xinConfig);
                     }
                     else if (strcmp(configFile->key, "TMVPMode") == 0)
                     {
@@ -618,7 +644,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
     }
 
     encoderOption = (encoder_option_struct*)malloc(sizeof(encoder_option_struct));
-    
+
     memset(encoderOption, 0, sizeof(encoder_option_struct));
 
     Xin26xSetDefaultParam (
@@ -655,228 +681,232 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             fileNameLen
                 = (MAX_FILE_NAME_LEN < ((int)strlen(optarg) + 1)) ?
                   MAX_FILE_NAME_LEN : ((int)strlen(optarg) + 1);
-			memcpy(encoderOption->outputFileName, optarg,
+            memcpy(encoderOption->outputFileName, optarg,
                    fileNameLen);
             break;
 
         case 'a':
-			encoderOption->xinConfig.algorithmMode = atoi(optarg);
+            encoderOption->xinConfig.algorithmMode = atoi(optarg);
             break;
 
         case 'n':
-			encoderOption->xinConfig.frameToBeEncoded = atoi(optarg);
+            encoderOption->xinConfig.frameToBeEncoded = atoi(optarg);
             break;
 
         case 'R':
             fileNameLen
                 = (MAX_FILE_NAME_LEN < ((int)strlen(optarg) + 1)) ?
                   MAX_FILE_NAME_LEN : ((int)strlen(optarg) + 1);
-			memcpy(encoderOption->reconFileName, optarg,
+            memcpy(encoderOption->reconFileName, optarg,
                    fileNameLen);
             break;
 
         case 'w':
-			encoderOption->xinConfig.inputWidth = atoi(optarg);
+            encoderOption->xinConfig.inputWidth = atoi(optarg);
             break;
 
         case 'h':
-			encoderOption->xinConfig.inputHeight = atoi(optarg);
+            encoderOption->xinConfig.inputHeight = atoi(optarg);
             break;
 
         case 'f':
-			encoderOption->xinConfig.frameRate = (float)atof(optarg);
+            encoderOption->xinConfig.frameRate = (float)atof(optarg);
             break;
 
         case 'b':
-			encoderOption->xinConfig.bitRate = atoi(optarg);
+            encoderOption->xinConfig.bitRate = atoi(optarg);
             break;
 
         case 't':
-			encoderOption->xinConfig.temporalLayerNum = atoi(optarg);
+            encoderOption->xinConfig.temporalLayerNum = atoi(optarg);
             break;
 
         case 's':
-			encoderOption->xinConfig.screenContentMode = atoi(optarg);
+            encoderOption->xinConfig.screenContentMode = atoi(optarg);
+
+            SetScreenContentMode (
+                &encoderOption->xinConfig);
+
             break;
 
         case 'r':
-			encoderOption->xinConfig.rcMode = atoi(optarg);
+            encoderOption->xinConfig.rcMode = atoi(optarg);
             break;
 
         case 'u':
-			encoderOption->xinConfig.unitTree = atoi(optarg);
+            encoderOption->xinConfig.unitTree = atoi(optarg);
             break;
 
         case 'e':
-			encoderOption->xinConfig.unitTreeStrength = (double)atoi(optarg);
+            encoderOption->xinConfig.unitTreeStrength = (double)atoi(optarg);
             break;
 
         case 'O':
-			encoderOption->xinConfig.enableSao = atoi(optarg);
+            encoderOption->xinConfig.enableSao = atoi(optarg);
             break;
 
         case 'l':
-			encoderOption->xinConfig.enableAlf = atoi(optarg);
+            encoderOption->xinConfig.enableAlf = atoi(optarg);
             break;
 
         case 'D':
-			encoderOption->xinConfig.enableDeblock = atoi(optarg);
+            encoderOption->xinConfig.enableDeblock = atoi(optarg);
             break;
 
         case 'P':
-			encoderOption->xinConfig.calcPsnr = atoi(optarg);
+            encoderOption->xinConfig.calcPsnr = atoi(optarg);
             break;
 
         case 'B':
-			encoderOption->xinConfig.bFrameNum = atoi(optarg);
+            encoderOption->xinConfig.bFrameNum = atoi(optarg);
             break;
 
         case 'W':
-			encoderOption->xinConfig.enableWpp = atoi(optarg);
+            encoderOption->xinConfig.enableWpp = atoi(optarg);
             break;
 
         case 'F':
-			encoderOption->xinConfig.enableFpp = atoi(optarg);
+            encoderOption->xinConfig.enableFpp = atoi(optarg);
             break;
 
         case 'T':
-			encoderOption->xinConfig.threadNum = atoi(optarg);
+            encoderOption->xinConfig.threadNum = atoi(optarg);
             break;
 
         case 'N':
-			encoderOption->xinConfig.enableIntraNxN = atoi(optarg);
+            encoderOption->xinConfig.enableIntraNxN = atoi(optarg);
             break;
 
         case 'X':
-			encoderOption->xinConfig.enableInterNxN = atoi(optarg);
+            encoderOption->xinConfig.enableInterNxN = atoi(optarg);
             break;
 
         case 'p':
-			encoderOption->xinConfig.encoderMode = atoi(optarg);
+            encoderOption->xinConfig.encoderMode = atoi(optarg);
 
             SetPreset (encoderOption);
-            
+
             break;
 
         case 'S':
-			encoderOption->xinConfig.enableSignDataHiding = atoi(optarg);
+            encoderOption->xinConfig.enableSignDataHiding = atoi(optarg);
             break;
 
         case 'U':
-			encoderOption->xinConfig.refreshType = atoi(optarg);
+            encoderOption->xinConfig.refreshType = atoi(optarg);
             break;
 
         case 'M':
-			encoderOption->xinConfig.refFrameNum = atoi(optarg);
+            encoderOption->xinConfig.refFrameNum = atoi(optarg);
             break;
 
         case 'g':
-			encoderOption->xinConfig.adaptiveBFrame = atoi(optarg);
+            encoderOption->xinConfig.adaptiveBFrame = atoi(optarg);
             break;
 
         case 'A':
-			encoderOption->xinConfig.transformSkipFlag = atoi(optarg);
+            encoderOption->xinConfig.transformSkipFlag = atoi(optarg);
             break;
 
         case '1':
-			encoderOption->xinConfig.frameSkip = atoi(optarg);
+            encoderOption->xinConfig.frameSkip = atoi(optarg);
             break;
 
         case '2':
-			encoderOption->xinConfig.ctuSize = atoi(optarg);
+            encoderOption->xinConfig.ctuSize = atoi(optarg);
             break;
 
         case '3':
-			encoderOption->xinConfig.minQtSize = atoi(optarg);
+            encoderOption->xinConfig.minQtSize = atoi(optarg);
             break;
 
         case '4':
-			encoderOption->xinConfig.maxBtSize = atoi(optarg);
+            encoderOption->xinConfig.maxBtSize = atoi(optarg);
             break;
 
         case '5':
-			encoderOption->xinConfig.maxTtSize = atoi(optarg);
+            encoderOption->xinConfig.maxTtSize = atoi(optarg);
             break;
 
         case '6':
-			encoderOption->xinConfig.maxMttDepth = atoi(optarg);
+            encoderOption->xinConfig.maxMttDepth = atoi(optarg);
             break;
 
         case '7':
-			encoderOption->xinConfig.minCuSize = atoi(optarg);
+            encoderOption->xinConfig.minCuSize = atoi(optarg);
             break;
 
         case '8':
-			encoderOption->xinConfig.lookAhead = atoi(optarg);
+            encoderOption->xinConfig.lookAhead = atoi(optarg);
             break;
 
         case '9':
-			encoderOption->xinConfig.lumaTrSize64 = atoi(optarg);
+            encoderOption->xinConfig.lumaTrSize64 = atoi(optarg);
             break;
 
         case 'I':
-			encoderOption->xinConfig.intraPeriod = atoi(optarg);
+            encoderOption->xinConfig.intraPeriod = atoi(optarg);
             break;
 
         case 'q':
-			encoderOption->xinConfig.qp = atoi(optarg);
+            encoderOption->xinConfig.qp = atoi(optarg);
             break;
 
         case 'd':
-			encoderOption->xinConfig.enableRdoq = atoi(optarg);
+            encoderOption->xinConfig.enableRdoq = atoi(optarg);
             break;
 
         case 'C':
-			encoderOption->xinConfig.enableCclm = atoi(optarg);
+            encoderOption->xinConfig.enableCclm = atoi(optarg);
             break;
 
         case 'K':
-			encoderOption->xinConfig.enableMctf = atoi(optarg);
+            encoderOption->xinConfig.enableMctf = atoi(optarg);
             break;
 
         case 'y':
-			encoderOption->xinConfig.enableDmvr = atoi(optarg);
+            encoderOption->xinConfig.enableDmvr = atoi(optarg);
             break;
 
         case 'G':
-			encoderOption->xinConfig.maxTrSkipSize = atoi(optarg);
+            encoderOption->xinConfig.maxTrSkipSize = atoi(optarg);
             break;
 
         case 'Q':
-			encoderOption->xinConfig.enableRectPartType = atoi(optarg);
+            encoderOption->xinConfig.enableRectPartType = atoi(optarg);
             break;
 
         case 'z':
-			encoderOption->xinConfig.sbSize = atoi(optarg);
+            encoderOption->xinConfig.sbSize = atoi(optarg);
             break;
 
         case 'E':
-			encoderOption->xinConfig.statLevel = atoi(optarg);
+            encoderOption->xinConfig.statLevel = atoi(optarg);
             break;
 
         case 128:
             encoderOption->xinConfig.enableSbTmvp = atoi(optarg);
-			break;
+            break;
 
         case 129:
             encoderOption->xinConfig.enableAffine = atoi(optarg);
-			break;
+            break;
 
         case 130:
             encoderOption->xinConfig.enableMts = atoi(optarg);
-			break;
+            break;
 
         case 131:
             encoderOption->xinConfig.enableGpb = atoi(optarg);
-			break;
+            break;
 
         case 132:
             encoderOption->xinConfig.enableDepQuant = atoi(optarg);
-			break;
+            break;
 
         case 255:
             encoderOption->xinConfig.hiddenOption = atoi(optarg);
-			break;
+            break;
 
         case 'H':
             ShowHelp();
