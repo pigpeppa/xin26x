@@ -71,10 +71,12 @@ typedef struct xin26x_params
     UINT32      temporalLayerNum;
 	BOOL        twoPassEncoder;
     UINT32      enableMctf;
+    BOOL        enableSceneCut;
 
     UINT32      intraPeriod;
 
     UINT32      screenContentMode;
+    BOOL        zeroLatency;
 
     UINT32      bitDepth;
 
@@ -132,6 +134,7 @@ typedef struct xin26x_params
     BOOL        enableDmvr;
     BOOL        lumaTrSize64;
     BOOL        enableAlf;
+    BOOL        enableLmcs;
     BOOL        enableSbTmvp;
     BOOL        enableAffine;
     BOOL        enableDepQuant;

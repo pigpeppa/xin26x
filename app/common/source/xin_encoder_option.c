@@ -75,6 +75,8 @@ static const struct option encoder_long_options[] =
     { "mts",            required_argument, 0, 130 },
     { "gpb",            required_argument, 0, 131 },
     { "depQuant",       required_argument, 0, 132 },
+    { "scenecut",       required_argument, 0, 133 },
+    { "zerolatency",    required_argument, 0, 134 },
     { "hidden",         required_argument, 0, 255 },
     { 0,                0,                 0, 0   }
 };
@@ -267,6 +269,21 @@ static void SetScreenContentMode (
         xinConfig->minCuSize         = 4;
         xinConfig->minQtSize         = 4;
         xinConfig->enableCclm        = TRUE;
+    }
+    
+}
+
+static void SetZeroLatencyMode (
+    xin26x_params *xinConfig)
+{
+    if (xinConfig->zeroLatency)
+    {
+        xinConfig->bFrameNum      = 0;
+        xinConfig->lookAhead      = 0;
+        xinConfig->enableMctf     = FALSE;
+        xinConfig->enableSceneCut = FALSE;
+        xinConfig->unitTree       = FALSE;
+        xinConfig->rcMode         = 3;
     }
     
 }
@@ -902,6 +919,18 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 132:
             encoderOption->xinConfig.enableDepQuant = atoi(optarg);
+            break;
+
+        case 133:
+            encoderOption->xinConfig.enableSceneCut = atoi(optarg);
+            break;
+
+        case 134:
+            encoderOption->xinConfig.zeroLatency = atoi(optarg);
+
+            SetZeroLatencyMode (
+                &encoderOption->xinConfig);
+            
             break;
 
         case 255:
