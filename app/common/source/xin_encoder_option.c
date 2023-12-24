@@ -77,6 +77,7 @@ static const struct option encoder_long_options[] =
     { "depQuant",       required_argument, 0, 132 },
     { "scenecut",       required_argument, 0, 133 },
     { "zerolatency",    required_argument, 0, 134 },
+    { "amvr",           required_argument, 0, 135 },
     { "hidden",         required_argument, 0, 255 },
     { 0,                0,                 0, 0   }
 };
@@ -99,6 +100,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableCclm       = 0;
         encoderOption->xinConfig.enableDmvr       = 0;
         encoderOption->xinConfig.enableAlf        = 0;
+        encoderOption->xinConfig.enableAmvr       = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 0;
@@ -120,6 +122,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableCclm       = 0;
         encoderOption->xinConfig.enableDmvr       = 0;
         encoderOption->xinConfig.enableAlf        = 0;
+        encoderOption->xinConfig.enableAmvr       = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 0;
@@ -141,6 +144,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableCclm       = 0;
         encoderOption->xinConfig.enableDmvr       = 1;
         encoderOption->xinConfig.enableAlf        = 1;
+        encoderOption->xinConfig.enableAmvr       = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 0;
@@ -162,6 +166,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableCclm       = 0;
         encoderOption->xinConfig.enableDmvr       = 1;
         encoderOption->xinConfig.enableAlf        = 1;
+        encoderOption->xinConfig.enableAmvr       = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 0;
@@ -187,6 +192,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableAffine     = FALSE;
         encoderOption->xinConfig.enableMts        = TRUE;
         encoderOption->xinConfig.enableDepQuant   = TRUE;
+        encoderOption->xinConfig.enableAmvr       = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -212,6 +218,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableAffine     = TRUE;
         encoderOption->xinConfig.enableMts        = TRUE;
         encoderOption->xinConfig.enableDepQuant   = TRUE;
+        encoderOption->xinConfig.enableAmvr       = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -237,6 +244,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableAffine     = TRUE;
         encoderOption->xinConfig.enableMts        = TRUE;
         encoderOption->xinConfig.enableDepQuant   = TRUE;
+        encoderOption->xinConfig.enableAmvr       = TRUE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -244,6 +252,28 @@ static void SetPreset (
         break;
 
     default:
+		encoderOption->xinConfig.refFrameNum      = 4;
+        encoderOption->xinConfig.enableRdoq       = 1;
+        encoderOption->xinConfig.motionSearchMode = 2;
+        encoderOption->xinConfig.enableMctf       = 1;
+
+        // VVC
+        encoderOption->xinConfig.ctuSize          = 128;
+        encoderOption->xinConfig.maxMttDepth      = 1;
+        encoderOption->xinConfig.maxBtSize        = 64;
+        encoderOption->xinConfig.maxTtSize        = 64;
+        encoderOption->xinConfig.lumaTrSize64     = 1;
+        encoderOption->xinConfig.enableCclm       = 1;
+        encoderOption->xinConfig.enableDmvr       = 1;
+        encoderOption->xinConfig.enableAlf        = TRUE;
+        encoderOption->xinConfig.enableSbTmvp     = TRUE;
+        encoderOption->xinConfig.enableAffine     = TRUE;
+        encoderOption->xinConfig.enableMts        = TRUE;
+        encoderOption->xinConfig.enableDepQuant   = TRUE;
+        encoderOption->xinConfig.enableAmvr       = TRUE;
+
+        // HEVC
+        encoderOption->xinConfig.enableSmp        = 1;
         break;
 
     }
@@ -931,6 +961,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             SetZeroLatencyMode (
                 &encoderOption->xinConfig);
             
+            break;
+
+        case 135:
+            encoderOption->xinConfig.enableAmvr = atoi(optarg);            
             break;
 
         case 255:
