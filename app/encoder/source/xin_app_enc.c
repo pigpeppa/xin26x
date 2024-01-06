@@ -335,6 +335,8 @@ int main(int argc, char **argv)
             printf ("%d frames encoded, coding speed fps:%3.4f bitrate: %4.2f kbps.\n", config->frameToBeEncoded, (double)(config->frameToBeEncoded) / encoderTime, ((double)totalBitSize)/((double)config->frameToBeEncoded/(double)config->frameRate)/1000.0);
         }
 
+		fflush (encoderOption->outputFileHandle);
+
         printf("Complete coding.\n");
 
 		Xin26xReadFrameDelete (
