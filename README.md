@@ -208,6 +208,7 @@ VVC
 - Screen content coding tools support.
 - SIMD optimization.
 - More VVC coding tools support.
+- Memory usage reduction.
 
 About Xin26x
 -----------------
