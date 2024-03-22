@@ -209,6 +209,7 @@ VVC
 - SIMD optimization.
 - More VVC coding tools support.
 - Memory usage reduction.
+- Affine motion estimation.
 
 About Xin26x
 -----------------
