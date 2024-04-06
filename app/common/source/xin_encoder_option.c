@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <string.h>
-#include "getopt.h"
+#include <getopt.h>
 #include "xin_typedef.h"
 #include "xin_encoder_option.h"
 #include "xin_config_file.h"

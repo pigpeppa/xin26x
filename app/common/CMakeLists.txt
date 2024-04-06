@@ -2,8 +2,10 @@
 # Add include directories here
 #
 include_directories (
-    "${PROJECT_SOURCE_DIR}/video_api/video_common/include"
+if(WIN32)
     "${PROJECT_SOURCE_DIR}/third_party/getopt"
+endif()
+    "${PROJECT_SOURCE_DIR}/video_api/video_common/include"
     "${PROJECT_SOURCE_DIR}/video_api/h265_encoder/include"
     "${PROJECT_SOURCE_DIR}/app/common/include")
 

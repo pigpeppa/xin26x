@@ -240,11 +240,6 @@ int main(int argc, char **argv)
 
                 totalBitSize += outputBuffer.bytesGenerate*8;
 
-                if (config->statLevel >= XIN26X_STAT_PIC)
-                {
-                    printf ("frame %d, encoded %d bytes.\n", inputFrameIdx, outputBuffer.bytesGenerate);
-                }
-
                 if ((encoderOption->reconFileHandle) && (outputBuffer.bytesGenerate > 0) && (passIdx == config->twoPassEncoder))
                 {
                     Xin26xGetReconFrame (
@@ -263,6 +258,11 @@ int main(int argc, char **argv)
                 if ((outputBuffer.bytesGenerate > 0) && (passIdx == config->twoPassEncoder))
                 {
                     encodedFrame++;
+
+                    if (config->statLevel >= XIN26X_STAT_PIC)
+                    {
+                        printf ("frame %d, encoded %d bytes.\n", encodedFrame, outputBuffer.bytesGenerate);
+                    }
 
                     fwrite (
                         outputBuffer.bitsBuf,
@@ -286,11 +286,6 @@ int main(int argc, char **argv)
 
                     totalBitSize += (outputBuffer.bytesGenerate > 0) ? outputBuffer.bytesGenerate*8 : 0;
 
-                    if (config->statLevel >= XIN26X_STAT_PIC)
-                    {
-                        printf ("frame %d, encoded %d bytes.\n", trailingFrame+config->frameToBeEncoded, outputBuffer.bytesGenerate);
-                    }
-
                     if ((encoderOption->reconFileHandle) && (outputBuffer.bytesGenerate > 0) && (passIdx == config->twoPassEncoder))
                     {
                         Xin26xGetReconFrame (
@@ -310,6 +305,11 @@ int main(int argc, char **argv)
                     if ((outputBuffer.bytesGenerate > 0) && (passIdx == config->twoPassEncoder))
                     {
                         encodedFrame++;
+
+                        if (config->statLevel >= XIN26X_STAT_PIC)
+                        {
+                            printf ("frame %d, encoded %d bytes.\n", encodedFrame, outputBuffer.bytesGenerate);
+                        }
 
                         fwrite (
                             outputBuffer.bitsBuf,

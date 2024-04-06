@@ -20,7 +20,7 @@ void Xin26xLogEntry (
     char*    pMsg,
     ...);
 
-void (*pfXin26xLogEntry) (
+extern void (*pfXin26xLogEntry) (
     UINT32   level,
     char*    pMsg,
     ...);
