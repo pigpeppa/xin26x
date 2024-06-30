@@ -23,9 +23,9 @@ extern "C" {
 #define XIN26X_OPTION_GET_PSNR              5
 #define XIN26X_DYN_COMMAND_INVALID          (255)
 
-#define XIN26X_STAT_NONE                    0
-#define XIN26X_STAT_SEQ                     1
-#define XIN26X_STAT_PIC                     2
+#define XIN26X_LOG_NONE                    0
+#define XIN26X_LOG_SEQ                     1
+#define XIN26X_LOG_PIC                     2
 
 typedef struct xin_frame_desc
 {
@@ -56,6 +56,9 @@ typedef struct xin26x_params
 
     float       frameRate;
     UINT32      bitRate;
+    UINT32      crf;
+    UINT32      vbvBufSize;
+    UINT32      vbvMaxRate;
     UINT32      minQp;
     UINT32      maxQp;
     UINT32      rcMode;
@@ -67,13 +70,13 @@ typedef struct xin26x_params
 
     UINT32      bFrameNum;
     UINT32      refFrameNum;
-    UINT32      refreshType;
     UINT32      temporalLayerNum;
-	BOOL        twoPassEncoder;
+    BOOL        twoPassEncoder;
     UINT32      enableMctf;
     BOOL        enableSceneCut;
 
     UINT32      intraPeriod;
+    UINT32      refreshType;
 
     UINT32      screenContentMode;
     BOOL        zeroLatency;
@@ -120,6 +123,7 @@ typedef struct xin26x_params
 
     UINT32      enableSmp;
     UINT32      enableAmp;
+    SINT32      chromaQpOffset;
 
     // h266 settings
     UINT32      ctuSize;
@@ -154,10 +158,10 @@ typedef struct xin26x_params
     UINT32      lookAhead;
     double      unitTreeStrength;
 
-	BOOL        enableDeblock;
+    BOOL        enableDeblock;
     BOOL        needRecon;
     XinLogEntry pfXinLogEntry;
-    UINT32      statLevel;
+    UINT32      logLevel;
     UINT32      hiddenOption;
 
 } xin26x_params;

@@ -66,7 +66,7 @@ static const struct option encoder_long_options[] =
     { "rateControl",    required_argument, 0, 'r' },
     { "initqp",         required_argument, 0, 'q' },
     { "rdoq",           required_argument, 0, 'd' },
-    { "statLevel",      required_argument, 0, 'E' },
+    { "logLevel",       required_argument, 0, 'E' },
     { "psnr",           required_argument, 0, 'P' },
     { "help",                 no_argument, 0, 'H' },
     { "version",              no_argument, 0, 'V' },
@@ -78,6 +78,9 @@ static const struct option encoder_long_options[] =
     { "scenecut",       required_argument, 0, 133 },
     { "zerolatency",    required_argument, 0, 134 },
     { "amvr",           required_argument, 0, 135 },
+    { "vbvBufSize",     required_argument, 0, 136 },
+    { "vbvMaxRate",     required_argument, 0, 137 },
+    { "crf",            required_argument, 0, 138 },
     { "hidden",         required_argument, 0, 255 },
     { 0,                0,                 0, 0   }
 };
@@ -252,7 +255,7 @@ static void SetPreset (
         break;
 
     default:
-		encoderOption->xinConfig.refFrameNum      = 4;
+        encoderOption->xinConfig.refFrameNum      = 4;
         encoderOption->xinConfig.enableRdoq       = 1;
         encoderOption->xinConfig.motionSearchMode = 2;
         encoderOption->xinConfig.enableMctf       = 1;
@@ -574,9 +577,9 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     {
                         encoderOption->xinConfig.refreshType = atoi(configFile->value);
                     }
-                    else if (strcmp(configFile->key, "StatLevel") == 0)
+                    else if (strcmp(configFile->key, "logLevel") == 0)
                     {
-                        encoderOption->xinConfig.statLevel = atoi(configFile->value);
+                        encoderOption->xinConfig.logLevel = atoi(configFile->value);
                     }
 
                 }
@@ -928,7 +931,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             break;
 
         case 'E':
-            encoderOption->xinConfig.statLevel = atoi(optarg);
+            encoderOption->xinConfig.logLevel = atoi(optarg);
             break;
 
         case 128:
@@ -965,6 +968,18 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 135:
             encoderOption->xinConfig.enableAmvr = atoi(optarg);            
+            break;
+
+        case 136:
+            encoderOption->xinConfig.vbvBufSize = atoi(optarg);            
+            break;
+
+        case 137:
+            encoderOption->xinConfig.vbvMaxRate = atoi(optarg);            
+            break;
+
+        case 138:
+            encoderOption->xinConfig.crf = atoi(optarg);            
             break;
 
         case 255:

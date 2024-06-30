@@ -183,7 +183,7 @@ int main(int argc, char **argv)
     SINT32                passIdx;
 
     totalBitSize  = 0;
-	encoderOption = CreateEncoderOption(argc, argv);
+    encoderOption = CreateEncoderOption(argc, argv);
 
     if (encoderOption)
     {
@@ -259,9 +259,13 @@ int main(int argc, char **argv)
                 {
                     encodedFrame++;
 
-                    if (config->statLevel >= XIN26X_STAT_PIC)
+                    if (config->logLevel >= XIN26X_LOG_PIC)
                     {
                         printf ("frame %d, encoded %d bytes.\n", encodedFrame, outputBuffer.bytesGenerate);
+                    }
+                    else if (config->logLevel == XIN26X_LOG_SEQ)
+                    {
+                        printf ("%d/%d frames are encoded.\r", encodedFrame, config->frameToBeEncoded);
                     }
 
                     fwrite (
@@ -306,9 +310,13 @@ int main(int argc, char **argv)
                     {
                         encodedFrame++;
 
-                        if (config->statLevel >= XIN26X_STAT_PIC)
+                        if (config->logLevel >= XIN26X_LOG_PIC)
                         {
                             printf ("frame %d, encoded %d bytes.\n", encodedFrame, outputBuffer.bytesGenerate);
+                        }
+                        else if (config->logLevel == XIN26X_LOG_SEQ)
+                        {
+							printf ("%d/%d frames are encoded.\r", encodedFrame, config->frameToBeEncoded);
                         }
 
                         fwrite (
@@ -330,17 +338,17 @@ int main(int argc, char **argv)
         endTime     = Xin26xGetTime ();
         encoderTime = (double)(endTime - startTime) / 1000000;
 
-        if (config->statLevel >= XIN26X_STAT_SEQ)
+        if (config->logLevel >= XIN26X_LOG_SEQ)
         {
             printf ("%d frames encoded, coding speed fps:%3.4f bitrate: %4.2f kbps.\n", config->frameToBeEncoded, (double)(config->frameToBeEncoded) / encoderTime, ((double)totalBitSize)/((double)config->frameToBeEncoded/(double)config->frameRate)/1000.0);
         }
 
-		fflush (encoderOption->outputFileHandle);
+        fflush (encoderOption->outputFileHandle);
 
         printf("Complete coding.\n");
 
-		Xin26xReadFrameDelete (
-			fileReadHandle);
+        Xin26xReadFrameDelete (
+            fileReadHandle);
 
         Xin26xEncoderDelete (
             encoderHandle);
