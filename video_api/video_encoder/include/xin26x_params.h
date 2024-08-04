@@ -162,6 +162,7 @@ typedef struct xin26x_params
     BOOL        needRecon;
     XinLogEntry pfXinLogEntry;
     UINT32      logLevel;
+    UINT32      clientId;
     UINT32      hiddenOption;
 
 } xin26x_params;

@@ -81,6 +81,8 @@ static const struct option encoder_long_options[] =
     { "vbvBufSize",     required_argument, 0, 136 },
     { "vbvMaxRate",     required_argument, 0, 137 },
     { "crf",            required_argument, 0, 138 },
+    { "minQp",          required_argument, 0, 139 },
+    { "maxQp",          required_argument, 0, 140 },
     { "hidden",         required_argument, 0, 255 },
     { 0,                0,                 0, 0   }
 };
@@ -313,10 +315,10 @@ static void SetZeroLatencyMode (
     {
         xinConfig->bFrameNum      = 0;
         xinConfig->lookAhead      = 0;
-        xinConfig->enableMctf     = FALSE;
         xinConfig->enableSceneCut = FALSE;
+        xinConfig->enableMctf     = FALSE;
         xinConfig->unitTree       = FALSE;
-        xinConfig->rcMode         = 3;
+        xinConfig->rcMode         = xinConfig->rcMode > 3 ? 3 : xinConfig->rcMode;
     }
     
 }
@@ -980,6 +982,14 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 138:
             encoderOption->xinConfig.crf = atoi(optarg);            
+            break;
+
+        case 139:
+            encoderOption->xinConfig.minQp = atoi(optarg);            
+            break;
+
+        case 140:
+            encoderOption->xinConfig.maxQp = atoi(optarg);            
             break;
 
         case 255:
