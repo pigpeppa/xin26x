@@ -143,6 +143,7 @@ typedef struct xin26x_params
     BOOL        enableAffine;
     BOOL        enableDepQuant;
     BOOL        enableAmvr;
+    BOOL        enableBcw;
 
     // av1 settings
     UINT32      sbSize;

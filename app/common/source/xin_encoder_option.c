@@ -83,6 +83,7 @@ static const struct option encoder_long_options[] =
     { "crf",            required_argument, 0, 138 },
     { "minQp",          required_argument, 0, 139 },
     { "maxQp",          required_argument, 0, 140 },
+    { "bcw",            required_argument, 0, 141 },
     { "hidden",         required_argument, 0, 255 },
     { 0,                0,                 0, 0   }
 };
@@ -106,6 +107,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableDmvr       = 0;
         encoderOption->xinConfig.enableAlf        = 0;
         encoderOption->xinConfig.enableAmvr       = FALSE;
+        encoderOption->xinConfig.enableBcw        = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 0;
@@ -128,6 +130,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableDmvr       = 0;
         encoderOption->xinConfig.enableAlf        = 0;
         encoderOption->xinConfig.enableAmvr       = FALSE;
+        encoderOption->xinConfig.enableBcw        = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 0;
@@ -150,6 +153,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableDmvr       = 1;
         encoderOption->xinConfig.enableAlf        = 1;
         encoderOption->xinConfig.enableAmvr       = FALSE;
+        encoderOption->xinConfig.enableBcw        = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 0;
@@ -172,6 +176,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableDmvr       = 1;
         encoderOption->xinConfig.enableAlf        = 1;
         encoderOption->xinConfig.enableAmvr       = FALSE;
+        encoderOption->xinConfig.enableBcw        = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 0;
@@ -198,6 +203,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableMts        = TRUE;
         encoderOption->xinConfig.enableDepQuant   = TRUE;
         encoderOption->xinConfig.enableAmvr       = FALSE;
+        encoderOption->xinConfig.enableBcw        = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -224,6 +230,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableMts        = TRUE;
         encoderOption->xinConfig.enableDepQuant   = TRUE;
         encoderOption->xinConfig.enableAmvr       = FALSE;
+        encoderOption->xinConfig.enableBcw        = FALSE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -250,6 +257,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableMts        = TRUE;
         encoderOption->xinConfig.enableDepQuant   = TRUE;
         encoderOption->xinConfig.enableAmvr       = TRUE;
+        encoderOption->xinConfig.enableBcw        = TRUE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -276,6 +284,7 @@ static void SetPreset (
         encoderOption->xinConfig.enableMts        = TRUE;
         encoderOption->xinConfig.enableDepQuant   = TRUE;
         encoderOption->xinConfig.enableAmvr       = TRUE;
+        encoderOption->xinConfig.enableBcw        = TRUE;
 
         // HEVC
         encoderOption->xinConfig.enableSmp        = 1;
@@ -990,6 +999,10 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
 
         case 140:
             encoderOption->xinConfig.maxQp = atoi(optarg);            
+            break;
+
+        case 141:
+            encoderOption->xinConfig.enableBcw = atoi(optarg);            
             break;
 
         case 255:
