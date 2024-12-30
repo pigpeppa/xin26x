@@ -15,7 +15,7 @@ xin26x_test.exe -i input.yuv -w 1280 -h 720 -f 30 -a 2 -p 1 -r 0 -q 32 -o test.b
 
 Building Project
 ----------
-- Our Windows build use CMake and Visual Studio. The workable version is CMake3.5 or above and Visual Studio 2013.
+- Our Windows build use CMake and Visual Studio. The workable version is CMake3.5 or above and Visual Studio 2022.
 - Run make-solutions.bat under build folder, building projects will be generated under this folder. 
 - In addition, we put a pre-built win64 exe under folder testbin, you can run it on win64 without build.
 
