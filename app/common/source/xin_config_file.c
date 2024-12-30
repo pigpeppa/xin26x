@@ -21,8 +21,8 @@ config_file_struct* CreateConfigFile(const char* configFileName)
         printf("Config file name is null\n");
         return configFile;
     }
-    
-     
+
+
     configFile = (config_file_struct*)malloc(sizeof(config_file_struct));
     if (configFile)
     {
@@ -59,19 +59,19 @@ bool ReadOneLine(const config_file_struct* configFile)
     bool ret = false;
     bool commentFlag = false;
     int strLen = 0;
-	char* str;
+    char* str;
 
     if (configFile == 0)
     {
         return ret;
     }
-    
+
     memset((void*)configFile->key, 0, MAX_OPTION_LEN);
     memset((void*)configFile->value, 0, MAX_OPTION_LEN);
 
     str = configFile->key;
 
-	for (;;)
+    for (;;)
     {
         const char c = (char)fgetc(configFile->fileHandle);
         if (c == '\n' || feof(configFile->fileHandle))
@@ -115,7 +115,7 @@ bool ReadOneLine(const config_file_struct* configFile)
     {
         ret = true;
     }
-    
+
     return ret;
 }
 
