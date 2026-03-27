@@ -138,7 +138,7 @@ Basicly, Xin26x is purely a result of coding happiness pursuit. It is named afte
 
 Technical Articles
 -----------------
-[VVC Deployment Challenges](docs/vvc-deployment-challenges.md)
+- [VVC Deployment Challenges](docs/vvc-deployment-challenges.md)
 
 Any question, please contact pig.peppa@qq.com
 
