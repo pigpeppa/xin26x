@@ -19,68 +19,6 @@ Building Project
 - Run make-solutions.bat under build folder, building projects will be generated under this folder. 
 - In addition, we put a pre-built win64 exe under folder testbin, you can run it on win64 without build.
 
-Basic Parameters
-----------
--i/--input <filename>    
-which specifies input YUV file name. Currently we accept YUV 420 video format.
-
--a/--algmode <integer>    
-which specifies algorithm mode. 0: H265 1: AV1 2: H266
-
--w/--width <integer>    
-which specifies input YUV luma width.
-
--h/--height <integer>    
-which specifies input YUV luma height.
-
--f/--framerate <float>    
-which specifies the frame rate of the input video.
-
--t/--temporallayer <integer>    
-which specifies temporal layer number. It works under all P frame sequence.
-
--p/--preset <integer>    
-which specifies the encoding preset, trading off compression efficiency against encoding speed. [0, 6] Big number means high quality but low encoder speed.
-
--o/--output <filename>    
-which specifies output bitstream file name. For HEVC and VVC, the output file accord with Annex B specification. For AV1, the output file accord with OBU format.
-
--R/--recon <filename>    
-which specifies reconstruction YUV file name. It is not a must input parameter.
-
--r/--ratecontrol <integer>    
-which specifies rate control mode. 0: rate control is off (fixed qp), 1: rate control is on.
-
--b/--bitrate <integer>    
-which specifies target bitrate. It works under rate control is on.
-
--q/--qp <integer>    
-which specifies quantization paramter. It works under rate control is off.
-
--n/--framenumber <integer>    
-which specifies how many frames to be encoded.
-
--B/--bframes <integer>    
-which specifies how many B frames in a gop. Currently, we support 1, 3 and 7.
-
--W/--wpp <integer>    
-which specifies whether wavefront parallel processing is enabled. 0: disable 1: enable.
-
--F/--fpp <integer>    
-which specifies whether frame parallel processing is enabled. 0: disable 1: enable.
-
--T/--thread <integer>    
-which specifies thread number in thread pool. It is decided by local system if this number is 0.
-
---refframes <integer>    
-which specifies how many frames is used for reference.
-
---signbithide <integer>    
-which specifies whether sign bit hidden coding tool is used in encoder. 0: off 1: on.
-
--d/--rdoq <integer>    
-which specifies whether rate distortion optimization quantization is enabled. 0: disable 1: enable.
-
 Api Usage
 -----------------
 Please refer to xin_app_enc.c.
@@ -179,38 +117,6 @@ Known Issues
 - Under evaluation mode, only ABR is supported.
 - For VVC, please use vtm 10 to decode the bitstream. You can download vtm 10 from https://vcgit.hhi.fraunhofer.de/jvet/VVCSoftware_VTM/-/releases/VTM-10.0 
 
-Todo Lists
------------------
-
-Xin26x
------------------
-- 2 pass coding tool support.
-- 16 and 32 picture gop size support.
-- Preprocessing algorithm refactor.
-- Rate contronl algorithm refine.
-- Encoder structre refactor for offline coding consideration.
-- 10 bit encoder support.
-- Fast algorithm optimization.
-
-HEVC
------------------
-- Minor structure adjustment.
-- Local algorithm refinement.
-
-AV1
------------------
-- P and B frame support.
-- General video coding tools support.
-- SIMD optimization.
-
-VVC
------------------
-- Screen content coding tools support.
-- SIMD optimization.
-- More VVC coding tools support.
-- Memory usage reduction.
-- Affine motion estimation.
-
 About Xin26x
 -----------------
 The main purpose of Xin26x is unification. Xin26x is designed to unify different video standards and different implementations for same video standard.
@@ -229,6 +135,10 @@ Different encoding tools are adopted for different encoder implementions. For ex
 I wish video coding standardization would take a revolution, break though current hybrid scheme, stop piling up computation for better compression rate in the future, then Xin26x reaches its end-of-life. Otherwise, Xin26x will keep catching up with the latest video coding standard, till I reach my end-of-life.
 
 Basicly, Xin26x is purely a result of coding happiness pursuit. It is named after my 8 year old beautiful child. I would like her know how great her father is. After she grows up, I wish she would know how father loved her.
+
+Technical Articles
+-----------------
+[VVC Deployment Challenges](docs/vvc-deployment-challenges.md)
 
 Any question, please contact pig.peppa@qq.com
 
