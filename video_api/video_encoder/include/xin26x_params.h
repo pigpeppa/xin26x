@@ -73,6 +73,7 @@ typedef struct xin26x_params
     UINT32      temporalLayerNum;
     BOOL        twoPassEncoder;
     UINT32      enableMctf;
+    BOOL        enableBim;
     BOOL        enableSceneCut;
 
     UINT32      intraPeriod;
