@@ -140,5 +140,12 @@ Technical Articles
 -----------------
 - [VVC Deployment Challenges](docs/vvc-deployment-challenges.md)
 
-Any question, please contact pig.peppa@qq.com
+Current Focus & Opportunities
+-----------------
+Currently, I am open to both full-time and part-time opportunities. In the meantime, I am dedicating my time to the Xin26x project, focusing on further development and optimization. I am always happy to connect with teams working on interesting technical challenges.
+
+Linkin:
+
+https://www.linkedin.com/in/chao-zhou-2ab52b30a/
+
 
