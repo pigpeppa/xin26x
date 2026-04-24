@@ -13,6 +13,40 @@ Xin26x Structure
 ----------
 ![Xin26x Structure](docs/code_structure.png)
 
+Xin26x is organized into the following core modules:
+- h26x_core:
+Provides common foundational components, including:
+pixel-level operations,
+MCTF low-level implementation,
+uinttree data structure,
+thread pool,
+and shared modules for HEVC and VVC (e.g., transform, inverse transform, SAO)
+- h265_core:
+Shared components for the HEVC encoder and decoder
+- h266_core:
+Shared components for the VVC encoder and decoder
+- AV1_core (h265p_core):
+Shared components for the AV1 encoder and decoder
+- h265_enc:
+HEVC encoder implementation
+- h266_enc:
+VVC encoder implementation
+- AV1_enc (h265p_enc):
+AV1 encoder implementation
+- h26x-api:
+Public API interface layer for xin26x
+
+The project is modular and can be configured based on your needs:
+
+- If you only need HEVC encoding, link the following modules: h26x_core, h265_core, h265_enc, h26x-api.
+To add VVC support on top of HEVC, simply include: h266_core, h266_enc.
+
+- All modules can be selectively enabled or disabled during the CMake build configuration, without modifying the codebase.
+
+Additional Notes
+- The dashed components in the architecture diagram indicate reserved structures that are not yet implemented.
+- AV1 is internally referred to as: h265p (H.265 Plus).
+
 Encoder Usage
 ----------
 xin26x_test.exe -i input.yuv -w 1280 -h 720 -f 30 -a 2 -p 1 -r 1 -b 2000000 -o test.bin   
