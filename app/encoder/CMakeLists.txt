@@ -6,11 +6,7 @@ endif()
     "${PROJECT_SOURCE_DIR}/video_api/video_encoder/include"
     "${PROJECT_SOURCE_DIR}/app/common/include"
     "${PROJECT_SOURCE_DIR}/app/encoder/include")
-
-link_directories(
-    "${PROJECT_SOURCE_DIR}/lib")
     
-
 FILE(GLOB cmake_includes *.h)
 FILE(GLOB cmake_sources  source/*.c)
 
@@ -37,7 +33,7 @@ if(XCODE)
 else(XCODE)
 
     add_executable(xin26x_test ${cmake_sources})
-    target_link_libraries(xin26x_test ${XIN26X_LIB})
+    target_link_libraries(xin26x_test PRIVATE ${XIN26X_LIBS})
     
 endif()
 

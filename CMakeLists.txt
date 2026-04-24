@@ -1,7 +1,7 @@
 #=================================================================================
 # The required version of cmake
 #=================================================================================
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 
 
 #=================================================================================
@@ -21,6 +21,10 @@ set(XIN26X_VERSION_MINOR 0)
 OPTION(64BIT               "ON for 64 bit executable, OFF for 32 bit executable"           ON)
 OPTION(BUILD_SHARED_LIBS   "ON builds dynamic libraries, OFF builds static libraries"     OFF)
 OPTION(ARM_PLATFORM        "ON build for ARM platform"                                    OFF)
+
+set(AV1 1)
+set(H265 1)
+set(H266 1)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/testbin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/testbin)
@@ -92,14 +96,68 @@ endif()
 #=================================================================================
 # H26X Library Name
 #=================================================================================
-if (64BIT)
-    set (XIN26X_LIB "xin26x")
-else()
-    set (XIN26X_LIB "xin26x")
+set (H265ENC_LIB  "h265_enc")
+set (H265CORE_LIB "h265_core")
+set (H266CORE_LIB "h266_core")
+set (H266ENC_LIB  "h266_enc")
+set (AV1CORE_LIB  "h265p_core")
+set (AV1ENC_LIB   "h265p_enc")
+set (H26XCORE_LIB "h26x_core")
+set (H26XAPI_LIB  "h26x_api")
+set (XIN26X_LIB   "xin26x")
+
+add_library(${H26XCORE_LIB} STATIC IMPORTED)
+set_target_properties(${H26XCORE_LIB} PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h26x_core/${H26XCORE_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+add_library(${H265CORE_LIB} STATIC IMPORTED)
+set_target_properties(${H265CORE_LIB} PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265_core/${H265CORE_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+add_library(${AV1CORE_LIB} STATIC IMPORTED)
+set_target_properties(${AV1CORE_LIB} PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265p_core/${AV1CORE_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+	
+add_library(${H266CORE_LIB} STATIC IMPORTED)
+set_target_properties(${H266CORE_LIB} PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h266_core/${H266CORE_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+add_library(${H265ENC_LIB} STATIC IMPORTED)
+set_target_properties(${H265ENC_LIB} PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265_encoder/${H265ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+add_library(${AV1ENC_LIB} STATIC IMPORTED)
+set_target_properties(${AV1ENC_LIB} PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265p_encoder/${AV1ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+	
+add_library(${H266ENC_LIB} STATIC IMPORTED)
+set_target_properties(${H266ENC_LIB} PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h266_encoder/${H266ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+	
+add_library(${H26XAPI_LIB} STATIC IMPORTED)
+set_target_properties(${H26XAPI_LIB} PROPERTIES
+	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h26x_api/${H26XAPI_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+set(XIN26X_LIBS)
+
+list(APPEND XIN26X_LIBS ${H26XCORE_LIB})
+
+if(H265)
+    list(APPEND XIN26X_LIBS ${H265CORE_LIB})
+    list(APPEND XIN26X_LIBS ${H265ENC_LIB})
 endif()
 
-set(CMAKE_LINK_DEF_FILE "${PROJECT_SOURCE_DIR}/video_api/h26x_encoder/xin26x_encoder.def")
+if(AV1)
+    list(APPEND XIN26X_LIBS ${AV1CORE_LIB})
+    list(APPEND XIN26X_LIBS ${AV1ENC_LIB})
+endif()
 
+if(H266)
+    list(APPEND XIN26X_LIBS ${H266CORE_LIB})
+    list(APPEND XIN26X_LIBS ${H266ENC_LIB})
+endif()
+
+list(APPEND XIN26X_LIBS ${H26XAPI_LIB})
 
 #=================================================================================
 # Build Type
