@@ -8,6 +8,11 @@ xin26x
 - It is written from scratch and has a plain C API to enable a simple integration into other software.
 - It is very small footprint encoder, it takes very small memory requirement under restricted mode.
 
+
+Xin26x Structure 
+----------
+![Xin26x Structure](docs/code_structure.png)
+
 Encoder Usage
 ----------
 xin26x_test.exe -i input.yuv -w 1280 -h 720 -f 30 -a 2 -p 1 -r 1 -b 2000000 -o test.bin   
