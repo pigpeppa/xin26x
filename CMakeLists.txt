@@ -21,15 +21,25 @@ set(XIN26X_VERSION_MINOR 0)
 OPTION(64BIT               "ON for 64 bit executable, OFF for 32 bit executable"           ON)
 OPTION(BUILD_SHARED_LIBS   "ON builds dynamic libraries, OFF builds static libraries"     OFF)
 OPTION(ARM_PLATFORM        "ON build for ARM platform"                                    OFF)
-
-set(AV1 1)
-set(H265 1)
-set(H266 1)
+OPTION(AV1                 "ON for enable AV1 encoder"                                    OFF)
+OPTION(H265                "ON for enable H265 encoder"                                    ON)
+OPTION(H266                "ON for enable H266 encoder"                                   OFF)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/testbin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/testbin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBUGINFO ${CMAKE_SOURCE_DIR}/testbin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_SOURCE_DIR}/testbin)
+if(H265)
+    add_definitions(-DENABLE_H265_ENCODER)
+endif()
+
+if(AV1)
+    add_definitions(-DENABLE_AV1_ENCODER)
+endif()
+
+if(H266)
+    add_definitions(-DENABLE_H266_ENCODER)
+endif()
 
 if(ARM_PLATFORM)
   set( MY_CPU "arm" )
@@ -134,9 +144,7 @@ add_library(${H266ENC_LIB} STATIC IMPORTED)
 set_target_properties(${H266ENC_LIB} PROPERTIES
 	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h266_encoder/${H266ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
 	
-add_library(${H26XAPI_LIB} STATIC IMPORTED)
-set_target_properties(${H26XAPI_LIB} PROPERTIES
-	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h26x_api/${H26XAPI_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
+add_subdirectory (h26x_api)
 
 set(XIN26X_LIBS)
 
