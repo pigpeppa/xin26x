@@ -18,6 +18,7 @@ set(XIN26X_VERSION_MINOR 0)
 #=================================================================================
 # Options 
 #=================================================================================
+OPTION(USE_INTRINSICS      "ON for intrinsics"                                             ON)
 OPTION(64BIT               "ON for 64 bit executable, OFF for 32 bit executable"           ON)
 OPTION(BUILD_SHARED_LIBS   "ON builds dynamic libraries, OFF builds static libraries"     OFF)
 OPTION(ARM_PLATFORM        "ON build for ARM platform"                                    OFF)
@@ -123,10 +124,6 @@ set_target_properties(${H26XCORE_LIB} PROPERTIES
 add_library(${H265CORE_LIB} STATIC IMPORTED)
 set_target_properties(${H265CORE_LIB} PROPERTIES
 	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265_core/${H265CORE_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
-
-add_library(${AV1CORE_LIB} STATIC IMPORTED)
-set_target_properties(${AV1CORE_LIB} PROPERTIES
-	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265p_core/${AV1CORE_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
 	
 add_library(${H266CORE_LIB} STATIC IMPORTED)
 set_target_properties(${H266CORE_LIB} PROPERTIES
@@ -135,15 +132,13 @@ set_target_properties(${H266CORE_LIB} PROPERTIES
 add_library(${H265ENC_LIB} STATIC IMPORTED)
 set_target_properties(${H265ENC_LIB} PROPERTIES
 	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265_encoder/${H265ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
-
-add_library(${AV1ENC_LIB} STATIC IMPORTED)
-set_target_properties(${AV1ENC_LIB} PROPERTIES
-	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265p_encoder/${AV1ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
 	
 add_library(${H266ENC_LIB} STATIC IMPORTED)
 set_target_properties(${H266ENC_LIB} PROPERTIES
 	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h266_encoder/${H266ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
 	
+add_subdirectory (h265p_core)
+add_subdirectory (h265p_encoder)
 add_subdirectory (h26x_api)
 
 set(XIN26X_LIBS)
