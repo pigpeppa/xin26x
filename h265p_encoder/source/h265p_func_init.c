@@ -1,11 +1,22 @@
 /***************************************************************************//**
-*
-* @file          h265p_func_init.c
-* @brief         Subroutines assign function pointer according to cpu feature.
-* @authors       Chao Zhou
-* @copyright     (c) 2020, Chao Zhou <czhou2@qq.com>  All rights reserved
-*
-*******************************************************************************/
+ *
+ * @file          h265p_func_init.c
+ * @brief         Assign function pointers according to CPU features.
+ *
+ * @authors       Chao Zhou
+ *
+ * Xin26x Video Codec Library
+ *
+ * Copyright (C) 2020-2026 Chao Zhou <czhou2@qq.com>
+ *
+ * This file is part of Xin26x.
+ *
+ * Licensed under the GNU General Public License, Version 3 or later
+ * (GPL-3.0-or-later). See the LICENSE file for details.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ *******************************************************************************/
 #include "xin_typedef.h"
 #include "h265p_constant.h"
 #include "xin_video_common.h"

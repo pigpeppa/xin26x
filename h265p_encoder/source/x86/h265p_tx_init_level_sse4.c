@@ -1,11 +1,22 @@
 /***************************************************************************//**
-*
-* @file          h265p_tx_init_level_sse4.c
-* @brief         Av1 transform level initialization.
-* @authors       Chao Zhou
-* @copyright     (c) 2020, Chao Zhou <czhou2@qq.com>  All rights reserved
-*
-*******************************************************************************/
+ *
+ * @file          h265p_tx_init_level_sse4.c
+ * @brief         av1 transform level initialization (SSE4).
+ *
+ * @authors       Chao Zhou
+ *
+ * Xin26x Video Codec Library
+ *
+ * Copyright (C) 2020-2026 Chao Zhou <czhou2@qq.com>
+ *
+ * This file is part of Xin26x.
+ *
+ * Licensed under the GNU General Public License, Version 3 or later
+ * (GPL-3.0-or-later). See the LICENSE file for details.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ *******************************************************************************/
 #include "assert.h"
 #include "smmintrin.h"
 #include "xin_typedef.h"
