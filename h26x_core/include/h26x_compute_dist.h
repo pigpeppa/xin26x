@@ -1,11 +1,22 @@
 /***************************************************************************//**
-*
-* @file          h26x_compute_dist.c
-* @brief         Sad or satd subroutines declare.
-* @authors       Chao Zhou
-* @copyright     (c) 2020, Chao Zhou <czhou2@qq.com>  All rights reserved
-*
-*******************************************************************************/
+ *
+ * @file          h26x_compute_dist.h
+ * @brief         SAD or SATD subroutines declaration.
+ *
+ * @authors       Chao Zhou
+ *
+ * Xin26x Video Codec Library
+ *
+ * Copyright (C) 2020-2026 Chao Zhou <czhou2@qq.com>
+ *
+ * This file is part of Xin26x.
+ *
+ * Licensed under the GNU General Public License, Version 3 or later
+ * (GPL-3.0-or-later). See the LICENSE file for details.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ *******************************************************************************/
 #ifndef _h26x_compute_dist_h_
 #define _h26x_compute_dist_h_
 
@@ -857,25 +868,7 @@ void Xin26xComputeSatdFast (
     UINT32   height,
     UINT32   *satd);
 
-void Xin26xComputeSatd_SSSE3 (
-    PIXEL    *input,
-    intptr_t inputStride,
-    PIXEL    *pred,
-    intptr_t predStride,
-    UINT32   width,
-    UINT32   height,
-    UINT32   *satd);
-
 void Xin26xComputeSatd_AVX2 (
-    PIXEL    *input,
-    intptr_t inputStride,
-    PIXEL    *pred,
-    intptr_t predStride,
-    UINT32   width,
-    UINT32   height,
-    UINT32   *satd);
-
-void Xin26xComputeSatdFast_AVX2 (
     PIXEL    *input,
     intptr_t inputStride,
     PIXEL    *pred,
@@ -923,6 +916,15 @@ void Xin26xComputeSatdGt4x4_SSSE3 (
     UINT32   height,
     UINT32   *satd);
 
+void Xin26xComputeSatdGt4x4_AVX2 (
+    PIXEL    *input,
+    intptr_t inputStride,
+    PIXEL    *pred,
+    intptr_t predStride,
+    UINT32   width,
+    UINT32   height,
+    UINT32   *satd);
+
 void Xin26xComputeSatdGt8x8_AVX2 (
     PIXEL    *input,
     intptr_t inputStride,
@@ -933,11 +935,6 @@ void Xin26xComputeSatdGt8x8_AVX2 (
     UINT32   *satd);
 
 void Xin26xComputeHada8x8 (
-    PIXEL    *input,
-    intptr_t inputStride,
-    UINT32   *satd);
-
-void Xin26xComputeHada8x8_SSSE3 (
     PIXEL    *input,
     intptr_t inputStride,
     UINT32   *satd);

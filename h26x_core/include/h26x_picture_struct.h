@@ -1,11 +1,22 @@
 /***************************************************************************//**
-*
-* @file          h26x_picture_struct.h
-* @brief         This file contins input picture description.
-* @authors       Chao Zhou
-* @copyright     (c) 2020, Chao Zhou <czhou2@qq.com>  All rights reserved
-*
-*******************************************************************************/
+ *
+ * @file          h26x_picture_struct.h
+ * @brief         This file contains input picture description.
+ *
+ * @authors       Chao Zhou
+ *
+ * Xin26x Video Codec Library
+ *
+ * Copyright (C) 2020-2026 Chao Zhou <czhou2@qq.com>
+ *
+ * This file is part of Xin26x.
+ *
+ * Licensed under the GNU General Public License, Version 3 or later
+ * (GPL-3.0-or-later). See the LICENSE file for details.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ *******************************************************************************/
 #ifndef _h26x_picture_struct_h_
 #define _h26x_picture_struct_h_
 
@@ -81,7 +92,7 @@ typedef struct xin_input_picture
 
     UINT32          encodeIdx;
     UINT32          predGopIdx;
-    UINT32          depthIdx;
+    UINT32          temporalId;
     SINT32          predGopSize;
     SINT32          inputNumber;
     UINT32          frameType;
