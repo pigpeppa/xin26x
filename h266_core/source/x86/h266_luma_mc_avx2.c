@@ -1321,11 +1321,11 @@ void  Xin266InterpWeightGt8xHS16U8_AVX2 (
             dstB0x8 = _mm256_add_epi32 (dstB0x8, offsetx8);
             dstB1x8 = _mm256_add_epi32 (dstB1x8, offsetx8);
 
-            dstT0x8 = _mm256_srli_epi32 (dstT0x8, shift);
-            dstT1x8 = _mm256_srli_epi32 (dstT1x8, shift);
+            dstT0x8 = _mm256_srai_epi32 (dstT0x8, shift);
+            dstT1x8 = _mm256_srai_epi32 (dstT1x8, shift);
 
-            dstB0x8 = _mm256_srli_epi32 (dstB0x8, shift);
-            dstB1x8 = _mm256_srli_epi32 (dstB1x8, shift);
+            dstB0x8 = _mm256_srai_epi32 (dstB0x8, shift);
+            dstB1x8 = _mm256_srai_epi32 (dstB1x8, shift);
 
             dstTx16 = _mm256_packs_epi32 (dstT0x8, dstT1x8);
             dstBx16 = _mm256_packs_epi32 (dstB0x8, dstB1x8);

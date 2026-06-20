@@ -3371,11 +3371,11 @@ void  Xin266InterpWeightGt4xHS16U8_SSSE3 (
             dstB0x4 = _mm_add_epi32 (dstB0x4, offsetx4);
             dstB1x4 = _mm_add_epi32 (dstB1x4, offsetx4);
 
-            dstT0x4 = _mm_srli_epi32 (dstT0x4, shift);
-            dstT1x4 = _mm_srli_epi32 (dstT1x4, shift);
+            dstT0x4 = _mm_srai_epi32 (dstT0x4, shift);
+            dstT1x4 = _mm_srai_epi32 (dstT1x4, shift);
 
-            dstB0x4 = _mm_srli_epi32 (dstB0x4, shift);
-            dstB1x4 = _mm_srli_epi32 (dstB1x4, shift);
+            dstB0x4 = _mm_srai_epi32 (dstB0x4, shift);
+            dstB1x4 = _mm_srai_epi32 (dstB1x4, shift);
 
             dstTx8 = _mm_packs_epi32 (dstT0x4, dstT1x4);
             dstBx8 = _mm_packs_epi32 (dstB0x4, dstB1x4);
