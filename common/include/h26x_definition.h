@@ -1,11 +1,22 @@
 /***************************************************************************//**
-*
-* @file          h26x_definition.h
-* @brief         This file contains definitions for all video coding mode.
-* @authors       Chao Zhou
-* @copyright     (c) 2020, Chao Zhou <czhou2@qq.com>  All rights reserved
-*
-*******************************************************************************/
+ *
+ * @file          h26x_definition.h
+ * @brief         This file contains definitions for all video coding modes.
+ *
+ * @authors       Chao Zhou
+ *
+ * Xin26x Video Codec Library
+ *
+ * Copyright (C) 2020-2026 Chao Zhou <czhou2@qq.com>
+ *
+ * This file is part of Xin26x.
+ *
+ * Licensed under the GNU General Public License, Version 3 or later
+ * (GPL-3.0-or-later). See the LICENSE file for details.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ *******************************************************************************/
 #ifndef _h26x_definition_h_
 #define _h26x_definition_h_
 
@@ -55,6 +66,11 @@
 
 #define XIN_MIN_REF_FRAMES       1
 #define XIN_MAX_REF_FRAMES       6
+#define XIN_MAX_RPS_NUM          64
+#define XIN_MAX_PRED_HIER_NUM    5
+#define XIN_MIN_GOP_SIZE         1
+#define XIN_MAX_GOP_SIZE         16
+#define XIN_GOP_HIER_NUM         5
 
 #define XIN_LIST_0               0
 #define XIN_LIST_1               1
