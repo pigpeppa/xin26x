@@ -6,6 +6,7 @@
 * @copyright     (c) 2020, shennung <shennung@hotmail.com>  All rights reserved
 *
 *******************************************************************************/
+#include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
 #include <string.h>
@@ -379,11 +380,7 @@ static bool parseConfigFile(encoder_option_struct* encoderOption, const char *co
                     }
                     else if (strcmp(configFile->key, "InputImageFile") == 0)
                     {
-                        int fileNameLen
-                            = (MAX_FILE_NAME_LEN < ((int)strlen(configFile->value) + 1))?
-                              MAX_FILE_NAME_LEN : ((int)strlen(configFile->value) + 1);
-                        memcpy(encoderOption->inputFileName, configFile->value,
-                               fileNameLen);
+                        snprintf(encoderOption->inputFileName, MAX_FILE_NAME_LEN, "%s", configFile->value);
                     }
                     else if (strcmp(configFile->key, "OutputStreamFile") == 0)
                     {
@@ -734,8 +731,7 @@ encoder_option_struct* CreateEncoderOption(int argc, char**argv)
             fileNameLen
                 = (MAX_FILE_NAME_LEN < ((int)strlen(optarg) + 1)) ?
                   MAX_FILE_NAME_LEN : ((int)strlen(optarg) + 1);
-            memcpy(encoderOption->inputFileName, optarg,
-                   fileNameLen);
+            snprintf(encoderOption->inputFileName, MAX_FILE_NAME_LEN, "%s", optarg);
             break;
 
         case 'o':
