@@ -183,10 +183,10 @@ Current Focus & Opportunities
 -----------------
 Currently, I am open to both full-time and part-time opportunities. In the meantime, I am dedicating my time to the Xin26x project, focusing on further development and optimization. I am always happy to connect with teams working on interesting technical challenges.
 
-If you have any encoder-related feature requests or requirements, feel free to email czhou2@qq.com. Features that align with the Xin26x development roadmap will be prioritized.
+If you have any encoder-related feature requests or requirements, feel free to email me. Features that align with the Xin26x development roadmap will be prioritized.
 
-Linkedin:
+**Email:** [czhou2@qq.com](mailto:czhou2@qq.com)
 
-https://www.linkedin.com/in/chao-zhou-2ab52b30a/
+**Linkedin:** https://www.linkedin.com/in/chao-zhou-2ab52b30a/
 
 
