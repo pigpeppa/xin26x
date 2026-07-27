@@ -45,7 +45,7 @@
 #include "h266_write_header.h"
 #include "h266_get_neighbour_mv.h"
 #include "h266_intra_prediction.h"
-#include "h26x_rate_control_struct.h"
+#include "h26x_rate_control_context.h"
 #include "h26x_thread_wrapper.h"
 #include "h26x_common_data.h"
 #include "h266_common_data.h"

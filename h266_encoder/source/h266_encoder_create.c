@@ -47,7 +47,7 @@
 #include "h266_enc_init.h"
 #include "h266_cabac_context.h"
 #include "h266_encoder_create.h"
-#include "h26x_rate_control_struct.h"
+#include "h26x_rate_control_context.h"
 #include "h266_rate_control.h"
 #include "h26x_look_ahead_struct.h"
 #include "h266_alf_struct.h"

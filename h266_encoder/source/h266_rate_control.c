@@ -39,7 +39,7 @@
 #include "h266_section_struct.h"
 #include "h266_rate_control.h"
 #include "h26x_thread_wrapper.h"
-#include "h26x_rate_control_struct.h"
+#include "h26x_rate_control_context.h"
 #include "h26x_calc_log.h"
 #include "h26x_rate_control.h"
 
@@ -193,14 +193,11 @@ void Xin266RcCtu (
     xin_rc_context  *rcContext;
     xin_ref_picture *pictureWrite;
     xin_rc_struct   *rcSet;
-    xin_rc_abr_pic  *pictureRc;
-    xin_rc_abr_ctu  *ctuRc;
 
     picSet       = secSet->picSet;
     seqSet       = secSet->seqSet;
     rcContext    = &picSet->rcContext;
     rcSet        = rcContext->rcSet;
-    pictureRc    = (xin_rc_abr_pic *)rcContext->pictureRc;
     pictureWrite = picSet->pictureWrite;
     secSet->qp   = rcSet->pfXinRcCtu (rcContext, ctu->ctuAddr);
 
@@ -208,12 +205,6 @@ void Xin266RcCtu (
     {
         secSet->qp += (SINT32)pictureWrite->qpOffset[ctu->ctuAddr];
         secSet->qp  = XIN_CLIP (secSet->qp, XIN_MIN_QP, XIN_MAX_QP);
-    }
-
-    if (seqSet->config.rateControlMode == XIN_RC_ABR)
-    {
-        ctuRc     = pictureRc->rcCtu + ctu->ctuAddr;
-        ctuRc->qp = secSet->qp;
     }
     
 }
@@ -223,23 +214,12 @@ void Xin266RcUpdateCtu (
     xin_ctu_struct *ctu)
 {
     xin_rc_context *rcContext;
-    xin_rc_cbr_ctu *ctuCbr;
-    xin_rc_cbr_pic *pictureCbr;
     xin_pic_struct *picSet;
     xin_rc_struct  *rcSet;
 
     picSet    = secSet->picSet;
     rcContext = &picSet->rcContext;
     rcSet     = rcContext->rcSet;
-
-    if (rcSet->rateControlMode == XIN_RC_CBR)
-    {
-        pictureCbr = (xin_rc_cbr_pic *)rcContext->pictureRc;
-        ctuCbr     = pictureCbr->rcCtu + ctu->ctuAddr;
-
-        ctuCbr->qp      = secSet->qp;
-        ctuCbr->bitUsed = ctu->bitUsed;
-    }
 
     rcSet->pfXinRcUpdateCtu (
         rcContext,
