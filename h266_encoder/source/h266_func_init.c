@@ -678,7 +678,7 @@ void Xin266FuncInit (
     funcSet->pfXinComputeVar8x8    = Xin26xComputeVar8x8;
     funcSet->pfXinPictureCopy      = Xin26xBlockCopy;
     funcSet->pfXinPictureScaleCopy = Xin26xPictureScaleCopy;
-    funcSet->pfXinDownscale2x2     = Xin26xDownscale2x2Taps4;
+    funcSet->pfXinDownscale2x2     = Xin26xDownscale2x2;
     funcSet->pfXinLumaLoopFilter   = Xin266LumaLoopFilter;
     funcSet->pfXinComputeBlockSsd  = Xin26xComputeBlockSsd;
     funcSet->pfXinComputeFrameAct  = Xin26xComputeFrameAct;
