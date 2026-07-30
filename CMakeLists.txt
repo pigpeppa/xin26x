@@ -135,12 +135,9 @@ set_target_properties(${H265CORE_LIB} PROPERTIES
 add_library(${H265ENC_LIB} STATIC IMPORTED)
 set_target_properties(${H265ENC_LIB} PROPERTIES
 	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265_encoder/${H265ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
-	
-add_library(${H266ENC_LIB} STATIC IMPORTED)
-set_target_properties(${H266ENC_LIB} PROPERTIES
-	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h266_encoder/${H266ENC_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
 
 add_subdirectory (h266_core)	
+add_subdirectory (h266_encoder)	
 add_subdirectory (h265p_core)
 add_subdirectory (h265p_encoder)
 add_subdirectory (h26x_api)
