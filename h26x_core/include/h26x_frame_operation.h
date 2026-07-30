@@ -1,7 +1,7 @@
 /***************************************************************************//**
  *
- * @file          h26x_calc_log.h
- * @brief         This file declares the log calculation subroutine.
+ * @file          h26x_frame_operation.h
+ * @brief         This file defines subroutines for push and pop frame from frame queue.
  *
  * @authors       Chao Zhou
  *
@@ -17,15 +17,18 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  *******************************************************************************/
-#ifndef _h26x_calc_log_h_
-#define _h26x_calc_log_h_
+#ifndef _h26x_frame_operation_h_
+#define _h26x_frame_operation_h_
 
-#define XIN_LOG_FRAC_BITS       8
-#define XIN_LOG_ROUNDING        (1 << (XIN_LOG_FRAC_BITS - 1))
-#define XIN_LOG_FRACTION        (1<<XIN_LOG_FRAC_BITS)
-#define XIN_LOG_INT2FLOAT(X)    ((X)/((double)XIN_LOG_FRACTION))
+void Xin26xFramePush (
+    void    **frameQueue,
+    UINT32  *frameQueueSize,
+    void    *frameToPush);
 
-UINT32 XinCalcLog (
-    UINT32 value);
+void Xin26xFramePop (
+    void    **frameQueue,
+    UINT32  *frameQueueSize,
+    void    **frameToPop);
 
 #endif
+
