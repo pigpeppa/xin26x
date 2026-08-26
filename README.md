@@ -96,22 +96,22 @@ x265 veryslow
 x265.exe -o test.bin --input-res 1920x1080 --fps 30 --frames frames --bitrate kbitrate --tune psnr -p veryslow input.yuv
 
 xin265 p1   
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 1 -a 0
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 5 -b bitrate -p 1 -a 0
 
 xin265 p4  
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 4 -a 0
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 5 -b bitrate -p 4 -a 0
 
 xin265 p6   
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 0
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 5 -b bitrate -p 6 -a 0
 
 xin266 p1    
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 1 -a 2
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 5 -b bitrate -p 1 -a 2
 
 xin266 p4    
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 4 -a 2
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 5 -b bitrate -p 4 -a 2
 
 xin266 p6    
-xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 6 -b bitrate -p 6 -a 2
+xin26x_test.exe -o test.bin -i input.yuv -w 1920 -h 1080 -f 30 -n frames -r 5 -b bitrate -p 6 -a 2
 
 In above table, we set x265(veryslow) as a reference, others are compared with x265(veryslow). x265 is 2020/12/25 version.
 
