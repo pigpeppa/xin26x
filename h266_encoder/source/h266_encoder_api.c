@@ -202,8 +202,8 @@ static void Xin266CopyInputFrame (
         inputPicture->inputHeight = inputBuf->lumaHeight;
 
     }
-
-    inputQueue[seqSet->inputIdx] = inputPicture;
+    
+    inputQueue[XIN_QUEUE_IDX(seqSet->inputIdx)] = inputPicture;
 
     seqSet->inputIdx++;
 
