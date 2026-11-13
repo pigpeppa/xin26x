@@ -86,6 +86,7 @@ SINT32 Xin266RcCreate (
     }
     else
     {
+#if ENABLE_RC_CBR
         rcSet->pfXinRcGop        = Xin26xRcCbrGop;
         rcSet->pfXinRcPic        = Xin26xRcCbrPic;
         rcSet->pfXinRcUpdatePic  = Xin26xRcCbrUpdatePic;
@@ -95,6 +96,7 @@ SINT32 Xin266RcCreate (
         rcSet->pfXinRcUpdateCtu  = Xin26xRcCbrUpdateCtu;
         rcSet->pfXinRcSkipDec    = Xin26xRcCbrSkipDec;
         rcSet->pfXinRcUpdateSkip = Xin26xRcCbrUpdateSkip;
+#endif
     }
 
     rcSet->pfXinRcCreate (
