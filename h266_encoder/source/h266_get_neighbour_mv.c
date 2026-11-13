@@ -390,7 +390,7 @@ static void ScaleMv (
     {
         diffPocB = XIN_CLIP(diffPocB, -128, 127);
         diffPocD = XIN_CLIP(diffPocD, -128, 127);
-        mult     = (0x4000 + XIN_ABS(diffPocD >> 1))/diffPocD;
+        mult     = (0x4000 + XIN_ABS(diffPocD / 2))/diffPocD;
         scale    = XIN_CLIP((diffPocB*mult + 32) >> 6, -4096, 4095);
 
         mv->mv.mv32X = XIN_CLIP ((scale*mv->mv.mv32X + 127 + (scale*mv->mv.mv32X < 0)) >> 8, XIN_MIN_MV, XIN_MAX_MV);
