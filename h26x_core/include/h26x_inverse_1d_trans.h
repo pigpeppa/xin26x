@@ -92,7 +92,7 @@ void Xin26xIDct2P32 (
     SINT32      skipLine,
     SINT32      shift);
 
-void Xin26xIDct2VP32_AVX2 (
+void Xin26xIDct2P32_AVX2 (
     COEFF       *input,
     intptr_t    inputStride,
     SINT16      *output,
