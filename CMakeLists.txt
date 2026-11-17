@@ -23,8 +23,8 @@ OPTION(64BIT               "ON for 64 bit executable, OFF for 32 bit executable"
 OPTION(BUILD_SHARED_LIBS   "ON builds dynamic libraries, OFF builds static libraries"     OFF)
 OPTION(ARM_PLATFORM        "ON build for ARM platform"                                    OFF)
 OPTION(AV1                 "ON for enable AV1 encoder"                                    OFF)
-OPTION(H265                "ON for enable H265 encoder"                                    ON)
-OPTION(H266                "ON for enable H266 encoder"                                   OFF)
+OPTION(H265                "ON for enable H265 encoder"                                   OFF)
+OPTION(H266                "ON for enable H266 encoder"                                    ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/testbin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/testbin)
@@ -124,10 +124,6 @@ set (H26XCORE_LIB "h26x_core")
 set (H26XAPI_LIB  "h26x_api")
 set (XIN26X_LIB   "xin26x")
 
-add_library(${H26XCORE_LIB} STATIC IMPORTED)
-set_target_properties(${H26XCORE_LIB} PROPERTIES
-	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h26x_core/${H26XCORE_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
-
 add_library(${H265CORE_LIB} STATIC IMPORTED)
 set_target_properties(${H265CORE_LIB} PROPERTIES
 	IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/h265_core/${H265CORE_LIB}${CMAKE_STATIC_LIBRARY_SUFFIX})
@@ -140,6 +136,7 @@ add_subdirectory (h266_core)
 add_subdirectory (h266_encoder)	
 add_subdirectory (h265p_core)
 add_subdirectory (h265p_encoder)
+add_subdirectory (h26x_core)
 add_subdirectory (h26x_api)
 
 set(XIN26X_LIBS)
