@@ -20,7 +20,7 @@
 #ifndef _h26x_inverse_1d_trans_h_
 #define _h26x_inverse_1d_trans_h_
 
-typedef void (*Xin266Idct) (
+typedef void (*Xin26xIdct) (
     COEFF       *input,
     intptr_t    inputStride,
     COEFF       *output,

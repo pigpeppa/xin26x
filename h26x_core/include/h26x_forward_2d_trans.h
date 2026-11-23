@@ -64,6 +64,28 @@ void Xin26xFDct2W8H8_AVX2 (
     SINT32   shift1st,
     SINT32   shift2nd);
 
+void Xin26xFDct2W8H4_AVX2 (
+    COEFF    *input,
+    intptr_t inputStride,
+    COEFF    *output,
+    intptr_t outputStride,
+    UINT32   width,
+    UINT32   height,
+    COEFF    *tempBuf,
+    SINT32   shift1st,
+    SINT32   shift2nd);
+
+void Xin26xFDct2W4H8_AVX2 (
+    COEFF    *input,
+    intptr_t inputStride,
+    COEFF    *output,
+    intptr_t outputStride,
+    UINT32   width,
+    UINT32   height,
+    COEFF    *tempBuf,
+    SINT32   shift1st,
+    SINT32   shift2nd);
+
 void Xin26xFDct2W16H16_AVX2 (
     COEFF    *input,
     intptr_t inputStride,
