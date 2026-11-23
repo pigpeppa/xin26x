@@ -1522,7 +1522,7 @@ void Xin266CuInit (
         secSet,
         cu);
 
-    if ((seqSet->config.enableLmcs) && (lmcsSet->lmcsParam.enableChromaAdj))
+    if ((seqSet->config.enableLmcs) && (lmcsSet->lmcsParam.sliceReshaperEnabled) && (lmcsSet->lmcsParam.enableChromaAdj))
     {
         Xin266CalcChromaAdjVpdu (
             secSet,

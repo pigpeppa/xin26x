@@ -367,7 +367,10 @@ void Xin266CalcLmcsSeqStat (
         }
     }
 
-    lmcsSeq->meanBinVar /= (double)lmcsSeq->nonZeroCnt;
+    if (lmcsSeq->nonZeroCnt > 0)
+    {
+        lmcsSeq->meanBinVar /= (double)lmcsSeq->nonZeroCnt;
+    }
 
     for (idx = 0; idx < lmcsSet->binNum; idx++)
     {
@@ -603,8 +606,17 @@ static void Xin266DeriveReshapeParam (
         }
     }
 
-    maxCW  = (double)reshapeCW->binCW[0];
-    minCW  = (double)reshapeCW->binCW[1];
+    maxCW = (double)reshapeCW->binCW[0];
+    minCW = (double)reshapeCW->binCW[1];
+
+    if (maxVar <= minVar)
+    {
+        *alpha = 0.0;
+        *beta  = 0.5 * (maxCW + minCW);
+
+        return;
+    }
+
     *alpha = (minCW - maxCW) / (maxVar - minVar);
     *beta  = (maxCW * maxVar - minCW * minVar) / (maxVar - minVar);
 
@@ -737,6 +749,14 @@ static void Xin266DeriveReshapeParamSDR (
         }
     }
 
+    if (rspSeq->nonZeroCnt == 0)
+    {
+        *intraAdp = FALSE;
+        *interAdp = FALSE;
+
+        return;
+    }
+
     rspSeq->meanBinVar /= (double)rspSeq->nonZeroCnt;
 
     for (idx = 0; idx < lmcsSet->binNum; idx++)
@@ -748,6 +768,14 @@ static void Xin266DeriveReshapeParamSDR (
 
         rspSeq->weightVar  += rspSeq->binHist[idx] * rspSeq->binVar[idx];
         rspSeq->weightNorm += rspSeq->binHist[idx] * rspSeq->normVar[idx];
+    }
+
+    if ((srcSeq->weightVar <= 0.0) || (srcSeq->weightNorm <= 0.0))
+    {
+        *intraAdp = FALSE;
+        *interAdp = FALSE;
+
+        return;
     }
 
     ratioWeiVar     = rspSeq->weightVar / srcSeq->weightVar;
@@ -1249,6 +1277,11 @@ void Xin266ConstructReshaperLmcs (
         {
             lmcsSet->invScaleCoef[idx]     = (SINT32)(lmcsSet->initCW * (1 << 11) / lmcsSet->binCW[idx]);
             lmcsSet->chromaAdjHelpLUT[idx] = (SINT32)(lmcsSet->initCW * (1 << 11) / (lmcsSet->binCW[idx] + lmcsParam->chrResScalingOffset));
+
+            if (lmcsSet->chromaAdjHelpLUT[idx] <= 0)
+            {
+                lmcsSet->chromaAdjHelpLUT[idx] = 1 << 11;
+            }
         }
     }
 
@@ -1524,9 +1557,12 @@ void Xin266LmcsPreAnalyzer (
 
             if (!intraAdp && !interAdp)
             {
+                lmcsParam->sliceReshaperEnabled      = FALSE;
+                lmcsParam->enableChromaAdj           = 0;
                 lmcsParam->sliceReshaperModelPresent = FALSE;
 
-                lmcsSet->reshape = FALSE;
+                lmcsSet->reshape   = FALSE;
+                lmcsSet->chromaAdj = 0;
 
                 return;
             }
@@ -1875,6 +1911,11 @@ void Xin266CalcChromaAdjVpdu (
 
     chromaScale = lmcsSet->chromaAdjHelpLUT[Xin266GetPWLIdxInv(lmcsSet, lumaValue)];
 
+    if (chromaScale <= 0)
+    {
+        chromaScale = 1 << 11;
+    }
+
     *ouputScale = chromaScale;
 
 }
@@ -1915,6 +1956,11 @@ void Xin266FwdScaleSignal (
     SINT32 absVal;
     SINT32 maxVal;
 
+    if (chromaAdj <= 0)
+    {
+        return;
+    }
+
     maxVal = MAX_PIXEL_VALUE;
 
     for (rowIdx = 0; rowIdx < height; rowIdx++)
@@ -1944,6 +1990,11 @@ void Xin266InvScaleSignal (
     SINT32 sign;
     SINT32 absVal;
     SINT32 maxVal;
+
+    if (chromaAdj <= 0)
+    {
+        return;
+    }
 
     maxVal = MAX_PIXEL_VALUE;
 

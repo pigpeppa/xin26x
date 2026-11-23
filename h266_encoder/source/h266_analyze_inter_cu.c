@@ -1371,7 +1371,7 @@ static void Xin266AnalyzeInterPu (
 
     }
 
-    if ((seqSet->config.biPredMe) && (pictureWrite->frameType == XIN_B_FRAME))
+    if ((seqSet->config.biPredMe) && (pictureWrite->frameType == XIN_B_FRAME) && (meData->bestCost[1] != XIN_MAX_U64_COST))
     {
         Xin266InterBiSearch (
             secSet,
@@ -1383,6 +1383,8 @@ static void Xin266AnalyzeInterPu (
 
     if (seqSet->config.enableLmcs && lmcsSet->lmcsParam.sliceReshaperEnabled)
     {
+        minCost -= (UINT64)minSad << XIN_COST_FRACTION;
+
         Xin266ReshapeSignal (
             fastBuf->predBuf[PLANE_LUMA] + predPos,
             fastBuf->lumaStride,
@@ -1400,6 +1402,8 @@ static void Xin266AnalyzeInterPu (
             pu->width,
             pu->height,
             &minSad);
+
+        minCost += (UINT64)minSad << XIN_COST_FRACTION;
 
     }
 
