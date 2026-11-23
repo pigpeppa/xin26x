@@ -79,7 +79,7 @@ static void Xin266InitDctSub (
         for (colIdx = 0; colIdx < XIN_BLOCK_128xH; colIdx++)
         {
             funcSet->pfXinFor2dDct2[colIdx][rowIdx] = Xin26xFDct2WxH;
-            funcSet->pfXinInv2dDct2[colIdx][rowIdx] = Xin266IDct2WxH;
+            funcSet->pfXinInv2dDct2[colIdx][rowIdx] = Xin26xIDct2WxH;
         }
     }
 }
@@ -409,14 +409,14 @@ void Xin266FuncInit (
     funcSet->pfXinFor2dSkip[XIN_BLOCK_2xH]   = Xin26xFSkipWxH;
     funcSet->pfXinFor2dSkip[XIN_BLOCK_1xH]   = Xin26xFSkipWxH;
 
-    funcSet->pfXinInv2dSkip[XIN_BLOCK_128xH] = Xin266ISkipWxH;
-    funcSet->pfXinInv2dSkip[XIN_BLOCK_64xH]  = Xin266ISkipWxH;
-    funcSet->pfXinInv2dSkip[XIN_BLOCK_32xH]  = Xin266ISkipWxH;
-    funcSet->pfXinInv2dSkip[XIN_BLOCK_16xH]  = Xin266ISkipWxH;
-    funcSet->pfXinInv2dSkip[XIN_BLOCK_8xH]   = Xin266ISkipWxH;
-    funcSet->pfXinInv2dSkip[XIN_BLOCK_4xH]   = Xin266ISkipWxH;
-    funcSet->pfXinInv2dSkip[XIN_BLOCK_2xH]   = Xin266ISkipWxH;
-    funcSet->pfXinInv2dSkip[XIN_BLOCK_1xH]   = Xin266ISkipWxH;
+    funcSet->pfXinInv2dSkip[XIN_BLOCK_128xH] = Xin26xISkipWxH;
+    funcSet->pfXinInv2dSkip[XIN_BLOCK_64xH]  = Xin26xISkipWxH;
+    funcSet->pfXinInv2dSkip[XIN_BLOCK_32xH]  = Xin26xISkipWxH;
+    funcSet->pfXinInv2dSkip[XIN_BLOCK_16xH]  = Xin26xISkipWxH;
+    funcSet->pfXinInv2dSkip[XIN_BLOCK_8xH]   = Xin26xISkipWxH;
+    funcSet->pfXinInv2dSkip[XIN_BLOCK_4xH]   = Xin26xISkipWxH;
+    funcSet->pfXinInv2dSkip[XIN_BLOCK_2xH]   = Xin26xISkipWxH;
+    funcSet->pfXinInv2dSkip[XIN_BLOCK_1xH]   = Xin26xISkipWxH;
 
     Xin266InitDctSub (
         funcSet);
@@ -1079,22 +1079,24 @@ void Xin266FuncInit (
         funcSet->pfXinInv2dSkip[XIN_BLOCK_32xH]  = Xin266ISkip32xH_AVX2;
         funcSet->pfXinInv2dSkip[XIN_BLOCK_16xH]  = Xin266ISkip16xH_AVX2;
 
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_8xH][XIN_BLOCK_8xH]   = Xin266IDct2W8H8_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_16xH] = Xin266IDct2W16H16_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_32xH][XIN_BLOCK_32xH] = Xin266IDct2W32H32_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_8xH]  = Xin266IDct2W16H8_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_8xH][XIN_BLOCK_16xH]  = Xin266IDct2W8H16_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_32xH][XIN_BLOCK_16xH] = Xin266IDct2W32H16_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_32xH] = Xin266IDct2W16H32_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_64xH][XIN_BLOCK_64xH] = Xin266IDct2W64H64_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_64xH] = Xin266IDct2W16H64_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_64xH][XIN_BLOCK_16xH] = Xin266IDct2W64H16_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_64xH][XIN_BLOCK_32xH] = Xin266IDct2W64H32_AVX2;
-        funcSet->pfXinInv2dDct2[XIN_BLOCK_32xH][XIN_BLOCK_64xH] = Xin266IDct2W32H64_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_8xH][XIN_BLOCK_8xH]   = Xin26xIDct2W8H8_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_16xH] = Xin26xIDct2W16H16_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_32xH][XIN_BLOCK_32xH] = Xin26xIDct2W32H32_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_8xH]  = Xin26xIDct2W16H8_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_8xH][XIN_BLOCK_16xH]  = Xin26xIDct2W8H16_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_32xH][XIN_BLOCK_16xH] = Xin26xIDct2W32H16_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_32xH] = Xin26xIDct2W16H32_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_64xH][XIN_BLOCK_64xH] = Xin26xIDct2W64H64_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_64xH] = Xin26xIDct2W16H64_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_64xH][XIN_BLOCK_16xH] = Xin26xIDct2W64H16_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_64xH][XIN_BLOCK_32xH] = Xin26xIDct2W64H32_AVX2;
+        funcSet->pfXinInv2dDct2[XIN_BLOCK_32xH][XIN_BLOCK_64xH] = Xin26xIDct2W32H64_AVX2;
 
         funcSet->pfXinInv1dDct[XIN_DST7][XIN_BLOCK_8xH]  = Xin26xIDst7P8_AVX2;
         funcSet->pfXinInv1dDct[XIN_DST7][XIN_BLOCK_16xH] = Xin26xIDst7P16_AVX2;
 
+        funcSet->pfXinFor2dDct2[XIN_BLOCK_8xH][XIN_BLOCK_4xH]   = Xin26xFDct2W8H4_AVX2;
+        funcSet->pfXinFor2dDct2[XIN_BLOCK_4xH][XIN_BLOCK_8xH]   = Xin26xFDct2W4H8_AVX2;
         funcSet->pfXinFor2dDct2[XIN_BLOCK_8xH][XIN_BLOCK_8xH]   = Xin26xFDct2W8H8_AVX2;
         funcSet->pfXinFor2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_16xH] = Xin26xFDct2W16H16_AVX2;
         funcSet->pfXinFor2dDct2[XIN_BLOCK_32xH][XIN_BLOCK_32xH] = Xin26xFDct2W32H32_AVX2;
