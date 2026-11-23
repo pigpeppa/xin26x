@@ -52,34 +52,69 @@
 
 extern const UINT32 auiGoRiceParsCoeff[32];
 extern const SINT32 goRiceBits[4][32];
-extern const xin_decision startDec[2];
 
-static void Xin266StateInit (
-    xin_dp_simd_state *state,
-    UINT32            stateId)
+static void Xin266StateInitAll (
+    xin_dp_simd_state *state)
 {
-    state->rdCost[stateId]         = XIN_MAX_DEP_COST;
-    state->coeffCtx.coeff[stateId] = 0;
-    state->coeffCtx.sig[stateId]   = 0;
-    state->numSig[stateId]         = 0;
-    state->refSbbCtxId[stateId]    = -1;
-    state->remRegBins[stateId]     = 4;
-    state->coeffBitsCtxOffset      = 0;
-    state->goRicePar[stateId]      = 0;
-    state->goRiceZero[stateId]     = 0;
-    state->sbbBits0[stateId]       = 0;
-    state->sbbBits1[stateId]       = 0;
+    __m256i maxCost = _mm256_set1_epi64x (XIN_MAX_DEP_COST);
 
+    _mm256_storeu_si256 ((__m256i *)state->rdCost, maxCost);
+    _mm_storeu_si32 (state->coeffCtx.coeff, _mm_setzero_si128 ());
+    _mm_storeu_si32 (state->coeffCtx.sig, _mm_setzero_si128 ());
+    _mm_storeu_si32 (state->numSig, _mm_setzero_si128 ());
+    _mm_storeu_si32 (state->refSbbCtxId, _mm_set1_epi8 ((char)-1));
+    _mm_storeu_si64 ((__m128i *)state->remRegBins, _mm_set1_epi16 (4));
+    _mm_storeu_si32 (state->goRicePar, _mm_setzero_si128 ());
+    _mm_storeu_si32 (state->goRiceZero, _mm_setzero_si128 ());
+    _mm_storeu_si128 ((__m128i *)state->sbbBits0, _mm_setzero_si128 ());
+    _mm_storeu_si128 ((__m128i *)state->sbbBits1, _mm_setzero_si128 ());
+    state->coeffBitsCtxOffset = 0;
 }
 
-static void Xin266CheckRdCostSkipSbbZeroOut (
-    xin_dp_simd_state *state,
-    xin_decision      *decision,
-    SINT32            statId)
+static inline void Xin266InitDecision (
+    xin_decision *decisions)
 {
-    decision->rdCost[statId]   = state->rdCost[statId] + state->sbbBits0[statId];
-    decision->absLevel[statId] = 0;
-    decision->prevId[statId]   = (SINT8)(4 | statId);
+    __m256i maxCost = _mm256_set1_epi64x (XIN_MAX_DEP_COST >> 1);
+
+    _mm256_storeu_si256 ((__m256i *)decisions->rdCost, maxCost);
+    _mm_storeu_si64 (decisions->absLevel, _mm_set1_epi16 ((SINT16)-1));
+    _mm_storeu_si32 (decisions->prevId, _mm_set1_epi8 ((char)-2));
+}
+
+static void Xin266CheckRdCostSkipSbbZeroOutAll (
+    xin_dp_simd_state *state,
+    xin_decision      *decision)
+{
+    __m128i bits = _mm_loadu_si128 ((const __m128i *)state->sbbBits0);
+    __m128i rd0  = _mm_loadu_si128 ((const __m128i *)&state->rdCost[0]);
+    __m128i rd2  = _mm_loadu_si128 ((const __m128i *)&state->rdCost[2]);
+
+    rd0 = _mm_add_epi64 (rd0, _mm_cvtepi32_epi64 (bits));
+    rd2 = _mm_add_epi64 (rd2, _mm_cvtepi32_epi64 (_mm_unpackhi_epi64 (bits, bits)));
+
+    _mm_storeu_si128 ((__m128i *)&decision->rdCost[0], rd0);
+    _mm_storeu_si128 ((__m128i *)&decision->rdCost[2], rd2);
+    _mm_storeu_si64 (decision->absLevel, _mm_setzero_si128 ());
+    _mm_storeu_si32 (decision->prevId, _mm_setr_epi8 (4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+}
+
+static void Xin266CheckRdCostSkipSbbAll (
+    xin_dp_simd_state *state,
+    xin_decision      *decisions)
+{
+    SINT32 i;
+
+    for (i = 0; i < 4; i++)
+    {
+        SINT64 rdCost = state->rdCost[i] + state->sbbBits0[i];
+
+        if (rdCost < decisions->rdCost[i])
+        {
+            decisions->rdCost[i]   = rdCost;
+            decisions->absLevel[i] = 0;
+            decisions->prevId[i]   = (SINT8)(4 | i);
+        }
+    }
 }
 
 static inline UINT32 auiGoRicePosCoeff0 (
@@ -125,55 +160,63 @@ static void Xin266CheckRdCosts (
     SINT32            idxB)
 {
     const SINT32  *goRiceTab;
+    const UINT32  *gtxBits;
+    const UINT32  *sigBits;
     SINT64         rdCostA;
     SINT64         rdCostB;
     SINT64         rdCostZ;
     UINT32         value;
+    SINT32         riceZero;
+    SINT64         baseCost;
 
     goRiceTab = goRiceBits[state->goRicePar[stateId]];
-    rdCostA   = state->rdCost[stateId] + pqDataA->deltaDist;
-    rdCostB   = state->rdCost[stateId] + pqDataB->deltaDist;
-    rdCostZ   = state->rdCost[stateId];
+    baseCost  = state->rdCost[stateId];
+    rdCostA   = baseCost + pqDataA->deltaDist;
+    rdCostB   = baseCost + pqDataB->deltaDist;
+    rdCostZ   = baseCost;
 
     if (state->remRegBins[stateId] >= 4)
     {
+        gtxBits = state->gtxFracBitsArray[state->coeffCtx.coeff[stateId]].intBits;
+        sigBits = state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits;
+
         if (pqDataA->absLevel < 4)
         {
-            rdCostA += state->gtxFracBitsArray[state->coeffCtx.coeff[stateId]].intBits[pqDataA->absLevel];
+            rdCostA += gtxBits[pqDataA->absLevel];
         }
         else
         {
             value    = (pqDataA->absLevel - 4) >> 1;
-            rdCostA += state->gtxFracBitsArray[state->coeffCtx.coeff[stateId]].intBits[pqDataA->absLevel - (value << 1)] + goRiceTab[XIN_MIN (value, 32 - 1)];
+            rdCostA += gtxBits[pqDataA->absLevel - (value << 1)] + goRiceTab[XIN_MIN (value, 32 - 1)];
         }
 
         if (pqDataB->absLevel < 4)
         {
-            rdCostB += state->gtxFracBitsArray[state->coeffCtx.coeff[stateId]].intBits[pqDataB->absLevel];
+            rdCostB += gtxBits[pqDataB->absLevel];
         }
         else
         {
             value    = (pqDataB->absLevel - 4) >> 1;
-            rdCostB += state->gtxFracBitsArray[state->coeffCtx.coeff[stateId]].intBits[pqDataB->absLevel - (value << 1)] + goRiceTab[XIN_MIN (value, 32 - 1)];
+            rdCostB += gtxBits[pqDataB->absLevel - (value << 1)] + goRiceTab[XIN_MIN (value, 32 - 1)];
         }
 
         if (spt == XIN_SCAN_ISCSBB)
         {
-            rdCostA += state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[1];
-            rdCostB += state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[1];
-            rdCostZ += state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[0];
+            rdCostA += sigBits[1];
+            rdCostB += sigBits[1];
+            rdCostZ += sigBits[0];
         }
         else if (spt == XIN_SCAN_SOCSBB)
         {
-            rdCostA += state->sbbBits1[stateId] + state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[1];
-            rdCostB += state->sbbBits1[stateId] + state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[1];
-            rdCostZ += state->sbbBits1[stateId] + state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[0];
+            rdCostA += state->sbbBits1[stateId] + sigBits[1];
+            rdCostB += state->sbbBits1[stateId] + sigBits[1];
+            rdCostZ += state->sbbBits1[stateId] + sigBits[0];
         }
         else if (state->numSig[stateId])
         {
-            rdCostA += state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[1];
-            rdCostB += state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[1];
-            rdCostZ += state->sigFracBitsArray[stateId][state->coeffCtx.sig[stateId]].intBits[0];
+            rdCostA += sigBits[1];
+            rdCostB += sigBits[1];
+            rdCostZ += sigBits[0];
         }
         else
         {
@@ -183,9 +226,10 @@ static void Xin266CheckRdCosts (
     }
     else
     {
-        rdCostA += (1 << 15) + goRiceTab[pqDataA->absLevel <= state->goRiceZero[stateId] ? pqDataA->absLevel - 1 : XIN_MIN(pqDataA->absLevel, 32 - 1)];
-        rdCostB += (1 << 15) + goRiceTab[pqDataB->absLevel <= state->goRiceZero[stateId] ? pqDataB->absLevel - 1 : XIN_MIN(pqDataB->absLevel, 32 - 1)];
-        rdCostZ += goRiceTab[state->goRiceZero[stateId]];
+        riceZero = state->goRiceZero[stateId];
+        rdCostA += (1 << 15) + goRiceTab[pqDataA->absLevel <= riceZero ? pqDataA->absLevel - 1 : XIN_MIN(pqDataA->absLevel, 32 - 1)];
+        rdCostB += (1 << 15) + goRiceTab[pqDataB->absLevel <= riceZero ? pqDataB->absLevel - 1 : XIN_MIN(pqDataB->absLevel, 32 - 1)];
+        rdCostZ += goRiceTab[riceZero];
     }
 
     if (rdCostA < rdCostZ && rdCostA < decisions->rdCost[idxAZ])
@@ -444,19 +488,18 @@ static void Xin266CheckRdCostStart (
     xin_pq_data       *pqData,
     xin_decision      *decision)
 {
-    SINT64 rdCost;
-    UINT32 value;
-
-    rdCost = pqData->deltaDist + lastOffset;
+    const UINT32 *gtxBits = state->gtxFracBitsArray[0].intBits;
+    SINT64        rdCost  = pqData->deltaDist + lastOffset;
+    UINT32        value;
 
     if (pqData->absLevel < 4)
     {
-        rdCost += state->gtxFracBitsArray[0].intBits[pqData->absLevel];
+        rdCost += gtxBits[pqData->absLevel];
     }
     else
     {
         value   = (pqData->absLevel - 4) >> 1;
-        rdCost += state->gtxFracBitsArray[0].intBits[pqData->absLevel - (value << 1)] + goRiceBits[0][value < 32 ? value : 32-1];
+        rdCost += gtxBits[pqData->absLevel - (value << 1)] + goRiceBits[0][value < 32 ? value : 31];
     }
 
     if (rdCost < decision->rdCost[stateId])
@@ -464,24 +507,6 @@ static void Xin266CheckRdCostStart (
         decision->rdCost  [stateId] = rdCost;
         decision->absLevel[stateId] = (SINT16)pqData->absLevel;
         decision->prevId  [stateId] = (SINT8)-1;
-    }
-}
-
-static void Xin266CheckRdCostSkipSbb (
-    xin_dp_simd_state *state,
-    SINT32            stateId,
-    xin_decision      *decisions,
-    SINT32            idx)
-{
-    SINT64 rdCost;
-
-    rdCost = state->rdCost[stateId] + state->sbbBits0[stateId];
-
-    if( rdCost < decisions->rdCost[idx] )
-    {
-        decisions->rdCost[idx]   = rdCost;
-        decisions->absLevel[idx] = 0;
-        decisions->prevId[idx]   = (SINT8)(4 | stateId);
     }
 }
 
@@ -501,35 +526,15 @@ static void Xin266Decide (
 
     skipState = &depQuant->simdStateSkip;
 
-    memcpy (
-        decisions,
-        startDec,
-        sizeof(xin_decision));
+    Xin266InitDecision (decisions);
 
     if (zeroOut)
     {
         if (scanInfo->spt == XIN_SCAN_EOCSBB)
         {
-            Xin266CheckRdCostSkipSbbZeroOut (
+            Xin266CheckRdCostSkipSbbZeroOutAll (
                 skipState,
-                decisions,
-                0);
-
-            Xin266CheckRdCostSkipSbbZeroOut (
-                skipState,
-                decisions,
-                1);
-
-            Xin266CheckRdCostSkipSbbZeroOut (
-                skipState,
-                decisions,
-                2);
-
-            Xin266CheckRdCostSkipSbbZeroOut (
-                skipState,
-                decisions,
-                3);
-
+                decisions);
         }
 
         return;
@@ -644,30 +649,9 @@ static void Xin266Decide (
 
     if (scanInfo->spt == XIN_SCAN_EOCSBB)
     {
-        Xin266CheckRdCostSkipSbb (
+        Xin266CheckRdCostSkipSbbAll (
             skipState,
-            0,
-            decisions,
-            0);
-
-        Xin266CheckRdCostSkipSbb (
-            skipState,
-            1,
-            decisions,
-            1);
-
-        Xin266CheckRdCostSkipSbb (
-            skipState,
-            2,
-            decisions,
-            2);
-
-        Xin266CheckRdCostSkipSbb (
-            skipState,
-            3,
-            decisions,
-            3);
-        
+            decisions);
     }
 
 }
@@ -691,14 +675,30 @@ static void Xin266UpdateAllLvls (
     const __m128i vshuf2 = _mm_setr_epi8(  2,  6, 10, 14, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 );
     const __m128i vshuf3 = _mm_setr_epi8(  3,  7, 11, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 );
 
-    for( int i = 0, j = 0; i < ctxSize; i += regSize, j += 4 )
+    for (int i = 0, j = 0; i + 32 <= ctxSize; i += 32, j += 8)
     {
-        __m128i in  = _mm_loadu_si128((__m128i *) &currState->absVal[i] );
+        __m256i in = _mm256_loadu_si256 ((const __m256i *)&currState->absVal[i]);
+        __m128i lo = _mm256_castsi256_si128 (in);
+        __m128i hi = _mm256_extracti128_si256 (in, 1);
 
-        _mm_storeu_si32( &levels0[j], _mm_shuffle_epi8( in, vshuf0 ) );
-        _mm_storeu_si32( &levels1[j], _mm_shuffle_epi8( in, vshuf1 ) );
-        _mm_storeu_si32( &levels2[j], _mm_shuffle_epi8( in, vshuf2 ) );
-        _mm_storeu_si32( &levels3[j], _mm_shuffle_epi8( in, vshuf3 ) );
+        _mm_storeu_si32 (&levels0[j],     _mm_shuffle_epi8 (lo, vshuf0));
+        _mm_storeu_si32 (&levels0[j + 4], _mm_shuffle_epi8 (hi, vshuf0));
+        _mm_storeu_si32 (&levels1[j],     _mm_shuffle_epi8 (lo, vshuf1));
+        _mm_storeu_si32 (&levels1[j + 4], _mm_shuffle_epi8 (hi, vshuf1));
+        _mm_storeu_si32 (&levels2[j],     _mm_shuffle_epi8 (lo, vshuf2));
+        _mm_storeu_si32 (&levels2[j + 4], _mm_shuffle_epi8 (hi, vshuf2));
+        _mm_storeu_si32 (&levels3[j],     _mm_shuffle_epi8 (lo, vshuf3));
+        _mm_storeu_si32 (&levels3[j + 4], _mm_shuffle_epi8 (hi, vshuf3));
+    }
+
+    for (int i = (ctxSize & ~31), j = (ctxSize & ~31) >> 2; i < ctxSize; i += regSize, j += 4)
+    {
+        __m128i in = _mm_loadu_si128 ((const __m128i *)&currState->absVal[i]);
+
+        _mm_storeu_si32 (&levels0[j], _mm_shuffle_epi8 (in, vshuf0));
+        _mm_storeu_si32 (&levels1[j], _mm_shuffle_epi8 (in, vshuf1));
+        _mm_storeu_si32 (&levels2[j], _mm_shuffle_epi8 (in, vshuf2));
+        _mm_storeu_si32 (&levels3[j], _mm_shuffle_epi8 (in, vshuf3));
     }
 }
 
@@ -819,7 +819,6 @@ static void Xin266UpdateStateEOS (
 
     {
         const int ctxSize = 16 * 4;
-        const int regSize = 16;
 
         __m128i vshuf     = _mm_loadu_si32( s );
         vshuf             = _mm_shuffle_epi32( vshuf, 0 );
@@ -827,11 +826,16 @@ static void Xin266UpdateStateEOS (
         vshuf             = _mm_add_epi8   ( vshuf, _mm_setr_epi8( 0, 0, 0, 0, 4, 4, 4, 4, 8, 8, 8, 8, 12, 12, 12, 12 ) );
         vshuf             = _mm_blendv_epi8( vshuf, _mm_set1_epi8( -1 ), vshufmask );
 
-        for( int i = 0; i < ctxSize; i += regSize )
         {
-            __m128i vval = _mm_loadu_si128( ( const __m128i* ) &currStates->absVal[i] );
-            vval = _mm_shuffle_epi8( vval, vshuf );
-            _mm_storeu_si128( ( __m128i* ) &currStates->absVal[i], vval );
+            __m256i vshuf256 = _mm256_broadcastsi128_si256 (vshuf);
+            int     i;
+
+            for (i = 0; i < ctxSize; i += 32)
+            {
+                __m256i vval = _mm256_loadu_si256 ((const __m256i *)&currStates->absVal[i]);
+                vval = _mm256_shuffle_epi8 (vval, vshuf256);
+                _mm256_storeu_si256 ((__m256i *)&currStates->absVal[i], vval);
+            }
         }
 
         __m128i numSig = _mm_loadu_si32( currStates->numSig );
@@ -958,7 +962,6 @@ static void Xin266UpdateState (
 
     {
         const int ctxSize = 16 * 4;
-        const int regSize = 16;
 
         __m128i vshuf     = _mm_loadu_si32 ( s );
         vshuf     = _mm_shuffle_epi32( vshuf, 0 );
@@ -966,19 +969,24 @@ static void Xin266UpdateState (
         vshuf             = _mm_add_epi8   ( vshuf, _mm_setr_epi8( 0, 0, 0, 0, 4, 4, 4, 4, 8, 8, 8, 8, 12, 12, 12, 12 ) );
         vshuf             = _mm_blendv_epi8( vshuf, _mm_set1_epi8( -1 ), vshufmask );
 
-        for( int i = 0; i < ctxSize; i += regSize )
         {
-            __m128i vtpl = _mm_loadu_si128( ( const __m128i* ) &currState->tplAcc[i] );
-            vtpl = _mm_shuffle_epi8( vtpl, vshuf );
-            _mm_storeu_si128( ( __m128i* ) &currState->tplAcc[i], vtpl );
+            __m256i vshuf256 = _mm256_broadcastsi128_si256 (vshuf);
+            int     i;
 
-            __m128i vval = _mm_loadu_si128( ( const __m128i* ) &currState->absVal[i] );
-            vval = _mm_shuffle_epi8( vval, vshuf );
-            _mm_storeu_si128( ( __m128i* ) &currState->absVal[i], vval );
+            for (i = 0; i < ctxSize; i += 32)
+            {
+                __m256i vtpl = _mm256_loadu_si256 ((const __m256i *)&currState->tplAcc[i]);
+                __m256i vval = _mm256_loadu_si256 ((const __m256i *)&currState->absVal[i]);
+                __m256i vsum = _mm256_loadu_si256 ((const __m256i *)&currState->sum1st[i]);
 
-            __m128i vsum = _mm_loadu_si128( ( const __m128i* ) &currState->sum1st[i] );
-            vsum = _mm_shuffle_epi8( vsum, vshuf );
-            _mm_storeu_si128( ( __m128i* ) &currState->sum1st[i], vsum );
+                vtpl = _mm256_shuffle_epi8 (vtpl, vshuf256);
+                vval = _mm256_shuffle_epi8 (vval, vshuf256);
+                vsum = _mm256_shuffle_epi8 (vsum, vshuf256);
+
+                _mm256_storeu_si256 ((__m256i *)&currState->tplAcc[i], vtpl);
+                _mm256_storeu_si256 ((__m256i *)&currState->absVal[i], vval);
+                _mm256_storeu_si256 ((__m256i *)&currState->sum1st[i], vsum);
+            }
         }
 
         __m128i numSig = _mm_loadu_si32( currState->numSig );
@@ -1172,7 +1180,6 @@ void Xin266DepQuant_AVX2 (
     dpParam     = &depQuant->dpParam[lgWidth + lgHeight][qp];
     scanOrderCG = tu->scanOrderCG[compType];
     scanOrder   = tu->scanOrder[compType];
-    scanOrder   = tu->scanOrder[compType];
     tuParam     = depQuant->tuParam[lgWidth][lgHeight][compType];
     scanInfo    = tuParam->scanInfo;
     effWidth    = XIN_MIN (width, 32);
@@ -1214,16 +1221,11 @@ void Xin266DepQuant_AVX2 (
         depQuant,
         tuParam);
 
+    Xin266StateInitAll (&depQuant->simdStateCurr);
+    Xin266StateInitAll (&depQuant->simdStateSkip);
+
     for (stateId = 0; stateId < 4; stateId++)
     {
-        Xin266StateInit (
-            &depQuant->simdStateCurr,
-            stateId);
-
-        Xin266StateInit (
-            &depQuant->simdStateSkip,
-            stateId);
-
         depQuant->simdStateCurr.sigFracBitsArray[stateId] = depQuant->sigFracBits[XIN_MAX(stateId - 1, 0)];
     }
 
