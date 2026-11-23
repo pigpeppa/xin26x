@@ -81,7 +81,7 @@ void Xin266IDctAdd (
         compId,
         mtsIdx);
 
-    if ((seqSet->config.enableLmcs) && (lmcsSet->lmcsParam.enableChromaAdj) && (compId != PLANE_LUMA))
+    if ((seqSet->config.enableLmcs) && (lmcsSet->lmcsParam.sliceReshaperEnabled) && (lmcsSet->lmcsParam.enableChromaAdj) && (compId != PLANE_LUMA) && (secSet->chromaResScaleInv > 0))
     {
         Xin266InvScaleSignal (
             buffer,
