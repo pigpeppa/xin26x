@@ -1092,6 +1092,11 @@ void Xin266FuncInit (
         funcSet->pfXinInv2dDct2[XIN_BLOCK_64xH][XIN_BLOCK_32xH] = Xin26xIDct2W64H32_AVX2;
         funcSet->pfXinInv2dDct2[XIN_BLOCK_32xH][XIN_BLOCK_64xH] = Xin26xIDct2W32H64_AVX2;
 
+        funcSet->pfXinInv1dDct[XIN_DCT2][XIN_BLOCK_8xH]  = Xin26xIDct2P8_AVX2;
+        funcSet->pfXinInv1dDct[XIN_DCT2][XIN_BLOCK_16xH] = Xin26xIDct2P16_AVX2;
+        funcSet->pfXinInv1dDct[XIN_DCT2][XIN_BLOCK_32xH] = Xin26xIDct2P32_AVX2;
+        funcSet->pfXinInv1dDct[XIN_DCT2][XIN_BLOCK_64xH] = Xin26xIDct2P64_AVX2;
+
         funcSet->pfXinInv1dDct[XIN_DST7][XIN_BLOCK_8xH]  = Xin26xIDst7P8_AVX2;
         funcSet->pfXinInv1dDct[XIN_DST7][XIN_BLOCK_16xH] = Xin26xIDst7P16_AVX2;
 
@@ -1112,6 +1117,9 @@ void Xin266FuncInit (
         funcSet->pfXinFor2dDct2[XIN_BLOCK_16xH][XIN_BLOCK_64xH] = Xin26xFDct2W16H64_AVX2;
         funcSet->pfXinFor2dDct2[XIN_BLOCK_64xH][XIN_BLOCK_16xH] = Xin26xFDct2W64H16_AVX2;
 
+        funcSet->pfXinFor1dDct[XIN_DCT2][XIN_BLOCK_8xH]  = Xin26xFDct2P8_AVX2;
+        funcSet->pfXinFor1dDct[XIN_DCT2][XIN_BLOCK_16xH] = Xin26xFDct2P16_AVX2;
+
         funcSet->pfXinFor1dDct[XIN_DST7][XIN_BLOCK_8xH]  = Xin26xFDst7P8_AVX2;
         funcSet->pfXinFor1dDct[XIN_DST7][XIN_BLOCK_16xH] = Xin26xFDst7P16_AVX2;
 
@@ -1128,7 +1136,7 @@ void Xin266FuncInit (
         //funcSet->pfXinApplyPDPC[XIN_BLOCK_64xH] = Xin266ApplyPDPCGt16xH_AVX2;
 
         funcSet->pfXinApplyHorPDPC[XIN_BLOCK_32xH] = Xin266ApplyPDPCHor32xH_AVX2;
-        funcSet->pfXinApplyHorPDPC[XIN_BLOCK_32xH] = Xin266ApplyPDPCHor64xH_AVX2;
+        funcSet->pfXinApplyHorPDPC[XIN_BLOCK_64xH] = Xin266ApplyPDPCHor64xH_AVX2;
 
         funcSet->pfXinApplyAngPDPC[0][XIN_BLOCK_16xH] = Xin266ApplyAngPDPCHor16xH_AVX2;
         funcSet->pfXinApplyAngPDPC[0][XIN_BLOCK_32xH] = Xin266ApplyAngPDPCHorGt16xH_AVX2;
