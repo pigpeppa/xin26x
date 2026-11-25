@@ -54,111 +54,152 @@ static const UINT8 tcMap[16] =
     0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3
 };
 
-static inline SINT32 calcDP (
-    PIXEL    *src,
-    intptr_t offset,
-    BOOL     isChromaCtuBoundary)
+/* Gather decision samples 0, 3, 4 and 7 into the low four words, mirrored above. */
+static const UINT8 dbPickBytes[16] =
 {
-    if (isChromaCtuBoundary)
-    {
-        return XIN_ABS(src[-offset*2] - 2*src[-offset*2] + src[-offset]);
-    }
-    else
-    {
-        return XIN_ABS(src[-offset*3] - 2*src[-offset*2] + src[-offset]);
-    }
+    0, 1, 6, 7, 8, 9, 14, 15,
+    0, 1, 6, 7, 8, 9, 14, 15
+};
+
+static inline __m128i dbLoad8 (
+    const PIXEL *src)
+{
+    return _mm_cvtepu8_epi16 (_mm_loadl_epi64 ((const __m128i *)src));
 }
 
-static inline SINT32 calcDQ (
-    PIXEL    *src,
-    intptr_t offset)
+/* abs(a - 2*b + c). Each input is an 8-bit pixel widened to i16. */
+static inline __m128i dbLap (
+    __m128i a,
+    __m128i b,
+    __m128i c)
 {
-    return XIN_ABS(src[0] - 2*src[offset] + src[offset*2]);
+    return _mm_abs_epi16 (_mm_sub_epi16 (_mm_add_epi16 (a, c), _mm_add_epi16 (b, b)));
 }
 
-static BOOL UseStrongFiltering (
-    PIXEL    *src,
-    intptr_t offset,
-    SINT32   d,
-    SINT32   beta,
-    SINT32   tc,
-    BOOL     sidePisLarge,
-    BOOL     sideQisLarge,
-    SINT32   maxFilterLengthP,
-    SINT32   maxFilterLengthQ,
-    BOOL     isChromaHorCtuBoundary)
+static inline __m128i dbPick (
+    __m128i v)
 {
-    PIXEL  m3, m4;
-    PIXEL  m0, m7;
-    PIXEL  m2;
-    PIXEL  mP4, mP5, mP6, mP7;
-    PIXEL  m8, m9, m10;
-    PIXEL  m11;
-    SINT32 sp3;
-    SINT32 sq3;
-    SINT32 strong;
+    return _mm_shuffle_epi8 (v, _mm_loadu_si128 ((const __m128i *)dbPickBytes));
+}
 
-    m4  = src[0];
-    m3  = src[-offset];
-    m7  = src[ offset*3];
-    m0  = src[-offset*4];
-    m2  = src[-offset*2];
-    sp3 = XIN_ABS (m0 - m3);
-    sq3 = XIN_ABS (m7 - m4);
+/* beta/tc for the four decision samples: block0, block0, block1, block1. */
+static inline __m128i dbPairValue (
+    SINT32 v0,
+    SINT32 v1)
+{
+    return _mm_set_epi16 (
+        (SINT16)v1, (SINT16)v1, (SINT16)v0, (SINT16)v0,
+        (SINT16)v1, (SINT16)v1, (SINT16)v0, (SINT16)v0);
+}
 
-    if (isChromaHorCtuBoundary)
-    {
-        sp3 = XIN_ABS (m2 - m3);
-    }
+static inline void dbPairSum (
+    __m128i v,
+    SINT32  *sum0,
+    SINT32  *sum1)
+{
+    __m128i p = dbPick (v);
+    __m128i h = _mm_hadd_epi16 (p, p);
 
-    strong = sp3 + sq3;
+    *sum0 = (SINT32)_mm_extract_epi16 (h, 0);
+    *sum1 = (SINT32)_mm_extract_epi16 (h, 1);
+}
+
+static inline void dbPairAnd (
+    __m128i mask,
+    BOOL    *block0,
+    BOOL    *block1)
+{
+    SINT32 bits = _mm_movemask_epi8 (mask);
+
+    *block0 = (bits & 0x0F) == 0x0F;
+    *block1 = (bits & 0xF0) == 0xF0;
+}
+
+/*
+ * Strong-filter predicate on the four decision samples.
+ * d4 is per-sample (dp + dq), already gathered. The scalar check compares 2*d.
+ */
+static inline __m128i dbStrongMask (
+    __m128i p0,
+    __m128i p3,
+    __m128i q0,
+    __m128i q3,
+    __m128i p4,
+    __m128i p5,
+    __m128i p6,
+    __m128i p7,
+    __m128i q4,
+    __m128i q5,
+    __m128i q6,
+    __m128i q7,
+    __m128i d4,
+    __m128i beta,
+    __m128i tc,
+    BOOL    sidePisLarge,
+    BOOL    sideQisLarge,
+    SINT32  maxFilterLengthP,
+    SINT32  maxFilterLengthQ)
+{
+    __m128i one = _mm_set1_epi16 (1);
+    __m128i sp  = _mm_abs_epi16 (_mm_sub_epi16 (p3, p0));
+    __m128i sq  = _mm_abs_epi16 (_mm_sub_epi16 (q3, q0));
+    __m128i thrHi;
+    __m128i thrD;
+    __m128i sum;
+    __m128i twoD;
+    __m128i pq;
+    __m128i tcThr;
+    __m128i mask;
 
     if (sidePisLarge || sideQisLarge)
     {
         if (sidePisLarge)
         {
+            __m128i ref = (maxFilterLengthP == 7) ? p7 : p5;
+
             if (maxFilterLengthP == 7)
             {
-                mP5 = src[-offset*5];
-                mP6 = src[-offset*6];
-                mP7 = src[-offset*7];
-                mP4 = src[-offset*8];
-                sp3 = sp3 + XIN_ABS (mP5 - mP6 - mP7 + mP4);
-            }
-            else
-            {
-                mP4 = src[-offset * 6];
+                __m128i acc = _mm_sub_epi16 (_mm_add_epi16 (p4, p7), _mm_add_epi16 (p5, p6));
+
+                sp = _mm_add_epi16 (sp, _mm_abs_epi16 (acc));
             }
 
-            sp3 = (sp3 + XIN_ABS (m0 - mP4) + 1) >> 1;
+            sp = _mm_add_epi16 (sp, _mm_abs_epi16 (_mm_sub_epi16 (p3, ref)));
+            sp = _mm_srai_epi16 (_mm_add_epi16 (sp, one), 1);
         }
 
         if (sideQisLarge)
         {
+            __m128i ref = (maxFilterLengthQ == 7) ? q7 : q5;
+
             if (maxFilterLengthQ == 7)
             {
-                m8  = src[offset*4];
-                m9  = src[offset*5];
-                m10 = src[offset*6];
-                m11 = src[offset*7];
-                sq3 = sq3 + XIN_ABS (m8 - m9 - m10 + m11);
-            }
-            else
-            {
-                m11 = src[offset*5];
+                __m128i acc = _mm_sub_epi16 (_mm_add_epi16 (q4, q7), _mm_add_epi16 (q5, q6));
+
+                sq = _mm_add_epi16 (sq, _mm_abs_epi16 (acc));
             }
 
-            sq3 = (sq3 + XIN_ABS (m11 - m7) + 1) >> 1;
+            sq = _mm_add_epi16 (sq, _mm_abs_epi16 (_mm_sub_epi16 (ref, q3)));
+            sq = _mm_srai_epi16 (_mm_add_epi16 (sq, one), 1);
         }
 
-        return ((sp3 + sq3) < (beta*3 >> 5)) && (d < (beta >> 4)) && (XIN_ABS(m3 - m4) < ((tc * 5 + 1) >> 1));
-
+        thrHi = _mm_srai_epi16 (_mm_mullo_epi16 (beta, _mm_set1_epi16 (3)), 5);
+        thrD  = _mm_srai_epi16 (beta, 4);
     }
     else
     {
-        return (strong < (beta>>3)) && (d<(beta>>2)) && ( XIN_ABS(m3-m4) < ((tc*5+1)>>1));
+        thrHi = _mm_srai_epi16 (beta, 3);
+        thrD  = _mm_srai_epi16 (beta, 2);
     }
 
+    sum   = _mm_add_epi16 (sp, sq);
+    twoD  = _mm_add_epi16 (d4, d4);
+    pq    = _mm_abs_epi16 (_mm_sub_epi16 (p0, q0));
+    tcThr = _mm_srai_epi16 (_mm_add_epi16 (_mm_mullo_epi16 (tc, _mm_set1_epi16 (5)), one), 1);
+    mask  = _mm_and_si128 (_mm_cmpgt_epi16 (thrHi, sum), _mm_cmpgt_epi16 (thrD, twoD));
+    mask  = _mm_and_si128 (mask, _mm_cmpgt_epi16 (tcThr, pq));
+
+    return mask;
 }
 
 static void Xin266Filter1stLuma8_SSE4 (
@@ -947,39 +988,28 @@ void Xin266LumaLoopFilter_SSE4 (
     SINT32   maxFilterLengthQ,
     BOOL     isVert)
 {
-    SINT32   dp00, dp30;
-    SINT32   dp01, dp31;
-    SINT32   dq00, dq30;
-    SINT32   dq01, dq31;
-    SINT32   d00, d30;
-    SINT32   dp0, dq0;
-    SINT32   d01, d31;
-    SINT32   dp1, dq1;
-    SINT32   dp00L, dq00L;
-    SINT32   dp01L, dq01L;
-    SINT32   dp30L, dq30L;
-    SINT32   dp31L, dq31L;
-    SINT32   d00L, d30L, d0L;
-    SINT32   d01L, d31L, d1L;
-    SINT32   d0, d1;
-    intptr_t fltStride;
     intptr_t fltOffset;
     PIXEL    *fltPel;
-    BOOL     strongFlt00;
-    BOOL     strongFlt30;
+    PIXEL    *rowP;
     BOOL     fstStrongFlt0;
-    BOOL     strongFlt01;
-    BOOL     strongFlt31;
     BOOL     fstStrongFlt1;
     BOOL     sndStrongFlt0;
     BOOL     sndStrongFlt1;
     BOOL     sndFlt0, sndFlt1;
+    BOOL     filterP0, filterP1;
+    BOOL     filterQ0, filterQ1;
     SINT32   iTc0, iTc1;
     SINT32   iTc;
     SINT32   sideThr0, sideThr1;
-    BOOL     filterP0, filterP1;
-    BOOL     filterQ0, filterQ1;
+    SINT32   dp0, dp1, dq0, dq1;
+    SINT32   d0L, d1L, d0, d1;
     SINT32   filterP, filterQ;
+    __m128i  one;
+    __m128i  p0, p1, p2, p3, q0, q1, q2, q3;
+    __m128i  p4, p5, p6, p7, q4, q5, q6, q7;
+    __m128i  dp, dq, dpL, dqL;
+    __m128i  beta4, tc4;
+    __m128i  zero;
     PIXEL    intermediateBuf[8*16];
 
     if (isVert)
@@ -993,94 +1023,103 @@ void Xin266LumaLoopFilter_SSE4 (
             8 + sidePisLarge*4 + sideQisLarge*4);
 
         fltOffset = 8;
-        fltStride = 1;
         fltPel    = intermediateBuf + 4*8 + sidePisLarge*4*8;
     }
     else
     {
         fltOffset = srcStride;
-        fltStride = 1;
         fltPel    = src;
     }
 
-    iTc0 = tc[0];
-    dp00 = calcDP (fltPel+fltStride*(0*4+0), fltOffset, FALSE);
-    dq00 = calcDQ (fltPel+fltStride*(0*4+0), fltOffset);
-    dp30 = calcDP (fltPel+fltStride*(0*4+3), fltOffset, FALSE);
-    dq30 = calcDQ (fltPel+fltStride*(0*4+3), fltOffset);
+    rowP = fltPel - fltOffset;
+    p0   = dbLoad8 (rowP);
+    p1   = dbLoad8 (rowP - fltOffset);
+    p2   = dbLoad8 (rowP - fltOffset*2);
+    p3   = dbLoad8 (rowP - fltOffset*3);
+    q0   = dbLoad8 (fltPel);
+    q1   = dbLoad8 (fltPel + fltOffset);
+    q2   = dbLoad8 (fltPel + fltOffset*2);
+    q3   = dbLoad8 (fltPel + fltOffset*3);
 
-    iTc1 = tc[1];
-    dp01 = calcDP (fltPel+fltStride*(1*4+0), fltOffset, FALSE);
-    dq01 = calcDQ (fltPel+fltStride*(1*4+0), fltOffset);
-    dp31 = calcDP (fltPel+fltStride*(1*4+3), fltOffset, FALSE);
-    dq31 = calcDQ (fltPel+fltStride*(1*4+3), fltOffset);
-
-    fstStrongFlt0 = FALSE;
-    fstStrongFlt1 = FALSE;
-    sideThr0   = (beta[0] + (beta[0]>>1))>>3;
-    sideThr1   = (beta[1] + (beta[1]>>1))>>3;
+    one  = _mm_set1_epi16 (1);
+    zero = _mm_setzero_si128 ();
+    dp   = dbLap (p2, p1, p0);
+    dq   = dbLap (q0, q1, q2);
+    dpL  = dp;
+    dqL  = dq;
+    p4   = zero;
+    p5   = zero;
+    p6   = zero;
+    p7   = zero;
+    q4   = zero;
+    q5   = zero;
+    q6   = zero;
+    q7   = zero;
 
     if (sidePisLarge)
     {
-        dp00L = (dp00 + calcDP (fltPel + fltStride*(0*4 + 0) - 3*fltOffset, fltOffset, FALSE) + 1) >> 1;
-        dp30L = (dp30 + calcDP (fltPel + fltStride*(0*4 + 3) - 3*fltOffset, fltOffset, FALSE) + 1) >> 1;
+        p4  = dbLoad8 (rowP - fltOffset*4);
+        p5  = dbLoad8 (rowP - fltOffset*5);
+        dpL = _mm_srai_epi16 (_mm_add_epi16 (_mm_add_epi16 (dp, dbLap (p5, p4, p3)), one), 1);
 
-        dp01L = (dp01 + calcDP (fltPel + fltStride*(1*4 + 0) - 3*fltOffset, fltOffset, FALSE) + 1) >> 1;
-        dp31L = (dp31 + calcDP (fltPel + fltStride*(1*4 + 3) - 3*fltOffset, fltOffset, FALSE) + 1) >> 1;
-    }
-    else
-    {
-        dp00L = dp00;
-        dp30L = dp30;
-
-        dp01L = dp01;
-        dp31L = dp31;
+        if (maxFilterLengthP == 7)
+        {
+            p6 = dbLoad8 (rowP - fltOffset*6);
+            p7 = dbLoad8 (rowP - fltOffset*7);
+        }
     }
 
     if (sideQisLarge)
     {
-        dq00L = (dq00 + calcDQ (fltPel + fltStride*(0*4 + 0) + 3*fltOffset, fltOffset) + 1) >> 1;
-        dq30L = (dq30 + calcDQ (fltPel + fltStride*(0*4 + 3) + 3*fltOffset, fltOffset) + 1) >> 1;
+        q4  = dbLoad8 (fltPel + fltOffset*4);
+        q5  = dbLoad8 (fltPel + fltOffset*5);
+        dqL = _mm_srai_epi16 (_mm_add_epi16 (_mm_add_epi16 (dq, dbLap (q3, q4, q5)), one), 1);
 
-        dq01L = (dq01 + calcDQ (fltPel + fltStride*(1*4 + 0) + 3*fltOffset, fltOffset) + 1) >> 1;
-        dq31L = (dq31 + calcDQ (fltPel + fltStride*(1*4 + 3) + 3*fltOffset, fltOffset) + 1) >> 1;
+        if (maxFilterLengthQ == 7)
+        {
+            q6 = dbLoad8 (fltPel + fltOffset*6);
+            q7 = dbLoad8 (fltPel + fltOffset*7);
+        }
     }
-    else
-    {
-        dq00L = dq00;
-        dq30L = dq30;
 
-        dq01L = dq01;
-        dq31L = dq31;
-    }
+    dbPairSum (_mm_add_epi16 (dpL, dqL), &d0L, &d1L);
+    dbPairSum (_mm_add_epi16 (dp, dq), &d0, &d1);
+    dbPairSum (dp, &dp0, &dp1);
+    dbPairSum (dq, &dq0, &dq1);
+
+    iTc0         = tc[0];
+    iTc1         = tc[1];
+    beta4        = dbPairValue (beta[0], beta[1]);
+    tc4          = dbPairValue (iTc0, iTc1);
+    sideThr0     = (beta[0] + (beta[0]>>1))>>3;
+    sideThr1     = (beta[1] + (beta[1]>>1))>>3;
+    fstStrongFlt0 = FALSE;
+    fstStrongFlt1 = FALSE;
 
     if (sidePisLarge || sideQisLarge)
     {
-        d00L = dp00L + dq00L;
-        d30L = dp30L + dq30L;
-        d0L  = d00L + d30L;
-
-
-        d01L = dp01L + dq01L;
-        d31L = dp31L + dq31L;
-        d1L  = d01L + d31L;
-
         if ((d0L < beta[0]) || (d1L < beta[1]))
         {
-            strongFlt00   = UseStrongFiltering (fltPel+fltStride*(0*4+0), fltOffset, 2*d00L, beta[0], iTc0, sidePisLarge, sideQisLarge, maxFilterLengthP, maxFilterLengthQ, FALSE);
-            strongFlt30   = UseStrongFiltering (fltPel+fltStride*(0*4+3), fltOffset, 2*d30L, beta[0], iTc0, sidePisLarge, sideQisLarge, maxFilterLengthP, maxFilterLengthQ, FALSE);
-            fstStrongFlt0 = strongFlt00 && strongFlt30 && (d0L < beta[0]);
+            __m128i d4 = _mm_add_epi16 (dbPick (dpL), dbPick (dqL));
+            __m128i strong;
 
-            strongFlt01   = UseStrongFiltering (fltPel+fltStride*(1*4+0), fltOffset, 2*d01L, beta[1], iTc1, sidePisLarge, sideQisLarge, maxFilterLengthP, maxFilterLengthQ, FALSE);
-            strongFlt31   = UseStrongFiltering (fltPel+fltStride*(1*4+3), fltOffset, 2*d31L, beta[1], iTc1, sidePisLarge, sideQisLarge, maxFilterLengthP, maxFilterLengthQ, FALSE);
-            fstStrongFlt1 = strongFlt01 && strongFlt31 && (d1L < beta[1]);
+            strong = dbStrongMask (
+                dbPick (p0), dbPick (p3), dbPick (q0), dbPick (q3),
+                dbPick (p4), dbPick (p5), dbPick (p6), dbPick (p7),
+                dbPick (q4), dbPick (q5), dbPick (q6), dbPick (q7),
+                d4, beta4, tc4,
+                sidePisLarge, sideQisLarge, maxFilterLengthP, maxFilterLengthQ);
+
+            dbPairAnd (strong, &fstStrongFlt0, &fstStrongFlt1);
+            fstStrongFlt0 = fstStrongFlt0 && (d0L < beta[0]);
+            fstStrongFlt1 = fstStrongFlt1 && (d1L < beta[1]);
 
             if (fstStrongFlt0 || fstStrongFlt1)
             {
                 iTc = ((iTc1 * fstStrongFlt1) << 16) | (iTc0 * fstStrongFlt0);
 
                 Xin266Filter1stLuma8_SSE4 (
-                    fltPel+fltStride*0*4,
+                    fltPel,
                     fltOffset,
                     iTc,
                     sidePisLarge,
@@ -1095,25 +1134,12 @@ void Xin266LumaLoopFilter_SSE4 (
 
     if ((!fstStrongFlt0) || (!fstStrongFlt1))
     {
-        d00 = dp00 + dq00;
-        d30 = dp30 + dq30;
-        dp0 = dp00 + dp30;
-        dq0 = dq00 + dq30;
-        d0  = d00 + d30;
-
-        d01 = dp01 + dq01;
-        d31 = dp31 + dq31;
-        dp1 = dp01 + dp31;
-        dq1 = dq01 + dq31;
-        d1  = d01 + d31;
-
         if ((d0 < beta[0]) || (d1 < beta[1]))
         {
             if (maxFilterLengthP > 1 && maxFilterLengthQ > 1)
             {
                 filterP0 = (dp0 < sideThr0);
                 filterQ0 = (dq0 < sideThr0);
-
                 filterP1 = (dp1 < sideThr1);
                 filterQ1 = (dq1 < sideThr1);
             }
@@ -1121,20 +1147,23 @@ void Xin266LumaLoopFilter_SSE4 (
             {
                 filterP0 = FALSE;
                 filterQ0 = FALSE;
-
                 filterP1 = FALSE;
                 filterQ1 = FALSE;
             }
 
             if (maxFilterLengthP > 2 && maxFilterLengthQ > 2)
             {
-                strongFlt00   = UseStrongFiltering(fltPel + fltStride*(0 * 4 + 0), fltOffset, 2 * d00, beta[0], iTc0, FALSE, FALSE, 0, 0, FALSE);
-                strongFlt30   = UseStrongFiltering(fltPel + fltStride*(0 * 4 + 3), fltOffset, 2 * d30, beta[0], iTc0, FALSE, FALSE, 0, 0, FALSE);
-                sndStrongFlt0 = strongFlt00 && strongFlt30;
+                __m128i d4 = _mm_add_epi16 (dbPick (dp), dbPick (dq));
+                __m128i strong;
 
-                strongFlt01   = UseStrongFiltering(fltPel + fltStride*(1 * 4 + 0), fltOffset, 2 * d01, beta[1], iTc1, FALSE, FALSE, 0, 0, FALSE);
-                strongFlt31   = UseStrongFiltering(fltPel + fltStride*(1 * 4 + 3), fltOffset, 2 * d31, beta[1], iTc1, FALSE, FALSE, 0, 0, FALSE);
-                sndStrongFlt1 = strongFlt01 && strongFlt31;
+                strong = dbStrongMask (
+                    dbPick (p0), dbPick (p3), dbPick (q0), dbPick (q3),
+                    zero, zero, zero, zero,
+                    zero, zero, zero, zero,
+                    d4, beta4, tc4,
+                    FALSE, FALSE, 0, 0);
+
+                dbPairAnd (strong, &sndStrongFlt0, &sndStrongFlt1);
             }
             else
             {
@@ -1150,7 +1179,7 @@ void Xin266LumaLoopFilter_SSE4 (
                 iTc = ((iTc1 * (sndFlt1 && (sndStrongFlt1))) << 16) | (iTc0 * (sndFlt0 && (sndStrongFlt0)));
 
                 Xin266Filter2ndLuma8_SSE4 (
-                    fltPel+fltStride*0*4,
+                    fltPel,
                     fltOffset,
                     iTc,
                     TRUE,
@@ -1166,7 +1195,7 @@ void Xin266LumaLoopFilter_SSE4 (
                 filterQ = ((filterQ1 * 0xFFFF) << 16) | (filterQ0 * 0xFFFF);
 
                 Xin266Filter2ndLuma8_SSE4 (
-                    fltPel+fltStride*0*4,
+                    fltPel,
                     fltOffset,
                     iTc,
                     FALSE,
